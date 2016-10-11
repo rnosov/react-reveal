@@ -1,0 +1,56 @@
+{
+  "name": "react-reveal",
+  "version": "0.0.2",
+  "author": "Roman Nosov <rnosov@gmail.com>",
+  "description": "Easily add reveal animation to any React component",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "reveal",
+    "scroll",
+    "animation",
+    "animate.css",
+    "universal",
+    "ssr"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rnosov/react-reveal"
+  },
+  "bugs": {
+    "url": "https://github.com/rnosov/react-reveal/issues"
+  },
+  "homepage": "https://github.com/rnosov/react-reveal",
+  "main": "./dist/Reveal.js",
+  "dependencies": {
+    "babel-runtime": "^6.11.6"
+  },
+  "peerDependencies": {
+    "react": "^15.3.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-core": "^6.11.4",
+    "babel-jest": "^15.0.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-transform-runtime": "^6.12.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "enzyme": "^2.4.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-uglify": "^2.0.0",
+    "jest-cli": "^15.1.0",
+    "react": "^15.3.1",
+    "react-addons-test-utils": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "uglify-js": "^2.7.3"
+  },
+  "scripts": {
+    "build": "./node_modules/gulp/bin/gulp.js build",
+    "test": "jest .",
+    "prepublish": "npm run build && npm run test -- -u;"
+  }
+}
