@@ -59,7 +59,7 @@ class Reveal extends Component {
     if (this.props.effect) {
       if (this.state.isHidden)
         s.visibility = 'hidden';
-      else// if (this.state.isMounted)
+      else if (this.state.isMounted)
         animation = ( className ? ' ' : '' ) + this.props.effect;
     }
     return (

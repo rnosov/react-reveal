@@ -1,6 +1,6 @@
 {
   "name": "react-reveal",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "author": "Roman Nosov <rnosov@gmail.com>",
   "description": "Easily add reveal animation to any React component",
   "license": "MIT",
