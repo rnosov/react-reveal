@@ -13,6 +13,7 @@ const
     effect: PropTypes.string.isRequired,
     className: PropTypes.string,
     style: PropTypes.object,
+    onReveal: PropTypes.func,
     children: PropTypes.node.isRequired,
   },
   defaultProps = {
@@ -35,6 +36,8 @@ class Reveal extends Component {
     if (window.pageYOffset + window.innerHeight*0.85 > getAbsoluteOffsetTop(this.refs.el)) {
       this.setState({ isHidden: false });
       this.componentWillUnmount();
+      if (typeof this.props.onReveal === 'function')
+        this.props.onReveal();
     }
   };
 
@@ -54,7 +57,7 @@ class Reveal extends Component {
   }
 
   render() {
-    const { effect, style, className, ...props } = this.props;
+    const { effect, style, className, onReveal, ...props } = this.props;
     let animation = '', s = {};
     if (this.props.effect) {
       if (this.state.isHidden)

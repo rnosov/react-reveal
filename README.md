@@ -33,6 +33,7 @@ Wrap the jsx that you want to be revealed in your **render** method:
 ### Properties
 
 - `effect` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** This prop expects a string containing CSS animation effect. You can use any animate.css animations or use any other CSS based animations. If you're using animate.css don't forget to add *animated* base class. **Required**.
+- `onReveal` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)** Function called once the element is revealed. **Optional**.
 
 ### Children
 
