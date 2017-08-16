@@ -23,7 +23,8 @@
   "homepage": "https://github.com/rnosov/react-reveal",
   "main": "./dist/Reveal.js",
   "dependencies": {
-    "babel-runtime": "^6.11.6"
+    "babel-runtime": "^6.11.6",
+    "prop-types": "^15.5.10"
   },
   "peerDependencies": {
     "react": "^15.3.1"
