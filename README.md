@@ -34,6 +34,7 @@ Wrap the jsx that you want to be revealed in your **render** method:
 
 - `effect` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** This prop expects a string containing CSS animation effect. You can use any animate.css animations or use any other CSS based animations. If you're using animate.css don't forget to add *animated* base class. **Required**.
 - `onReveal` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)** Function called once the element is revealed. **Optional**.
+- `ssr` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Use this option to suppress flickering during server side rendering. Off by default. **Optional**.
 
 ### Children
 
@@ -41,7 +42,13 @@ You must also pass at least one child to this component. **Required**.
 
 ### Universal Rendering
 
-This component is compatible with universal or server side rendering (SSR).
+This component is compatible with universal or server side rendering (SSR). You might want to enable ssr flag if you have any issues with flickering on page startup.
+
+```javascript
+<Reveal ssr effect="animated fadeInUp">
+  <div>Markup that will be revealed on scroll</div>
+</Reveal>
+```
 
 ## Step by Step Instructions
 
@@ -71,7 +78,7 @@ import 'animate.css/animate.css'; // CSS animation effects library
 class App extends Component {
   render() {
     return (
-      <div className="App">
+      <div className="App" style={{overflow: 'hidden'}}>>
         <Reveal effect="animated zoomIn" className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>

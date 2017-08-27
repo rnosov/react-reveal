@@ -1,6 +1,6 @@
 {
   "name": "react-reveal",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Roman Nosov <rnosov@gmail.com>",
   "description": "Easily add reveal animation to any React component",
   "license": "MIT",
@@ -23,7 +23,8 @@
   "homepage": "https://github.com/rnosov/react-reveal",
   "main": "./dist/Reveal.js",
   "dependencies": {
-    "babel-runtime": "^6.11.6"
+    "babel-runtime": "^6.26.0",
+    "prop-types": "^15.5.10"
   },
   "peerDependencies": {
     "react": "^15.3.1"
@@ -51,6 +52,6 @@
   "scripts": {
     "build": "./node_modules/gulp/bin/gulp.js build",
     "test": "jest .",
-    "prepublish": "npm run build && npm run test -- -u;"
+    "prepare": "npm run build && npm run test -- -u;"
   }
 }
