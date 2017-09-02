@@ -15,12 +15,16 @@ const
     className: PropTypes.string,
     style: PropTypes.object,
     ssr: PropTypes.bool,
+    fraction: PropTypes.number,
+    throttleTimeout: PropTypes.number,
     onReveal: PropTypes.func,
     children: PropTypes.node.isRequired,
   },
   defaultProps = {
     className: '',
     style: {},
+    fraction: 0.85,
+    throttleTimeout: 66,
     ssr: false,
   };
 
@@ -35,8 +39,11 @@ class Reveal extends React.Component {
     isMounted: false,
   };
 
-  handleScroll = () => {
-    if (window.pageYOffset + window.innerHeight*0.85 > getAbsoluteOffsetTop(this.refs.el)) {
+  revealTimeout = void 0;
+
+  handleReveal = () => {
+    this.revealTimeout = void 0;
+    if (window.pageYOffset + window.innerHeight*this.props.fraction > getAbsoluteOffsetTop(this.refs.el)) {
       this.setState({ isHidden: false });
       this.componentWillUnmount();
       if (typeof this.props.onReveal === 'function')
@@ -44,8 +51,15 @@ class Reveal extends React.Component {
     }
   };
 
+  revealThrottler = () => {
+    // ignore reveal events as long as an handleReveal execution is in the queue
+    if (!this.revealTimeout)
+      this.revealTimeout = window.setTimeout(this.handleReveal, this.props.throttleTimeout);
+  };
+
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('scroll', this.revealThrottler);
+    window.removeEventListener('resize', this.revealThrottler, false);
   }
 
   componentDidMount() {
@@ -55,12 +69,13 @@ class Reveal extends React.Component {
       return;
     }
     this.setState({ isHidden: true, isMounted: true });
-    window.setTimeout(this.handleScroll, 100);
-    window.addEventListener('scroll', this.handleScroll);
+    this.revealThrottler();
+    window.addEventListener('scroll', this.revealThrottler);
+    window.addEventListener('resize', this.revealThrottler, false);
   }
 
   render() {
-    const { effect, style, className, ssr, onReveal, ...props } = this.props;
+    const { effect, style, className, ssr, onReveal, fraction, throttleTimeout, ...props } = this.props;
     let animation = '', s = {};
     if (this.props.effect) {
       if (this.state.isHidden)

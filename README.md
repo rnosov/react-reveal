@@ -1,6 +1,6 @@
 # React Reveal
 
-Easily add reveal animation to any React component. It is compatible with the excellent [animate.css](https://daneden.github.io/animate.css/) library but you can use any CSS based animations.
+Easily add reveal animations to your React apps. [react-reveal](https://www.npmjs.com/package/react-reveal) is compatible with the excellent [animate.css](https://daneden.github.io/animate.css/) library and [Create React App](https://github.com/facebookincubator/create-react-app) scaffolding. Following examples assume that you're using animate.css but you can replace it with any other CSS animation effects toolkit.
 
 [Live Demo](https://www.solarleague.org/) - scroll down to see the reveal animation.
 
@@ -17,28 +17,58 @@ Import all necessary modules:
 
 ```javascript
 import Reveal from 'react-reveal'; // this package
-import 'animate.css/animate.css'; // CSS animation effects library
+import 'animate.css/animate.css'; // CSS animation effects library (you can use something else if you wish)
 ```
 
 Wrap the jsx that you want to be revealed in your **render** method:
 
 ```javascript
-<Reveal effect="animated fadeInUp">
+<Reveal effect="animated fadeInUp"> // for a full list of effects visit the animate.css page
   <div>Markup that will be revealed on scroll</div>
 </Reveal>
 ```
 
 ## Documentation
 
+A simple way of using react-reveal is to simply replace a **div** tag in your JSX markup with the **Reveal** class. All props that do not belong to **Reveal** class will be passed down to a **div** tag (including className). For example:
+```javascript
+
+<div className="someClass">
+  <p>Markup that will be revealed on scroll</p>
+</div>
+
+// Change div to Reveal and add a desired effect. 
+// All other other props will be passed down 
+
+<Reveal effect="animated fadeInUp" className="someClass">
+  <p>Markup that will be revealed on scroll</p>
+</Reveal>
+```
+
 ### Properties
 
-- `effect` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** This prop expects a string containing CSS animation effect. You can use any animate.css animations or use any other CSS based animations. If you're using animate.css don't forget to add *animated* base class. **Required**.
-- `onReveal` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)** Function called once the element is revealed. **Optional**.
+- `effect` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** This prop expects a string containing CSS animation effect. You can use any animate.css animations or use any other CSS based animations. Animate.css effects work by adding *animated* base class to the effect class name. **Required**.
+- `fraction` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Maximum fraction of the revealed element height that can remain off screen before reveal animation is triggered. Should be some value between 0 to 1. Adjust it if the reveal animation is being triggered too late or too early. Defaults to 0.85 **Optional**.
 - `ssr` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Use this option to suppress flickering during server side rendering. Off by default. **Optional**.
+- `throttleTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Use this option to suppress flickering during server side rendering. Off by default. Defaults to 66 **Optional**.
+- `onReveal` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)** Function called once the element is revealed. **Optional**.
 
 ### Children
 
 You must also pass at least one child to this component. **Required**.
+
+### Unwanted Scrollbars
+
+Some animation effects might create unwanted scrollbars for a short time. If you want to avoid it set **overflow** attribute of a containing div to **hidden**.
+```javascript
+<div style={{overflow: 'hidden'}}> //containing div
+  <p>Some other content</p>  
+  <Reveal effect="animated fadeInUp">
+    <p>Markup that will be revealed on scroll</p>
+  </Reveal>
+</div>
+```
+You can also do it through CSS.
 
 ### Universal Rendering
 
@@ -52,7 +82,7 @@ This component is compatible with universal or server side rendering (SSR). You 
 
 ## Step by Step Instructions
 
-In order to start from scratch we'll use Facebook react starter kit called [Create React App](https://github.com/facebookincubator/create-react-app). In the command prompt type:
+In order to start from scratch we'll use Facebook React starter kit called [Create React App](https://github.com/facebookincubator/create-react-app). In the command prompt type:
 
 
 ```sh
@@ -78,7 +108,7 @@ import 'animate.css/animate.css'; // CSS animation effects library
 class App extends Component {
   render() {
     return (
-      <div className="App" style={{overflow: 'hidden'}}>>
+      <div className="App" style={{overflow: 'hidden'}}>
         <Reveal effect="animated zoomIn" className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
