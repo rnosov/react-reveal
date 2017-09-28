@@ -103,3 +103,22 @@ class Reveal extends React.Component {
 Reveal.propTypes = propTypes;
 Reveal.defaultProps = defaultProps;
 export default Reveal;
+export let
+  Fade = () => <Reveal />,
+  SlideDown = () => <Reveal effect={{ transform: 'translate3d(0, -100%, 0)' }} />,
+  SlideDownBig = () => <Reveal effect={{ transform: 'translate3d(0, -2000px, 0)' }} />,
+  SlideLeft = () => <Reveal effect={{ transform: 'translate3d(-100%, 0, 0)' }} />,
+  SlideRight = () => <Reveal effect={{ transform: 'translate3d(100%, 0, 0)' }} />,
+  SlideRightBig  = () => <Reveal effect={{ transform: 'translate3d(2000px, 0, 0)' }} />,
+  SlideUp = () => <Reveal effect={{ transform: 'translate3d(0, 100%, 0)' }} />,
+  SlideUpBig = () => <Reveal effect={{ transform: 'translate3d(0, 2000px, 0)' }} />,
+  Flip = () => <Reveal effect={{ transform: 'perspective(400px) rotate3d(0, 1, 0, -360deg)' }} />,
+  FlipY = () => <Reveal effect={{ transform: 'perspective(400px) rotate3d(0, 1, 0, 90deg)' }} />,
+  FlipX = () => <Reveal effect={{ transform: 'perspective(400px) rotate3d(1, 0, 0, 90deg)' }} />,
+  Rotate = () => <Reveal effect={{ transform: 'rotate(-200deg)' }} />,
+  RotateDownLeft = () => <Reveal effect={{ transform: 'rotate3d(0, 0, 1, -45deg)', transformOrigin: 'left bottom' }} />,
+  RotateDownRight = () => <Reveal effect={{ transform: 'rotate3d(0, 0, 1, 45deg)', transformOrigin: 'right bottom' }} />,
+  RotateUpLeft = () => <Reveal effect={{ transform: 'rotate3d(0, 0, 1, 45deg)', transformOrigin: 'left bottom' }} />,
+  RotateUpRight = () => <Reveal effect={{ transform: 'rotate3d(0, 0, 1, -90deg)', transformOrigin: 'right bottom' }} />,
+  Zoom = () => <Reveal effect={{ transform: 'scale3d(.3, .3, .3)' }} />
+;
