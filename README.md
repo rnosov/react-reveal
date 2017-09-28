@@ -1,7 +1,7 @@
 # React Reveal
 
 ## Introduction
-[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. It's less than 2kb gzipped and has no external dependencies apart from React, Proptypes and Babel Runtime (it's very likely you already have them). It's specifically written for React in ES6. If you like this package don't forget to star the [Github project](https://github.com/rnosov/react-reveal)!
+[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. It's less than 2kb gzipped and has no external dependencies apart from React Proptypes and Babel Runtime (it's very likely you already have them). It's specifically written for React in ES6. If you like this package don't forget to star the [Github project](https://github.com/rnosov/react-reveal)!
 
 [Live Demo](https://www.solarleague.org/) - scroll down to see the reveal animation.
 
