@@ -3,7 +3,12 @@
 ## Introduction
 [React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. It's less than 2kb gzipped and has no external dependencies apart from React Proptypes and Babel Runtime (it's very likely you already have them). It's specifically written for React in ES6. If you like this package don't forget to star the [Github project](https://github.com/rnosov/react-reveal)!
 
-[Live Demo](https://www.solarleague.org/) - scroll down to see the reveal animation.
+## Demo 
+
+- [Dedicated demo](https://rnosov.github.io/react-reveal-demo/)
+- [Live production site](https://www.solarleague.org/) 
+
+Scroll down to see the reveal animation on these sites.
 
 ## Quick Start
 
@@ -12,6 +17,12 @@ In the command prompt run:
 ```sh
 npm install react-reveal --save
 
+```
+
+Alternatively you may use `yarn`:
+
+```sh
+yarn add react-reveal
 ```
 
 Import a required effect from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. We'll use `Zoom` in the following example.
@@ -75,9 +86,9 @@ If you want to avoid it set `overflow` attribute of a containing div to `hidden`
 
 ```jsx
 <div style={{overflow: 'hidden'}}>
-  <Reveal effect={{ transform: 'translate3d(2000px, 0, 0)' }} >
+  <SlideRightBig>
     <p>Markup that will be revealed on scroll</p>
-  </Reveal>
+  </SlideRightBig>
 </div>
 ```
 
