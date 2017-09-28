@@ -25,29 +25,29 @@ Alternatively you may use `yarn`:
 yarn add react-reveal
 ```
 
-Import a required effect from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. We'll use `Zoom` in the following example.
+Import a required effect from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. We'll use `Zoom` effect in the following example:
 
 ```javascript
 import { Zoom } from 'react-reveal';
 ```
 
-Place the following code somewhere in your `render` method. 
+Place the following code somewhere in your `render` method: 
 
 ```jsx
 <Zoom>
-  Place your markup here. It will be revealed on scroll.
+  <p>Markup that will be revealed on scroll</p>
 </Zoom>
 ``````
 
 You should see zooming animation that reveals text inside the tag. You can change this text to any JSX you want. 
 
-It might a bit difficult to see what is actually happening so let's make the effect a little bit more pronounced. Note that `key` prop is needed by the React as the element is being repeated.
+It might a bit difficult to see what is actually happening so let's make the effect a little bit more pronounced. Note that the `key` prop is needed by React as the element is being repeated.
 
 ```jsx
 <div>
   {Array(100).fill(void 0).map( (val, index) =>  
     <Zoom key={index}>
-      Place your markup here. It will be revealed on scroll.
+      <p>Markup that will be revealed on scroll</p>
     </Zoom>
   )}
 </div>
@@ -106,7 +106,7 @@ To implement custom reveal effects we'll need the `Reveal` base component and it
 import Reveal from 'react-reveal';
 ```
 
-Lets try to implement custom rotation. We'll do this by using `rotate(360deg)` transform function. 
+Lets try to implement custom rotation. We'll do this by using `rotate(360deg)` transform function: 
 
 ```jsx
 <Reveal effect={{ transform: "rotate(360deg)" }}>  
@@ -114,7 +114,7 @@ Lets try to implement custom rotation. We'll do this by using `rotate(360deg)` t
 </Reveal>
 ```
 
-Or with the repeated list
+Or with the repeated list:
 
 ```jsx
 <div style={{overflow: 'hidden'}}>
@@ -196,15 +196,21 @@ git clone https://github.com/rnosov/react-reveal.git
 
 In the cloned directory, you can run following commands:
 
-### `npm install`
+```sh
+npm install
+```
 
 Installs required node modules
 
-### `npm run build`
+```sh
+npm run build
+```
 
 Builds the package for production to the `dist` folder
 
-### `npm test`
+```sh
+npm test
+```
 
 Runs tests
 
