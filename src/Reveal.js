@@ -11,39 +11,38 @@ import PropTypes from 'prop-types';
 
 const
   propTypes = {
-    effect: PropTypes.string.isRequired,
+    effect: PropTypes.oneOfType([ PropTypes.string, PropTypes.object ]),
+    transition: PropTypes.string,
     className: PropTypes.string,
     style: PropTypes.object,
     ssr: PropTypes.bool,
     fraction: PropTypes.number,
     throttleTimeout: PropTypes.number,
     onReveal: PropTypes.func,
-    children: PropTypes.node.isRequired,
   },
   defaultProps = {
-    className: '',
-    style: {},
-    fraction: 0.85,
+    transition: 'all 1s ease 0s',
+    fraction: 0.2,
     throttleTimeout: 66,
     ssr: false,
   };
 
-function getAbsoluteOffsetTop({ offsetTop, offsetParent }) {
-  return offsetTop + (offsetParent && getAbsoluteOffsetTop(offsetParent));
-}
-
 class Reveal extends React.Component {
+
+  revealTimeout = void 0;
 
   state = {
     isHidden: false,
     isMounted: false,
   };
 
-  revealTimeout = void 0;
+  static getAbsoluteOffsetTop({ offsetTop, offsetParent }) {
+    return offsetTop + (offsetParent && Reveal.getAbsoluteOffsetTop(offsetParent));
+  }
 
   handleReveal = () => {
     this.revealTimeout = void 0;
-    if (window.pageYOffset + window.innerHeight*this.props.fraction > getAbsoluteOffsetTop(this.refs.el)) {
+    if (window.pageYOffset + window.innerHeight - this.refs.el.offsetHeight*this.props.fraction > Reveal.getAbsoluteOffsetTop(this.refs.el)) {
       this.setState({ isHidden: false });
       this.componentWillUnmount();
       if (typeof this.props.onReveal === 'function')
@@ -63,11 +62,12 @@ class Reveal extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.effect) return;
-    if (window.pageYOffset + window.innerHeight > getAbsoluteOffsetTop(this.refs.el)) {
-      if (!this.props.ssr) this.setState({ isHidden: false, isMounted: true });
-      return;
-    }
+    if (this.props.ssr)
+      if (window.pageYOffset + window.innerHeight > Reveal.getAbsoluteOffsetTop(this.refs.el))
+      {
+        this.setState({ isHidden: false, isMounted: false });
+        return;
+      }
     this.setState({ isHidden: true, isMounted: true });
     this.revealThrottler();
     window.addEventListener('scroll', this.revealThrottler);
@@ -75,16 +75,26 @@ class Reveal extends React.Component {
   }
 
   render() {
-    const { effect, style, className, ssr, onReveal, fraction, throttleTimeout, ...props } = this.props;
-    let animation = '', s = {};
-    if (this.props.effect) {
-      if (this.state.isHidden)
-        s.visibility = 'hidden';
-      else if (this.state.isMounted)
-        animation = ( className ? ' ' : '' ) + this.props.effect;
+    const { transition, effect, style, className, ssr, onReveal, fraction, throttleTimeout, ...props } = this.props;
+    if (!props.children) {
+      let lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ';
+      for (let i=0; i<4; i++)
+        lorem += lorem;
+      props.children = <p>{lorem}</p>;
+    }
+    let s = {}, cls = className, isInline = !(typeof effect === 'string' || effect instanceof String);
+    let o = isInline ? effect : {};
+    if (this.state.isHidden)
+      s = { opacity: 0, ...o };
+    else if (this.state.isMounted)
+    {
+      if (isInline)
+        s = { opacity: 1, transition };
+      else
+        cls = className ? className + ' ' + this.props.effect : this.props.effect;
     }
     return (
-      <div { ...props } style={ { ...style, ...s } } className={ className + animation } ref="el" />
+      <div { ...props } style={{ ...style, ...s }} className={cls} ref="el" />
     );
   }
 
