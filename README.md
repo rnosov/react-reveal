@@ -25,13 +25,13 @@ Alternatively you may use `yarn`:
 yarn add react-reveal
 ```
 
-Import a required effect from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. We'll use `Zoom` effect in the following example:
+Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. 
 
 ```javascript
-import { Zoom } from 'react-reveal';
+import { Fade, Flip, Rotate, Zoom } from 'react-reveal';
 ```
 
-Place the following code somewhere in your `render` method: 
+Lets try `Zoom` effect first. Place the following code somewhere in your `render` method: 
 
 ```jsx
 <Zoom>
@@ -57,27 +57,29 @@ Scroll down to see the reveal effect. It should be a lot clearer by now what is 
 
 ## List Of Reveal Effects
 
-Here is the handy list of different effects for you to try. Don't forget to import them first!
+Here is the handy list of different effects for you to try. 
+Some effects have attributes to them (like left or right versions).
 
-| Effect           | Import                                         | Example Usage |
-| ---------------- | --------------------------------------------   |----------------------------------------------------------|
-| Fade             | `import { Fade } from 'react-reveal';`            |  `<Fade>Your content goes here</Fade>`|
-| SlideDown        | `import { SlideDown } from 'react-reveal';`       |  `<SlideDown>Your content goes here</SlideDown>`|
-| SlideDownBig     | `import { SlideDownBig } from 'react-reveal';`    |  `<SlideDownBig>Your content goes here</SlideDownBig>`|
-| SlideLeft        | `import { SlideLeft } from 'react-reveal';`       |  `<SlideLeft>Your content goes here</SlideLeft>`|
-| SlideRight       | `import { SlideRight } from 'react-reveal';`      |  `<SlideRight>Your content goes here</SlideRight>`|
-| SlideRightBig    | `import { SlideRightBig } from 'react-reveal';`   |  `<SlideRightBig>Your content goes here</SlideRightBig>`|
-| SlideUp          | `import { SlideUp } from 'react-reveal';`         |  `<SlideUp>Your content goes here</SlideUp>`|
-| SlideUpBig       | `import { SlideUpBig } from 'react-reveal';`      |  `<SlideUpBig>Your content goes here</SlideUpBig>`|
-| Flip             | `import { Flip } from 'react-reveal';`            |  `<Flip>Your content goes here</Flip>`|
-| FlipY            | `import { FlipY } from 'react-reveal';`           |  `<FlipY>Your content goes here</FlipY>`|
-| FlipX            | `import { FlipX } from 'react-reveal';`           |  `<FlipX>Your content goes here</FlipX>`|
-| Rotate           | `import { Rotate } from 'react-reveal';`          |  `<Rotate>Your content goes here</Rotate>`|
-| RotateDownLeft   | `import { RotateDownLeft } from 'react-reveal';`  |  `<RotateDownLeft>Your content goes here</RotateDownLeft>`|
-| RotateDownRight  | `import { RotateDownRight } from 'react-reveal';` |  `<RotateDownRight>Your content goes here</RotateDownRight>`|
-| RotateUpLeft     | `import { RotateUpLeft } from 'react-reveal';`    |  `<RotateUpLeft>Your content goes here</RotateUpLeft>`|
-| RotateUpRight    | `import { RotateUpRight } from 'react-reveal';`   |  `<RotateUpRight>Your content goes here</RotateUpRight>`|
-| Zoom             | `import { Zoom } from 'react-reveal';`            |  `<Zoom>Your content goes here</Zoom>`|
+```jsx
+<Fade>Your content goes here</Fade>
+<Fade down>Your content goes here</Fade>
+<Fade down big>Your content goes here</Fade>
+<Fade left>Your content goes here</Fade>
+<Fade left big>Your content goes here</Fade>
+<Fade right>Your content goes here</Fade>
+<Fade right big>Your content goes here</Fade>
+<Fade up>Your content goes here</Fade>
+<Fade up big>Your content goes here</Fade>
+<Flip>Your content goes here</Flip>
+<Flip x>Your content goes here</Flip>
+<Flip y>Your content goes here</Flip>
+<Rotate>Your content goes here</Rotate>
+<Rotate down left>Your content goes here</Rotate>
+<Rotate down right>Your content goes here</Rotate>
+<Rotate up left>Your content goes here</Rotate>
+<Rotate up right>Your content goes here</Rotate>
+<Zoom>Your content goes here</Zoom>
+```
 
 If you need any more bespoke animations in your React app then this the author of this package is available for hire. The email to contact is rnosov@gmail.com
 
@@ -86,9 +88,9 @@ If you want to avoid it set `overflow` attribute of a containing div to `hidden`
 
 ```jsx
 <div style={{overflow: 'hidden'}}>
-  <SlideRightBig>
+  <Fade right big>
     <p>Markup that will be revealed on scroll</p>
-  </SlideRightBig>
+  </Fade>
 </div>
 ```
 

@@ -104,21 +104,18 @@ Reveal.propTypes = propTypes;
 Reveal.defaultProps = defaultProps;
 export default Reveal;
 export let
-  Fade = props => <Reveal {...props} />,
-  SlideDown = props => <Reveal {...props} effect={{ transform: 'translate3d(0, -100%, 0)' }} />,
-  SlideDownBig = props => <Reveal {...props} effect={{ transform: 'translate3d(0, -2000px, 0)' }} />,
-  SlideLeft = props => <Reveal {...props} effect={{ transform: 'translate3d(-100%, 0, 0)' }} />,
-  SlideRight = props => <Reveal {...props} effect={{ transform: 'translate3d(100%, 0, 0)' }} />,
-  SlideRightBig  = props => <Reveal {...props} effect={{ transform: 'translate3d(2000px, 0, 0)' }} />,
-  SlideUp = props => <Reveal {...props} effect={{ transform: 'translate3d(0, 100%, 0)' }} />,
-  SlideUpBig = props => <Reveal {...props} effect={{ transform: 'translate3d(0, 2000px, 0)' }} />,
-  Flip = props => <Reveal {...props} effect={{ transform: 'perspective(400px) rotate3d(0, 1, 0, -360deg)' }} />,
-  FlipY = props => <Reveal {...props} effect={{ transform: 'perspective(400px) rotate3d(0, 1, 0, 90deg)' }} />,
-  FlipX = props => <Reveal {...props} effect={{ transform: 'perspective(400px) rotate3d(1, 0, 0, 90deg)' }} />,
-  Rotate = props => <Reveal {...props} effect={{ transform: 'rotate(-200deg)' }} />,
-  RotateDownLeft = props => <Reveal {...props} effect={{ transform: 'rotate3d(0, 0, 1, -45deg)', transformOrigin: 'left bottom' }} />,
-  RotateDownRight = props => <Reveal {...props} effect={{ transform: 'rotate3d(0, 0, 1, 45deg)', transformOrigin: 'right bottom' }} />,
-  RotateUpLeft = props => <Reveal {...props} effect={{ transform: 'rotate3d(0, 0, 1, 45deg)', transformOrigin: 'left bottom' }} />,
-  RotateUpRight = props => <Reveal {...props} effect={{ transform: 'rotate3d(0, 0, 1, -90deg)', transformOrigin: 'right bottom' }} />,
+  Fade = ({ left, right, up, down, big, ...props }) => {
+    const dist = big?'2000px':'100%';
+    return <Reveal {...props} effect={{ transform: `translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down?`-${dist}`:(up?dist:'0')}, 0)` }} />;
+  },
+  Flip = ({ x, y, ...props }) => <Reveal {...props} effect={{ transform: `perspective(400px) rotate3d(${x?'1':'0'}, ${x?'0':'1'}, 0, ${x||y?'90deg':'-360deg'})` }} />,
+  Rotate = ({ left, right, up, down, ...props }) => {
+    let angle = '-200deg', origin = 'center';
+    if ( down && left ) angle = '-45deg';
+    if ( (down && right) || (up && left) ) angle = '45deg';
+    if ( up && right ) angle = '-90deg';
+    if ( left || right ) origin=(left?'left':'right')+' bottom';
+    return <Reveal {...props} effect={{ transform: `rotate3d(0, 0, 1, ${angle})`, transformOrigin: origin }} />
+  },
   Zoom = props => <Reveal {...props} effect={{ transform: 'scale3d(.3, .3, .3)' }} />
 ;
