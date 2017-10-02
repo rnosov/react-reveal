@@ -5,18 +5,17 @@
 
 ## Demo 
 
-- [Dedicated demo](https://rnosov.github.io/react-reveal-demo/)
-- [Live production site](https://www.solarleague.org/) 
+- [Live demo](https://rnosov.github.io/react-reveal-demo/)
+- [Production site](https://www.solarleague.org/) 
 
-Scroll down to see the reveal animation on these sites.
+## Documentation
 
-## Quick Start
+### Installation
 
 In the command prompt run:
 
 ```sh
 npm install react-reveal --save
-
 ```
 
 Alternatively you may use `yarn`:
@@ -24,6 +23,8 @@ Alternatively you may use `yarn`:
 ```sh
 yarn add react-reveal
 ```
+
+### Example usage
 
 Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. 
 
@@ -55,10 +56,10 @@ It might a bit difficult to see what is actually happening so let's make the eff
 
 Scroll down to see the reveal effect. It should be a lot clearer by now what is happening. 
 
-## List Of Reveal Effects
+### List Of Reveal Effects
 
 Here is the handy list of different effects for you to try. 
-Some effects have attributes to them (like left or right versions).
+Some effects have attributes to them (like left or right versions). The can can be combined with other Reveal props (see docs further down).
 
 ```jsx
 <Fade>Your content goes here</Fade>
@@ -83,6 +84,44 @@ Some effects have attributes to them (like left or right versions).
 
 If you need any more bespoke animations in your React app then this the author of this package is available for hire. The email to contact is rnosov@gmail.com
 
+### Reveal Waves
+
+One cool feature of `react-reveal` is the ability to easily create wavelike reveal effects. It can be handy if you want animate some boring long lists. Say you have list like this:
+
+```jsx
+<ul className="some-class">
+  <li>First Item</li>
+  <li>Another Item</li>
+  <li>Last Item</li>
+</ul>
+```
+
+You can liven it up a bit by using `wave` prop ( even without breaking you markup ):
+
+```jsx
+<Fade up wave tag="ul" className="some-class">
+  <li>First Item</li>
+  <li>Another Item</li>
+  <li>Last Item</li>
+</Fade>
+```
+
+### Timing Of Reveals
+
+If several of Reveal effects are likely to happen simultaneously you might want for them to happen sequentially. In such case, you should use `delay` prop. You can also adjust a duration of effect animation by using `duration` prop. Both `delay` and `duration` are specified in a number of milliseconds.
+
+```jsx
+<Zoom delay={500} duration={3000}>
+  <p>Markup that will be revealed first</p>
+</Zoom>
+<Zoom delay={4000} duration={200}>
+  <p>Markup that will be revealed a bit later</p>
+</Zoom>
+```
+
+
+### Unwanted Scrollbars
+
 Please note that some reveal effects might create unwanted scrollbars for a short time. 
 If you want to avoid it set `overflow` attribute of a containing div to `hidden`.
 
@@ -95,8 +134,6 @@ If you want to avoid it set `overflow` attribute of a containing div to `hidden`
 ```
 
 You can also do it using CSS.
-
-## Documentation
 
 ### Reveal Component
 
@@ -146,13 +183,16 @@ If you already have animations effects in your CSS then just set effect property
 ### Reveal Properties
 
 - `effect` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** or **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object)** This prop could be either an object describing a desired reveal effect  or a string containing CSS animation class (for example "animated fadeInUp" from  animate.css). If you don't specify it a default fade in effect will apply. **Optional**.
-- `transition` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Read about it [here](https://developer.mozilla.org/en-US/docs/Web/CSS/transition). Useful for adjusting animation duration (second value), easing curve (third value) or animation delay (last value) Defaults to `all 1s ease 0s`. **Optional**.
-- `fraction` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Fraction of the revealed element height that must be visible in order for reveal animation to trigger. Should be some value between 0 to 1. Defaults to `0.20` meaning that at least 20% of the element must be visible before the reveal. **Optional**.
+- `duration` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Duration of the reveal animation in milliseconds. Ignored for effects based on CSS animation classes. Defaults to `1000` milliseconds. **Optional**.
+- `delay` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Delay before the start of reveal animation in milliseconds. Can be handy if several reveals are happening at approximately same time and you want to space them out a bit. Defaults to `66` seconds ( small delay is used to throttle reveal events). Anything higher than that should be generally okay. **Optional**.
+- `easing` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Easing function. Read more about [here](https://developer.mozilla.org/en-US/docs/Web/CSS/transition-timing-function). Defaults to `ease`. **Optional**.
+- `wave` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** or **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Can be used to create wave like animation effects. Makes sense if you're trying to Reveal a some kind of list and don't want reveal all items at once. If you set it to a number then this number will be a delay in milliseconds between each reveal. If you set to true then the delay will `200` milliseconds. Off by default. **Optional**.    
+- `tag` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** HTML tag which is used for Reveal container. Defaults to `div`. **Optional**.
+- `fraction` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Fraction of the revealed element height that must be visible in order for reveal animation to trigger. Should be some value between 0 to 1. Defaults to `0.2` meaning that at least 20% of the element must be visible before the reveal. **Optional**.
 - `ssr` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Use this option to suppress flickering during server side rendering. Off by default. **Optional**.
-- `throttleTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds between running reveal event handler. Defaults to `66` **Optional**.
 - `onReveal` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)** Function called once the element is revealed. **Optional**.
 
-These props will work with effect aliases ( `<Zoom />`, `<Rotate />`, etc ) as well.
+These props will work with both `<Reveal />` component and effect aliases ( `<Zoom />`, `<Rotate />`, etc ) as well.
 
 ### Children
 
@@ -163,7 +203,6 @@ You should pass at least one child to this component. If you don't do it then lo
 All props that do not belong to `Reveal` class will be passed down to a `div` tag (including `className` and `style`). For example:
 
 ```jsx
-
 <div className="some-class">
   <p>Markup that will be revealed on scroll</p>
 </div>

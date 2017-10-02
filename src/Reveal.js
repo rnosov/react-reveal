@@ -12,19 +12,23 @@ import PropTypes from 'prop-types';
 const
   propTypes = {
     effect: PropTypes.oneOfType([ PropTypes.string, PropTypes.object ]),
-    transition: PropTypes.string,
+    duration: PropTypes.number,
+    delay: PropTypes.number,
+    easing: PropTypes.string,
+    wave: PropTypes.oneOfType([ PropTypes.bool, PropTypes.number ]),
+    tag: PropTypes.string,
     className: PropTypes.string,
     style: PropTypes.object,
     ssr: PropTypes.bool,
     fraction: PropTypes.number,
-    throttleTimeout: PropTypes.number,
     onReveal: PropTypes.func,
   },
   defaultProps = {
-    transition: 'all 1s ease 0s',
+    duration: 1000,
+    easing: 'ease',
+    delay: 66,
     fraction: 0.2,
-    throttleTimeout: 66,
-    ssr: false,
+    tag: 'div',
   };
 
 class Reveal extends React.Component {
@@ -36,13 +40,13 @@ class Reveal extends React.Component {
     isMounted: false,
   };
 
-  static getAbsoluteOffsetTop({ offsetTop, offsetParent }) {
-    return offsetTop + (offsetParent && Reveal.getAbsoluteOffsetTop(offsetParent));
+  static getTop({ offsetTop, offsetParent }) {
+    return offsetTop + (offsetParent && Reveal.getTop(offsetParent));
   }
 
   handleReveal = () => {
     this.revealTimeout = void 0;
-    if (window.pageYOffset + window.innerHeight - this.refs.el.offsetHeight*this.props.fraction > Reveal.getAbsoluteOffsetTop(this.refs.el)) {
+    if (window.pageYOffset + window.innerHeight - this.refs.el.offsetHeight*this.props.fraction > Reveal.getTop(this.refs.el)) {
       this.setState({ isHidden: false });
       this.componentWillUnmount();
       if (typeof this.props.onReveal === 'function')
@@ -53,7 +57,7 @@ class Reveal extends React.Component {
   revealThrottler = () => {
     // ignore reveal events as long as an handleReveal execution is in the queue
     if (!this.revealTimeout)
-      this.revealTimeout = window.setTimeout(this.handleReveal, this.props.throttleTimeout);
+      this.revealTimeout = window.setTimeout(this.handleReveal, this.props.delay);
   };
 
   componentWillUnmount() {
@@ -63,7 +67,7 @@ class Reveal extends React.Component {
 
   componentDidMount() {
     if (this.props.ssr)
-      if (window.pageYOffset + window.innerHeight > Reveal.getAbsoluteOffsetTop(this.refs.el))
+      if (window.pageYOffset + window.innerHeight > Reveal.getTop(this.refs.el))
       {
         this.setState({ isHidden: false, isMounted: false });
         return;
@@ -74,28 +78,40 @@ class Reveal extends React.Component {
     window.addEventListener('resize', this.revealThrottler, false);
   }
 
+  static lorem() {
+    let lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ';
+    for (let i=0; i<4; i++)
+      lorem += lorem;
+    return <p>{lorem}</p>;
+  }
+
   render() {
-    const { transition, effect, style, className, ssr, onReveal, fraction, throttleTimeout, ...props } = this.props;
-    if (!props.children) {
-      let lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ';
-      for (let i=0; i<4; i++)
-        lorem += lorem;
-      props.children = <p>{lorem}</p>;
-    }
-    let s = {}, cls = className, isInline = !(typeof effect === 'string' || effect instanceof String);
-    let o = isInline ? effect : {};
+    const { transition, tag, children, wave, duration, delay, easing, effect, style,
+            className, ssr, onReveal, fraction, ...props } = this.props;
+    let TagName = tag, newStyle = {}, cls = className, isInline = !(typeof effect === 'string' || effect instanceof String);
     if (this.state.isHidden)
-      s = { opacity: 0, ...o };
+      newStyle = { opacity: 0, ...( isInline ? effect : {} ) };
     else if (this.state.isMounted)
     {
       if (isInline)
-        s = { opacity: 1, transition };
+        newStyle = { opacity: 1,  transition: transition || `all ${duration}ms ${easing} 0s` };
       else
         cls = className ? className + ' ' + this.props.effect : this.props.effect;
     }
-    return (
-      <div { ...props } style={{ ...style, ...s }} className={cls} ref="el" />
-    );
+    if (wave && isInline) {
+      let delaySum = 0, waveDelay = typeof wave === 'boolean' ? 200 :  wave;
+      return (
+        <TagName { ...props } style={style} className={className} ref="el">
+          {React.Children.map(children, child => {
+            if (newStyle.transition)
+              newStyle.transition = `all ${duration}ms ${easing} ${delaySum += waveDelay}ms`;
+            return React.cloneElement( child, {style: {...child.props.style, ...newStyle} });
+          }
+          )}
+        </TagName>
+      );
+    }
+    else return <TagName { ...props } children={ children || Reveal.lorem() } style={{ ...style, ...newStyle }} className={cls} ref="el" />;
   }
 
 }
