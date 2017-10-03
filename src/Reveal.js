@@ -90,7 +90,7 @@ class Reveal extends React.Component {
             className, ssr, onReveal, fraction, ...props } = this.props;
     let TagName = tag, newStyle = {}, cls = className, isInline = !(typeof effect === 'string' || effect instanceof String);
     if (this.state.isHidden)
-      newStyle = { opacity: 0, ...( isInline ? effect : {} ) };
+      newStyle = { visibility: 'hidden', opacity: 0, ...( isInline ? effect : {} ) };
     else if (this.state.isMounted)
     {
       if (isInline)

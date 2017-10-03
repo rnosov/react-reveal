@@ -1,7 +1,7 @@
 # React Reveal
 
 ## Introduction
-[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. It's less than 2kb gzipped and has no external dependencies apart from React Proptypes and Babel Runtime (it's very likely you already have them). It's specifically written for React in ES6. If you like this package don't forget to star the [Github project](https://github.com/rnosov/react-reveal)!
+[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. It's less than 2kb gzipped and written for React from scratch in ES6. If you like this package don't forget to star the [Github project](https://github.com/rnosov/react-reveal)!
 
 ## Demo 
 
@@ -24,7 +24,7 @@ Alternatively you may use `yarn`:
 yarn add react-reveal
 ```
 
-### Example usage
+### Quick Start
 
 Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. 
 
@@ -59,7 +59,7 @@ Scroll down to see the reveal effect. It should be a lot clearer by now what is 
 ### List Of Reveal Effects
 
 Here is the handy list of different effects for you to try. 
-Some effects have attributes to them (like left or right versions). The can can be combined with other Reveal props (see docs further down).
+Some effects have attributes to them (like left or right versions). They can can be combined with other Reveal props (see docs further down).
 
 ```jsx
 <Fade>Your content goes here</Fade>
@@ -86,7 +86,7 @@ If you need any more bespoke animations in your React app then this the author o
 
 ### Reveal Waves
 
-One cool feature of `react-reveal` is the ability to easily create wavelike reveal effects. It can be handy if you want animate some boring long lists. Say you have list like this:
+One cool feature of `react-reveal` is the ability to easily create wavelike reveal effects. It can be handy if you want animate some boring looking lists. Say you have list like this:
 
 ```jsx
 <ul className="some-class">
