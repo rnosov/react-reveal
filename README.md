@@ -26,7 +26,7 @@ yarn add react-reveal
 
 ### Quick Start
 
-Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) in to your project. 
+Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) to your project. 
 
 ```javascript
 import { Fade, Flip, Rotate, Zoom } from 'react-reveal';
@@ -114,11 +114,20 @@ If several of Reveal effects are likely to happen simultaneously you might want 
 <Zoom delay={500} duration={3000}>
   <p>Markup that will be revealed first</p>
 </Zoom>
-<Zoom delay={4000} duration={200}>
+<Zoom delay={4000}>
   <p>Markup that will be revealed a bit later</p>
 </Zoom>
 ```
 
+### Web Analytics
+
+`react-reveal` can be used to generate events for web analytics tools (like Google analytics) in order to get fine grained reports. For example, you can log exactly whether a particular markup was seen by user:
+
+```jsx
+<Fade onReveal={ () => analyticsFunc('element revealed')  }>
+  <p>Markup that will be revealed</p>
+</Fade>
+```
 
 ### Unwanted Scrollbars
 
@@ -180,42 +189,26 @@ If you already have animations effects in your CSS then just set effect property
 ```
 
 
-### Reveal Properties
+### Reveal Props
 
 - `effect` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** or **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object)** This prop could be either an object describing a desired reveal effect  or a string containing CSS animation class (for example "animated fadeInUp" from  animate.css). If you don't specify it a default fade in effect will apply. **Optional**.
 - `duration` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Duration of the reveal animation in milliseconds. Ignored for effects based on CSS animation classes. Defaults to `1000` milliseconds. **Optional**.
 - `delay` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Delay before the start of reveal animation in milliseconds. Can be handy if several reveals are happening at approximately same time and you want to space them out a bit. Defaults to `66` seconds ( small delay is used to throttle reveal events). Anything higher than that should be generally okay. **Optional**.
-- `easing` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Easing function. Read more about [here](https://developer.mozilla.org/en-US/docs/Web/CSS/transition-timing-function). Defaults to `ease`. **Optional**.
 - `wave` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** or **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Can be used to create wave like animation effects. Makes sense if you're trying to Reveal a some kind of list and don't want reveal all items at once. If you set it to a number then this number will be a delay in milliseconds between each reveal. If you set to true then the delay will `200` milliseconds. Off by default. **Optional**.    
 - `tag` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** HTML tag which is used for Reveal container. Defaults to `div`. **Optional**.
+- `className` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** CSS class name. **Optional**.
+- `style` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object)** Style Object. **Optional**.
 - `fraction` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Fraction of the revealed element height that must be visible in order for reveal animation to trigger. Should be some value between 0 to 1. Defaults to `0.2` meaning that at least 20% of the element must be visible before the reveal. **Optional**.
 - `ssr` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Use this option to suppress flickering during server side rendering. Off by default. **Optional**.
-- `onReveal` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)** Function called once the element is revealed. **Optional**.
+- `easing` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Easing function. Read more about [here](https://developer.mozilla.org/en-US/docs/Web/CSS/transition-timing-function). Defaults to `ease`. **Optional**.
+- `preventReveal` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** If true then reveal will be suppressed even if element is in view. It is useful for building animation sequences. Off by default. **Optional**.
+- `onReveal` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)** Function called once the element is revealed.  **Optional**.
 
-These props will work with both `<Reveal />` component and effect aliases ( `<Zoom />`, `<Rotate />`, etc ) as well.
+These props will work with both `<Reveal />` component and effect aliases ( `<Fade />`, `<Rotate />`, etc ) as well.
 
 ### Children
 
-You should pass at least one child to this component. If you don't do it then lorem ipsum placeholder text will be generated.
-
-### Other Props 
-
-All props that do not belong to `Reveal` class will be passed down to a `div` tag (including `className` and `style`). For example:
-
-```jsx
-<div className="some-class">
-  <p>Markup that will be revealed on scroll</p>
-</div>
-```
-
-Change `div` to `Reveal` and add a desired effect. 
-All other other props will be passed down 
-
-```jsx
-<Reveal className="some-class">
-  <p>Markup that will be revealed on scroll</p>
-</Reveal>
-```
+You should pass at least one child to this component. **Required**.
 
 ### Universal Rendering
 

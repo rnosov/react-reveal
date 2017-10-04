@@ -7,21 +7,24 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
+import { string, object, number, oneOfType, bool, func, node } from 'prop-types';
 
 const
   propTypes = {
-    effect: PropTypes.oneOfType([ PropTypes.string, PropTypes.object ]),
-    duration: PropTypes.number,
-    delay: PropTypes.number,
-    easing: PropTypes.string,
-    wave: PropTypes.oneOfType([ PropTypes.bool, PropTypes.number ]),
-    tag: PropTypes.string,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    ssr: PropTypes.bool,
-    fraction: PropTypes.number,
-    onReveal: PropTypes.func,
+    effect: oneOfType([ string, object ]),
+    duration: number,
+    delay: number,
+    easing: string,
+    wave: oneOfType([ bool, number ]),
+    tag: string,
+    className: string,
+    style: object,
+    preventReveal: bool,
+    passProps: bool,
+    ssr: bool,
+    fraction: number,
+    onReveal: func,
+    children: node.isRequired,
   },
   defaultProps = {
     duration: 1000,
@@ -29,6 +32,7 @@ const
     delay: 66,
     fraction: 0.2,
     tag: 'div',
+    passProps: true
   };
 
 class Reveal extends React.Component {
@@ -46,6 +50,7 @@ class Reveal extends React.Component {
 
   handleReveal = () => {
     this.revealTimeout = void 0;
+    if (this.props.preventReveal)  return;
     if (window.pageYOffset + window.innerHeight - this.refs.el.offsetHeight*this.props.fraction > Reveal.getTop(this.refs.el)) {
       this.setState({ isHidden: false });
       this.componentWillUnmount();
@@ -65,6 +70,11 @@ class Reveal extends React.Component {
     window.removeEventListener('resize', this.revealThrottler, false);
   }
 
+  componentWillReceiveProps(next) {
+    if (!next.preventReveal && next.preventReveal !== this.props.preventReveal)
+      this.revealThrottler();
+  }
+
   componentDidMount() {
     if (this.props.ssr)
       if (window.pageYOffset + window.innerHeight > Reveal.getTop(this.refs.el))
@@ -78,16 +88,9 @@ class Reveal extends React.Component {
     window.addEventListener('resize', this.revealThrottler, false);
   }
 
-  static lorem() {
-    let lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ';
-    for (let i=0; i<4; i++)
-      lorem += lorem;
-    return <p>{lorem}</p>;
-  }
-
   render() {
     const { transition, tag, children, wave, duration, delay, easing, effect, style,
-            className, ssr, onReveal, fraction, ...props } = this.props;
+            preventReveal, passProps, className, ssr, onReveal, fraction, ...props } = this.props;
     let TagName = tag, newStyle = {}, cls = className, isInline = !(typeof effect === 'string' || effect instanceof String);
     if (this.state.isHidden)
       newStyle = { visibility: 'hidden', opacity: 0, ...( isInline ? effect : {} ) };
@@ -99,19 +102,18 @@ class Reveal extends React.Component {
         cls = className ? className + ' ' + this.props.effect : this.props.effect;
     }
     if (wave && isInline) {
-      let delaySum = 0, waveDelay = typeof wave === 'boolean' ? 200 :  wave;
+      let delaySum = 0, waveDelay = typeof wave === 'boolean' ? 200 : wave;
       return (
-        <TagName { ...props } style={style} className={className} ref="el">
+        <TagName {...( passProps ? props : {} )} style={style} className={className} ref="el">
           {React.Children.map(children, child => {
             if (newStyle.transition)
               newStyle.transition = `all ${duration}ms ${easing} ${delaySum += waveDelay}ms`;
             return React.cloneElement( child, {style: {...child.props.style, ...newStyle} });
-          }
-          )}
+          })}
         </TagName>
       );
     }
-    else return <TagName { ...props } children={ children || Reveal.lorem() } style={{ ...style, ...newStyle }} className={cls} ref="el" />;
+    else return <TagName {...( passProps ? props : {} )} children={children} style={{ ...style, ...newStyle }} className={cls} ref="el" />;
   }
 
 }
@@ -121,17 +123,17 @@ Reveal.defaultProps = defaultProps;
 export default Reveal;
 export let
   Fade = ({ left, right, up, down, big, ...props }) => {
-    const dist = big?'2000px':'100%';
-    return <Reveal {...props} effect={{ transform: `translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down?`-${dist}`:(up?dist:'0')}, 0)` }} />;
+    const dist = big ? '2000px' : '100%';
+    return <Reveal passProps={false} {...props} effect={{ transform: `translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down?`-${dist}`:(up?dist:'0')}, 0)` }} />;
   },
-  Flip = ({ x, y, ...props }) => <Reveal {...props} effect={{ transform: `perspective(400px) rotate3d(${x?'1':'0'}, ${x?'0':'1'}, 0, ${x||y?'90deg':'-360deg'})` }} />,
+  Flip = ({ x, y, ...props }) => <Reveal passProps={false} {...props} effect={{ transform: `perspective(400px) rotate3d(${x?'1':'0'}, ${x?'0':'1'}, 0, ${x||y?'90deg':'-360deg'})` }} />,
   Rotate = ({ left, right, up, down, ...props }) => {
     let angle = '-200deg', origin = 'center';
     if ( down && left ) angle = '-45deg';
     if ( (down && right) || (up && left) ) angle = '45deg';
     if ( up && right ) angle = '-90deg';
-    if ( left || right ) origin=(left?'left':'right')+' bottom';
-    return <Reveal {...props} effect={{ transform: `rotate3d(0, 0, 1, ${angle})`, transformOrigin: origin }} />
+    if ( left || right ) origin=( left ? 'left' : 'right' ) + ' bottom';
+    return <Reveal passProps={false} {...props} effect={{ transform: `rotate3d(0, 0, 1, ${angle})`, transformOrigin: origin }} />
   },
-  Zoom = props => <Reveal {...props} effect={{ transform: 'scale3d(.3, .3, .3)' }} />
+  Zoom = props => <Reveal passProps={false} {...props} effect={{ transform: 'scale3d(.3, .3, .3)' }} />
 ;
