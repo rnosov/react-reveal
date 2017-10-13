@@ -20,6 +20,7 @@ const
     className: string,
     style: object,
     preventReveal: bool,
+    //when: bool,
     passProps: bool,
     ssr: bool,
     fraction: number,
@@ -32,88 +33,95 @@ const
     delay: 66,
     fraction: 0.2,
     tag: 'div',
+    //when: true,
     passProps: true
   };
 
 class Reveal extends React.Component {
 
-  revealTimeout = void 0;
-
-  state = {
-    isHidden: false,
-    isMounted: false,
-  };
+  constructor(props) {
+    super(props);
+    this.timeout = void 0;
+    this.state = { stage: 0 }; //0 - nothing added, 1 - hidden, 2 - revealed
+    this.reveal = this.reveal.bind(this);
+    this.throttler = this.throttler.bind(this);
+    this.saveRef = el => this.el = el;
+  }
 
   static getTop({ offsetTop, offsetParent }) {
     return offsetTop + (offsetParent && Reveal.getTop(offsetParent));
   }
 
-  handleReveal = () => {
-    this.revealTimeout = void 0;
-    if (this.props.preventReveal)  return;
-    if (window.pageYOffset + window.innerHeight - this.refs.el.offsetHeight*this.props.fraction > Reveal.getTop(this.refs.el)) {
-      this.setState({ isHidden: false });
+  reveal() {
+    this.timeout = void 0;
+    if (this.props.preventReveal/* || !this.props.when*/) return;
+    const h = Math.min(this.el.offsetHeight,window.innerHeight)*this.props.fraction;
+    if (window.pageYOffset + window.innerHeight - h > Reveal.getTop(this.el)) {
+      this.setState({ stage: 2 });
       this.componentWillUnmount();
-      if (typeof this.props.onReveal === 'function')
+      if (this.props.onReveal)
         this.props.onReveal();
     }
-  };
+  }
 
-  revealThrottler = () => {
-    // ignore reveal events as long as an handleReveal execution is in the queue
-    if (!this.revealTimeout)
-      this.revealTimeout = window.setTimeout(this.handleReveal, this.props.delay);
-  };
+  throttler() {
+    // ignore reveal events as long as an reveal execution is in the queue
+    if (!this.timeout)
+      this.timeout = window.setTimeout(this.reveal, this.props.delay);
+  }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.revealThrottler);
-    window.removeEventListener('resize', this.revealThrottler, false);
+    window.removeEventListener('scroll', this.throttler);
+    window.removeEventListener('resize', this.throttler, false);
+    window.clearTimeout(this.timeout);
   }
 
   componentWillReceiveProps(next) {
-    if (!next.preventReveal && next.preventReveal !== this.props.preventReveal)
-      this.revealThrottler();
+    if ((!next.preventReveal && this.props.preventReveal)
+      /*||(!this.props.when && next.when)*/)
+      this.throttler();
   }
 
   componentDidMount() {
-    if (this.props.ssr)
-      if (window.pageYOffset + window.innerHeight > Reveal.getTop(this.refs.el))
-      {
-        this.setState({ isHidden: false, isMounted: false });
+    if (this.props.ssr && (window.pageYOffset + window.innerHeight > Reveal.getTop(this.el)))
         return;
-      }
-    this.setState({ isHidden: true, isMounted: true });
-    this.revealThrottler();
-    window.addEventListener('scroll', this.revealThrottler);
-    window.addEventListener('resize', this.revealThrottler, false);
+    this.setState({ stage: 1 });
+    window.addEventListener('scroll', this.throttler);
+    window.addEventListener('resize', this.throttler, false);
+    this.throttler();
   }
 
   render() {
-    const { transition, tag, children, wave, duration, delay, easing, effect, style,
-            preventReveal, passProps, className, ssr, onReveal, fraction, ...props } = this.props;
+    const {
+      props: { tag, children, wave, duration, delay, easing, effect, style,/* when,*/ className,
+               onReveal, fraction, preventReveal, passProps, transition, ssr, ...props },
+      state: { stage }
+    } = this;
     let TagName = tag, newStyle = {}, cls = className, isInline = !(typeof effect === 'string' || effect instanceof String);
-    if (this.state.isHidden)
-      newStyle = { visibility: 'hidden', opacity: 0, ...( isInline ? effect : {} ) };
-    else if (this.state.isMounted)
-    {
-      if (isInline)
-        newStyle = { opacity: 1,  transition: transition || `all ${duration}ms ${easing} 0s` };
-      else
-        cls = className ? className + ' ' + this.props.effect : this.props.effect;
+    switch (stage) {
+      case 1:
+        newStyle = { visibility: 'hidden', opacity: 0, ...( isInline ? effect : {} ) }; break;
+      case 2:
+        if (isInline)
+          newStyle = { opacity: 1,  transition: transition || `all ${duration}ms ${easing} 0s` };
+        else
+          cls = cls ? `${cls} ${effect}` : effect;
+      break;default:
     }
     if (wave && isInline) {
-      let delaySum = 0, waveDelay = typeof wave === 'boolean' ? 200 : wave;
+      let waveDelay = typeof wave === 'boolean' ? 200 : wave, delaySum = -waveDelay;
       return (
-        <TagName {...( passProps ? props : {} )} style={style} className={className} ref="el">
+        <TagName {...( passProps ? props : {} )} style={style} className={className} ref={this.saveRef}>
           {React.Children.map(children, child => {
-            if (newStyle.transition)
+            if ( typeof child !== 'object' || !child ) return child;
+            if ( stage === 2 )
               newStyle.transition = `all ${duration}ms ${easing} ${delaySum += waveDelay}ms`;
             return React.cloneElement( child, {style: {...child.props.style, ...newStyle} });
           })}
         </TagName>
       );
     }
-    else return <TagName {...( passProps ? props : {} )} children={children} style={{ ...style, ...newStyle }} className={cls} ref="el" />;
+    return <TagName {...( passProps ? props : {} )} children={children} style={{ ...style, ...newStyle }} className={cls} ref={this.saveRef} />;
   }
 
 }
@@ -122,16 +130,16 @@ Reveal.propTypes = propTypes;
 Reveal.defaultProps = defaultProps;
 export default Reveal;
 export let
-  Fade = ({ left, right, up, down, big, ...props }) => {
+  Fade = ({ left, right, up, down, top, bottom, big, ...props }) => {
     const dist = big ? '2000px' : '100%';
-    return <Reveal passProps={false} {...props} effect={{ transform: `translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down?`-${dist}`:(up?dist:'0')}, 0)` }} />;
+    return <Reveal passProps={false} {...props} effect={left||right||up||down||top||bottom?{ transform: `translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down||top?`-${dist}`:(up||bottom?dist:'0')}, 0)` }:void 0} />;
   },
   Flip = ({ x, y, ...props }) => <Reveal passProps={false} {...props} effect={{ transform: `perspective(400px) rotate3d(${x?'1':'0'}, ${x?'0':'1'}, 0, ${x||y?'90deg':'-360deg'})` }} />,
-  Rotate = ({ left, right, up, down, ...props }) => {
+  Rotate = ({ left, right, up, down, top, bottom, ...props }) => {
     let angle = '-200deg', origin = 'center';
-    if ( down && left ) angle = '-45deg';
-    if ( (down && right) || (up && left) ) angle = '45deg';
-    if ( up && right ) angle = '-90deg';
+    if ( (down||top) && left ) angle = '-45deg';
+    if ( ((down||top) && right) || ((up||bottom) && left) ) angle = '45deg';
+    if ( (up||bottom) && right ) angle = '-90deg';
     if ( left || right ) origin=( left ? 'left' : 'right' ) + ' bottom';
     return <Reveal passProps={false} {...props} effect={{ transform: `rotate3d(0, 0, 1, ${angle})`, transformOrigin: origin }} />
   },

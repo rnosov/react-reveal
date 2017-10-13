@@ -63,22 +63,22 @@ Some effects have attributes to them (like left or right versions). They can can
 
 ```jsx
 <Fade>Your content goes here</Fade>
-<Fade down>Your content goes here</Fade>
-<Fade down big>Your content goes here</Fade>
+<Fade bottom>Your content goes here</Fade>
+<Fade bottom big>Your content goes here</Fade>
 <Fade left>Your content goes here</Fade>
 <Fade left big>Your content goes here</Fade>
 <Fade right>Your content goes here</Fade>
 <Fade right big>Your content goes here</Fade>
-<Fade up>Your content goes here</Fade>
-<Fade up big>Your content goes here</Fade>
+<Fade top>Your content goes here</Fade>
+<Fade top big>Your content goes here</Fade>
 <Flip>Your content goes here</Flip>
 <Flip x>Your content goes here</Flip>
 <Flip y>Your content goes here</Flip>
 <Rotate>Your content goes here</Rotate>
-<Rotate down left>Your content goes here</Rotate>
-<Rotate down right>Your content goes here</Rotate>
-<Rotate up left>Your content goes here</Rotate>
-<Rotate up right>Your content goes here</Rotate>
+<Rotate bottom left>Your content goes here</Rotate>
+<Rotate bottom right>Your content goes here</Rotate>
+<Rotate top left>Your content goes here</Rotate>
+<Rotate top right>Your content goes here</Rotate>
 <Zoom>Your content goes here</Zoom>
 ```
 
@@ -99,7 +99,7 @@ One cool feature of `react-reveal` is the ability to easily create wavelike reve
 You can liven it up a bit by using `wave` prop ( even without breaking you markup ):
 
 ```jsx
-<Fade up wave tag="ul" className="some-class">
+<Fade bottom wave tag="ul" className="some-class">
   <li>First Item</li>
   <li>Another Item</li>
   <li>Last Item</li>
@@ -198,7 +198,7 @@ If you already have animations effects in your CSS then just set effect property
 - `tag` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** HTML tag which is used for Reveal container. Defaults to `div`. **Optional**.
 - `className` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** CSS class name. **Optional**.
 - `style` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object)** Style Object. **Optional**.
-- `fraction` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Fraction of the revealed element height that must be visible in order for reveal animation to trigger. Should be some value between 0 to 1. Defaults to `0.2` meaning that at least 20% of the element must be visible before the reveal. **Optional**.
+- `fraction` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Fraction of the revealed element height that must be visible in order for reveal animation to trigger. Should be some value between 0 to 1. Defaults to `0.2` meaning that at least 20% of the element height must be visible before the reveal. For elements taller than a viewport, height is limited to the height of a viewport. **Optional**.
 - `ssr` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Use this option to suppress flickering during server side rendering. Off by default. **Optional**.
 - `easing` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Easing function. Read more about [here](https://developer.mozilla.org/en-US/docs/Web/CSS/transition-timing-function). Defaults to `ease`. **Optional**.
 - `preventReveal` **[bool](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** If true then reveal will be suppressed even if element is in view. It is useful for building animation sequences. Off by default. **Optional**.
