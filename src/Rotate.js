@@ -10,7 +10,7 @@
 import React from 'react';
 import { bool } from 'prop-types';
 import Base from './Base';
-import { animation } from './globals';
+import { animation } from './lib/globals';
 
 const
   propTypes = {

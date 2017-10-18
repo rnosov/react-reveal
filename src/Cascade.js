@@ -21,7 +21,7 @@ const
 function makeRule(api, rule) {
   api.newRule(rule);
   let waveDelay = api.props.duration/5,
-  	  delaySum = api.delay()-waveDelay;
+  	  delaySum = api.props.delay-waveDelay;
    for (let i=1, max=React.Children.count(api.props.children)+1; i<max; i++, delaySum += waveDelay)
      api.newRule(`${rule}animation-delay: ${delaySum}ms;`, i);
 }

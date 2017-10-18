@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Base from './Base';
-import { animation } from './globals';
+import { animation } from './lib/globals';
 
 const
   propTypes = {

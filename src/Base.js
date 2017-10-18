@@ -1,5 +1,5 @@
 /*
- * Reveal React Component
+ * Base Component For react-reveal
  *
  * Copyright © Roman Nosov 2016, 2017
  *
@@ -8,7 +8,8 @@
  */
 import React from 'react';
 import { string, object, number, bool, func, node } from 'prop-types';
-import { insertRule, deleteRule, newId, ruleMap, namespace, ssr, disableSsr, globalHide } from './globals';
+import { insertRule, deleteRule, newId, ruleMap, namespace, ssr, disableSsr, globalHide } from './lib/globals';
+import debounce from './lib/debounce';
 
 const
   propTypes = {
@@ -19,7 +20,7 @@ const
     className: string,
     style: object,
     reveal: func,
-    step: func,
+    step: object,
     force: bool,
     fraction: number,
     onReveal: func,
@@ -28,8 +29,7 @@ const
   },
   defaultProps = {
     duration: 1000,
-    delay: 0,
-    throttle: 66,
+    delay: 0,    
     fraction: 0.2,
     tag: 'div',
   };
@@ -46,8 +46,8 @@ class Base extends React.Component {
     ruleMap[this.id] = [];
     this.show = this.show.bind(this);
     this.animate = this.animate.bind(this);
-    this.scrollThrottle = this.scrollThrottle.bind(this);
-    this.resizeThrottle = this.resizeThrottle.bind(this);
+    this.scrollHandler = debounce(this.animate, 66);
+    this.resizeHandler = debounce(this.show, 500);
     this.reveal = this.reveal.bind(this);
     this.saveRef = el => this.el = el;
   }
@@ -66,7 +66,8 @@ class Base extends React.Component {
 
   newRule(rule, cascade = 0) {
     ruleMap[this.id].push(insertRule(
-      `${this.props.tag}.${namespace}${this.id} ${cascade?`> *:nth-child(${cascade}) `:''}{${rule}}`));
+      `${this.props.tag}.${namespace}${this.id} ${cascade?`> *:nth-child(${cascade}) `:''}{${rule}}`)
+    );
   }
 
   hide() {
@@ -84,10 +85,6 @@ class Base extends React.Component {
     this.showTimeout = void 0;
   }
 
-  delay() {
-    return this.props.delay;//>this.props.throttle? this.props.delay - this.props.throttle : 0;
-  }
-
   cascade(rule) {
     return this.props.cascade ? this.props.cascade(this, rule) : this.newRule(rule);
   }
@@ -96,7 +93,7 @@ class Base extends React.Component {
     if ( this.props.force || this.inViewport() ) {
       if (this.start) {
         this.hide();
-        this.start(this.id);        
+        this.start(this.step);        
         return;
       }
       this.clean();      
@@ -109,7 +106,7 @@ class Base extends React.Component {
           animation-duration: ${this.props.duration}ms;
           animation-fill-mode: both;
           animation-name: ${this.props.animation()};
-          animation-delay: ${this.delay()}ms;
+          animation-delay: ${this.props.delay}ms;
         `;
         this.cascade(rule);
         if (this.props.onReveal)
@@ -119,31 +116,24 @@ class Base extends React.Component {
     this.scrollTimeout = void 0;
   }
 
-  scrollThrottle() {
+  scrollHandler() {
     // ignore scroll events as long as an reveal execution is in the queue
     if (!this.scrollTimeout)
       this.scrollTimeout = window.setTimeout(this.animate, this.props.throttle);
-  }
-
-  resizeThrottle() {
-    // ignore resize events as long as an show execution is in the queue
-    if (!this.resizeTimeout)
-      this.resizeTimeout = window.setTimeout(this.show, this.props.throttle);
-  }
+  }  
 
   clean() {
     if (this.isListener) {
       window.clearTimeout(this.scrollTimeout);
       window.clearTimeout(this.resizeTimeout);
-      window.removeEventListener('scroll', this.scrollThrottle);
-      window.removeEventListener('orientationchange', this.scrollThrottle);
-      window.removeEventListener('resize', this.resizeThrottle);
+      window.removeEventListener('scroll', this.scrollHandler);
+      window.removeEventListener('orientationchange', this.scrollHandler);
+      window.removeEventListener('resize', this.resizeHandler);
       this.isListener = false;
     }
   }
 
   clearRules() {
-    // this will hurt your brain :(
     const total = ruleMap[this.id].length;
     for (let i=0; i<total; i++){
       let ruleId = ruleMap[this.id][i];
@@ -166,9 +156,9 @@ class Base extends React.Component {
 
   reveal() {
     if (!this.props.force && !this.isListener) {
-      window.addEventListener('scroll', this.scrollThrottle);
-      window.addEventListener('orientationchange', this.scrollThrottle);
-      window.addEventListener('resize', this.resizeThrottle);
+      window.addEventListener('scroll', this.scrollHandler);
+      window.addEventListener('orientationchange', this.scrollHandler);
+      window.addEventListener('resize', this.resizeHandler);
       this.isListener = true;
     }
     this.animate();
@@ -178,10 +168,10 @@ class Base extends React.Component {
     if (!this.el) return;        
     if ( ssr && Base.getTop(this.el) < window.pageYOffset + window.innerHeight ) 
       return this.show(true);    
-    if (this.props.step)
-      this.props.step(this);
     if (this.props.reveal)
       this.props.step(this.reveal);
+    if (this.props.step)
+      this.props.step.push(this);
     this.reveal();    
   }
 
