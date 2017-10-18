@@ -30,6 +30,8 @@ export class Stepper {
 	constructor(...args) {		
 		this.steps = Array.isArray(args[0])? args[0] : args;
 		this.hasStarted = false;
+		this.isTriggered = false;
+
 		this.start = this.start.bind(this);		
 		this.next = this.next.bind(this);		
 		for (let i=0, len=this.steps.length;i<len;i++) {		
@@ -39,35 +41,43 @@ export class Stepper {
 	}
 
 	start(step) {
-		if(this.hasStarted) { 
-			if (step<this.head)
-				this.head = step;
-			return true;
+		if(this.isTriggered) { 
+			if (step<this.trigger)
+				this.trigger = step;
+			return;
 		}
-		this.head = step;
-		this.hasStarted = true;
+		this.isTriggered = true;
+		this.trigger = step;
 		window.setTimeout(this.init.bind(this),50);
 	}
 
 	init() {		
+		this.hasStarted = true;
+		this.head = this.trigger;
     this.tail = this.head === 0 ? this.steps.length - 1 : this.head - 1;    
     this.next();
     //window.setTimeout(this.next, this.steps[this.head].before);
 	}
 
+	stop() {
+		this.hasStarted = false;
+		this.isTriggered = false;			
+	}
+
 	next() {
 		for (let i = 0, len = this.steps[this.head].chain.length; i < len; i++){
-			if (this.steps[this.head].chain[i].start){
-				delete this.steps[this.head].chain[i].start;
-				this.steps[this.head].chain[i].reveal();
+			const api = this.steps[this.head].chain[i];
+			//if (!api.inViewport())
+			//	return this.stop();
+			if (api.start){
+				delete api.start;
+				api.reveal();
 			}
 			//this.steps[this.head].finished = true;	    
 		}
-		//console.log(this.head, this.tail);
-		if (this.head === this.tail) {
-			this.hasStarted = false;
-			return; // break the loop
-		}
+		console.log(this.head, this.tail, this.steps.length);
+		if (this.head === this.tail) 
+			return this.stop();		
 		const prev = this.head;
 		this.head++;
 		if (this.head >= this.steps.length) 

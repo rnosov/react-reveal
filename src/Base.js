@@ -40,14 +40,13 @@ class Base extends React.Component {
     super(props);
     this.state = { legacyMode: false };
     this.scrollTimeout = void 0;
-    this.showTimeout = void 0;
     this.isListener = false;
     this.id = newId();
     ruleMap[this.id] = [];
-    this.show = this.show.bind(this);
+    //this.show = ;
     this.animate = this.animate.bind(this);
     this.scrollHandler = debounce(this.animate, 66);
-    this.resizeHandler = debounce(this.show, 500);
+    this.resizeHandler = debounce(this.show.bind(this, false), 500);
     this.reveal = this.reveal.bind(this);
     this.saveRef = el => this.el = el;
   }
@@ -82,7 +81,6 @@ class Base extends React.Component {
       if (this.props.onReveal)
        this.props.onReveal();        
     }
-    this.showTimeout = void 0;
   }
 
   cascade(rule) {
@@ -125,7 +123,6 @@ class Base extends React.Component {
   clean() {
     if (this.isListener) {
       window.clearTimeout(this.scrollTimeout);
-      window.clearTimeout(this.resizeTimeout);
       window.removeEventListener('scroll', this.scrollHandler);
       window.removeEventListener('orientationchange', this.scrollHandler);
       window.removeEventListener('resize', this.resizeHandler);
