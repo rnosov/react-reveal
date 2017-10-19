@@ -43,7 +43,7 @@ class Base extends React.Component {
     ruleMap[this.id] = [];
     this.animate = this.animate.bind(this);
     this.scrollHandler = debounce(this.animate, 66);
-    this.resizeHandler = debounce(this.show.bind(this, false), 500);
+    this.resizeHandler = debounce(this.show.bind(this), 500);
     this.reveal = this.reveal.bind(this);
     this.saveRef = el => this.el = el;
   }
@@ -70,9 +70,9 @@ class Base extends React.Component {
     this.cascade('visibility: hidden; opacity: 0;');
   }
 
-  show(force = false) {
+  show() {
     if (!this.el) return;
-    if ( !this.isShown && (force || this.props.force || this.inViewport()) ) {
+    if ( !this.isShown && (this.props.force || this.inViewport()) ) {
       this.isShown = true;
       this.cascade('visibility: visible; opacity: 1;');        
       if (this.props.onReveal)
@@ -152,13 +152,18 @@ class Base extends React.Component {
 
   componentDidMount() {
     if (!this.el) return;        
-    if ( ssr && Base.getTop(this.el) < window.pageYOffset + window.innerHeight ) 
-      return this.show(true);    
     if (this.props.reveal)
       this.props.step(this.reveal);
     if (this.props.step)
       this.props.step.push(this);
-    this.reveal();    
+    if ( ssr && Base.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
+      this.newRule(`
+        opacity: 0;
+        transition: opacity 1000ms;
+      `);
+      window.setTimeout(this.reveal, 1000);
+    }
+    else this.reveal();    
   }
 
   render() {
