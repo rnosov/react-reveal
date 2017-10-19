@@ -76,7 +76,7 @@ class Base extends React.Component {
       this.isShown = true;
       this.cascade('visibility: visible; opacity: 1;');        
       if (this.props.onReveal)
-       this.props.onReveal();        
+        window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
     }
   }
 
@@ -105,7 +105,7 @@ class Base extends React.Component {
         `;
         this.cascade(rule);
         if (this.props.onReveal)
-          this.props.onReveal();        
+          window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
       }
     }
   }

@@ -48,15 +48,16 @@ class Cascade extends React.Component {
     api.newRule(`${rule}animation-duration: 0s;animation-delay: 0s;`);    
     const count = this.getCount(api.props.children) + 1,
       selector = new Array(this.props.grand ? 2 : this.props.depth).join(':first-child ') + '>*',
-      total = api.props.duration + this.props.duration;
+      minDuration =  api.props.duration - this.props.duration;
     for (let i=1; i<count; i++) {
-      let duration = Math.round(this.log(i, 1, count - 1, api.props.duration, total));
+      let duration = Math.round(this.log(i, 1, count - 1, minDuration, api.props.duration));
       api.newRule(`${rule}animation-duration: ${duration}ms;`, selector, i);      
     }
   }
 
   render() {
-    return React.cloneElement(React.Children.only(this.props.children), { cascade: this.makeRule });  
+    const child = React.Children.only(this.props.children);
+    return React.cloneElement(child, { cascade: this.makeRule, duration: child.props.duration + this.props.duration });  
   }
 
 }
