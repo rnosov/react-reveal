@@ -43,7 +43,6 @@ class Base extends React.Component {
     this.isListener = false;
     this.id = newId();
     ruleMap[this.id] = [];
-    //this.show = ;
     this.animate = this.animate.bind(this);
     this.scrollHandler = debounce(this.animate, 66);
     this.resizeHandler = debounce(this.show.bind(this, false), 500);
@@ -63,9 +62,9 @@ class Base extends React.Component {
     return ( delta > tail - window.innerHeight) && (delta < h-tail);
   }
 
-  newRule(rule, cascade = 0) {
+  newRule(rule, selector, n) {
     ruleMap[this.id].push(insertRule(
-      `${this.props.tag}.${namespace}${this.id} ${cascade?`> *:nth-child(${cascade}) `:''}{${rule}}`)
+      `${this.props.tag}.${namespace}${this.id} ${selector?`${selector}:nth-child(${n}) `:''}{${rule}}`)
     );
   }
 

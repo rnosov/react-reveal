@@ -12,7 +12,13 @@ export let ssr = true, disableSsr = () => ssr = false, globalHide = false;
 let id = 0, counter = 1, effectMap = {}, sheet = false;
 
 export function insertRule(rule) {
-  return !sheet||sheet.insertRule(rule, sheet.cssRules.length)    
+  //console.log(rule);
+  try {
+    return sheet.insertRule(rule, sheet.cssRules.length);
+  } 
+  catch(e){
+    console.warn('react-reveal - animation failed');
+  }
 }
 
 export function deleteRule(index) {
