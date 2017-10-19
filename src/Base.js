@@ -24,7 +24,6 @@ const
     force: bool,
     fraction: number,
     onReveal: func,
-    throttle: number,
     children: node.isRequired,
   },
   defaultProps = {
@@ -39,7 +38,6 @@ class Base extends React.Component {
   constructor(props) {
     super(props);
     this.state = { legacyMode: false };
-    this.scrollTimeout = void 0;
     this.isListener = false;
     this.id = newId();
     ruleMap[this.id] = [];
@@ -110,18 +108,10 @@ class Base extends React.Component {
           this.props.onReveal();        
       }
     }
-    this.scrollTimeout = void 0;
   }
-
-  scrollHandler() {
-    // ignore scroll events as long as an reveal execution is in the queue
-    if (!this.scrollTimeout)
-      this.scrollTimeout = window.setTimeout(this.animate, this.props.throttle);
-  }  
 
   clean() {
     if (this.isListener) {
-      window.clearTimeout(this.scrollTimeout);
       window.removeEventListener('scroll', this.scrollHandler);
       window.removeEventListener('orientationchange', this.scrollHandler);
       window.removeEventListener('resize', this.resizeHandler);
