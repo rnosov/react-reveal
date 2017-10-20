@@ -39,10 +39,10 @@ class Base extends React.Component {
     super(props);
     this.state = { legacyMode: false };
     this.isListener = false;
+    this.isShown = false;
     this.id = newId();
-    ruleMap[this.id] = [];
-    this.animate = this.animate.bind(this);
-    this.scrollHandler = debounce(this.animate, 66);
+    ruleMap[this.id] = [];           
+    this.scrollHandler = debounce(this.reveal.bind(this), 66);
     this.resizeHandler = debounce(this.show.bind(this), 500);
     this.reveal = this.reveal.bind(this);
     this.saveRef = el => this.el = el;
@@ -74,7 +74,7 @@ class Base extends React.Component {
     if (!this.el) return;
     if ( !this.isShown && (this.props.force || this.inViewport()) ) {
       this.isShown = true;
-      this.cascade('visibility: visible; opacity: 1;');        
+      this.cascade('visibility: visible; opacity: 1;');      
       if (this.props.onReveal)
         window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
     }
@@ -84,30 +84,25 @@ class Base extends React.Component {
     return this.props.cascade ? this.props.cascade(this, rule) : this.newRule(rule);
   }
 
-  animate() {
-    if ( this.props.force || this.inViewport() ) {
-      if (this.start) {
-        this.hide();
-        this.start(this.step);        
-        return;
-      }
-      this.clean();      
-      if(!this.props.animation)
-        this.setState({ legacyMode: true });
-      else {
-        const rule = `
-          visibility: visible;
-          opacity: 1;
-          animation-duration: ${this.props.duration}ms;
-          animation-fill-mode: both;
-          animation-name: ${this.props.animation()};
-          animation-delay: ${this.props.delay}ms;
-        `;
-        this.cascade(rule);
-        if (this.props.onReveal)
-          window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
-      }
+  animate() {    
+    this.clean();
+    this.clearRules();      
+    if(!this.props.animation)
+      this.setState({ legacyMode: true });
+    else {
+      const rule = `
+        visibility: visible;
+        opacity: 1;
+        animation-duration: ${this.props.duration}ms;
+        animation-fill-mode: both;
+        animation-name: ${this.props.animation()};
+        animation-delay: ${this.props.delay}ms;
+      `;
+      this.cascade(rule);
     }
+    this.isShown = true;
+    if (this.props.onReveal)
+      window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);      
   }
 
   clean() {
@@ -131,23 +126,32 @@ class Base extends React.Component {
              if(ruleMap[key][j] > ruleId)
               --ruleMap[key][j];
     }
-    delete ruleMap[this.id];
   }
 
   componentWillUnmount() {
     this.clean();
     this.clearRules();
+    delete ruleMap[this.id];
     ssr && disableSsr();
   }
 
   reveal() {
-    if (!this.props.force && !this.isListener) {
-      window.addEventListener('scroll', this.scrollHandler);
-      window.addEventListener('orientationchange', this.scrollHandler);
-      window.addEventListener('resize', this.resizeHandler);
-      this.isListener = true;
+    if (!this.isShown){
+      if (!this.isListener && !this.props.force ) {
+        window.addEventListener('scroll', this.scrollHandler);
+        window.addEventListener('orientationchange', this.scrollHandler);
+        window.addEventListener('resize', this.resizeHandler);
+        this.isListener = true;
+      }
+      if ( this.props.force || this.inViewport() ) 
+        if (this.start) {
+          this.hide();
+          this.start(this.step);        
+          return;
+        }
+        else        
+          this.animate();
     }
-    this.animate();
   }
 
   componentDidMount() {
@@ -157,10 +161,7 @@ class Base extends React.Component {
     if (this.props.step)
       this.props.step.push(this);
     if ( ssr && Base.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
-      this.newRule(`
-        opacity: 0;
-        transition: opacity 1000ms;
-      `);
+      this.newRule(`opacity: 0; transition: opacity 1000ms;`);
       window.setTimeout(this.reveal, 1000);
     }
     else this.reveal();    
