@@ -65,7 +65,7 @@ import Fade from 'react-reveal/Fade';
 ```
 
 **Flip**
-```
+```jsx
 import Flip from 'react-reveal/Flip'; 
 
 <Flip>Your content goes here</Flip>
@@ -74,7 +74,7 @@ import Flip from 'react-reveal/Flip';
 ```
 
 **Rotate**
-```
+```jsx
 import Rotate from 'react-reveal/Rotate'; 
 
 <Rotate>Your content goes here</Rotate>
@@ -85,7 +85,7 @@ import Rotate from 'react-reveal/Rotate';
 ```
 
 **Zoom**
-```
+```jsx
 import Zoom from 'react-reveal/Zoom'; 
 
 <Zoom>Your content goes here</Zoom>
