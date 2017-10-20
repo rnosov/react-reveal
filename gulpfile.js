@@ -6,5 +6,5 @@ gulp.task('build', () =>
   gulp.src('./src/**/*.js')
     .pipe(babel())
     .pipe(uglify())
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('./'))
 );
