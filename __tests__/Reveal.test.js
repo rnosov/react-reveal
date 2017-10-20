@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import Reveal from '../src/Reveal';
+import Reveal from '../src/';
 
 
 describe('Reveal', () => {
