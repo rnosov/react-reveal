@@ -25,7 +25,7 @@
     "url": "https://github.com/rnosov/react-reveal/issues"
   },
   "homepage": "https://github.com/rnosov/react-reveal",
-  "main": "./dist/index.js",
+  "main": "./index.js",
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
