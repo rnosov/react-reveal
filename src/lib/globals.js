@@ -12,30 +12,33 @@ export let ssr = true, disableSsr = () => ssr = false, globalHide = false;
 let id = 0, counter = 1, effectMap = {}, sheet = false;
 
 export function insertRule(rule) {
-  //console.log(rule);
   try {
     return sheet.insertRule(rule, sheet.cssRules.length);
-  } 
+  }
   catch(e){
     console.warn('react-reveal - animation failed');
   }
 }
 
 export function deleteRule(index) {
-  return !sheet||sheet.deleteRule(index);
+  try {
+    return !sheet||sheet.deleteRule(index);
+  }
+  catch(e){
+  }
 }
 
 export function animation(effect, to = true) {
   return function() {
     const rule = `
         @keyframes ${namespace}-animation-${counter} {
-          ${effect}          
+          ${effect}
           ${to?'to {opacity: 1;transform: none;}':''}
         }
       `;
     const effectId = effectMap[effect];
     if (!effectId){
-      sheet.insertRule(rule, sheet.cssRules.length);    
+      sheet.insertRule(rule, sheet.cssRules.length);
       effectMap[effect] = counter;
       return `${namespace}-animation-${counter++}`;
     }
@@ -44,10 +47,10 @@ export function animation(effect, to = true) {
 }
 
 export const newId = () => ++id;
-function hideAll() {  
-  window.removeEventListener('scroll', hideAll, true); 
+function hideAll() {
+  window.removeEventListener('scroll', hideAll, true);
   insertRule(`.${namespace} { visibility: hidden; opacity: 0; }`);
-  window.removeEventListener('orientationchange', hideAll, true); 
+  window.removeEventListener('orientationchange', hideAll, true);
   globalHide = true;
 }
 
@@ -56,7 +59,7 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
   ssr = window.document.querySelectorAll('div[data-reactroot]').length>0; // are we prerendered?
   let element = document.createElement('style');
   document.head.appendChild(element);
-  if (element.sheet && element.sheet.cssRules && element.sheet.insertRule && element.sheet.deleteRule) {    
+  if (element.sheet && element.sheet.cssRules && element.sheet.insertRule && element.sheet.deleteRule) {
     sheet = element.sheet;
     window.addEventListener('scroll', hideAll, true);
     window.addEventListener("orientationchange", hideAll, true);

@@ -93,33 +93,6 @@ import Zoom from 'react-reveal/Zoom';
 
 If you need any more bespoke animations in your React app then this the author of this package is available for hire. The email to contact is rnosov@gmail.com
 
-### Cascading effects 
-
-One cool feature of `react-reveal` is the ability to easily create cascading reveal effects. It can be handy if you want animate some boring looking lists. Say you have list like this:
-
-```jsx
-<ul className="some-class">
-  <li>First Item</li>
-  <li>Another Item</li>
-  <li>Last Item</li>
-</ul>
-```
-
-You can liven it up a bit by using `Cascade` component ( even without breaking you markup ):
-
-```jsx
-import Fade from 'react-reveal/Fade'; 
-import Cascade from 'react-reveal/Cascade'; 
-
-<Cascade>
-  <Fade bottom tag="ul" className="some-class">
-    <li>First Item</li>
-    <li>Another Item</li>
-    <li>Last Item</li>
-  </Fade>
-</Cascade>
-```
-
 ### Timing Of Reveals
 
 If several of Reveal effects are likely to happen simultaneously you might want for them to happen sequentially. In such case, you should use `delay` prop. You can also adjust a duration of effect animation by using `duration` prop. Both `delay` and `duration` are specified in a number of milliseconds.
