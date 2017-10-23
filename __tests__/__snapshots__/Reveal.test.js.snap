@@ -1,1 +1,1 @@
-exports[`Reveal renders a initial view 1`] = `"<div class=\"react-reveal react-reveal1\"><div>Test test</div></div>"`;
+exports[`Reveal renders a initial view 1`] = `"<div class=\"react-reveal\" style=\"opacity: 0;\"><div>Test test</div></div>"`;

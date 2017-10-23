@@ -122,7 +122,6 @@ You can liven it up a bit by using `cascade` prop ( even without breaking you ma
 
 ```jsx
 import Fade from 'react-reveal/Fade'; 
-import Cascade from 'react-reveal/Cascade'; 
 
 <Fade bottom cascade tag="ul" className="some-class">
   <li>First Item</li>
