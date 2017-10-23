@@ -106,6 +106,31 @@ If several of Reveal effects are likely to happen simultaneously you might want 
 </Zoom>
 ```
 
+### Cascading effects 
+
+One cool feature of `react-reveal` is the ability to easily create cascading reveal effects. It can be handy if you want animate some boring looking lists. Say you have list like this:
+
+```jsx
+<ul className="some-class">
+  <li>First Item</li>
+  <li>Another Item</li>
+  <li>Last Item</li>
+</ul>
+```
+
+You can liven it up a bit by using `cascade` prop ( even without breaking you markup ):
+
+```jsx
+import Fade from 'react-reveal/Fade'; 
+import Cascade from 'react-reveal/Cascade'; 
+
+<Fade bottom cascade tag="ul" className="some-class">
+  <li>First Item</li>
+  <li>Another Item</li>
+  <li>Last Item</li>
+</Fade>
+```
+
 ### Web Analytics
 
 `react-reveal` can be used to generate events for web analytics tools (like Google analytics) in order to get fine grained reports. For example, you can log exactly whether a particular markup was seen by user:

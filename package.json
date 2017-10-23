@@ -1,6 +1,6 @@
 {
   "name": "react-reveal",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "author": "Roman Nosov <rnosov@gmail.com>",
   "description": "Really simple way to add reveal on scroll animation to your React app.",
   "license": "MIT",
@@ -56,6 +56,7 @@
   "scripts": {
     "build": "./node_modules/gulp/bin/gulp.js build",
     "test": "jest .",
-    "prepare": "npm run build && npm run test -- -u;"
+    "prepare": "npm run build && npm run test -- -u;",
+    "clean":"rm Bounce.js && rm Fade.js && rm Flash.js && rm HeadShake.js && rm Jello.js && rm Jump.js && rm Pulse.js && rm Roll.js && rm RubberBand.js && rm Shake.js && rm Slide.js && rm Swing.js && rm Tada.js && rm Wobble.js && rm Flip.js && rm Reveal.js && rm Rotate.js && rm Stepper.js && rm Zoom.js && rm index.js && rm lib/*.js"
   }
 }

@@ -8,3 +8,4 @@ gulp.task('build', () =>
     .pipe(uglify())
     .pipe(gulp.dest('./'))
 );
+

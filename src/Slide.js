@@ -1,5 +1,5 @@
 /*
- * Fade React Component
+ * Slide React Component
  *
  * Copyright © Roman Nosov 2017
  *
@@ -24,14 +24,14 @@ const
     
   };
 
-function Fade({ left, right, up, down, top, bottom, big, ...props }) {
+function Slide({ left, right, up, down, top, bottom, big, ...props }) {
 	const 
 		dist = big ? '2000px' : '100%', 
-		effect=`from { opacity: 0;${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down||top?`-${dist}`:(up||bottom?dist:'0')}, 0);` : ''}}`;
+		effect=`from { opacity: 1;${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down||top?`-${dist}`:(up||bottom?dist:'0')}, 0);` : ''}}`;
   return <Reveal {...props} reverse={left} animation={animation(effect, true)} />;
 }
 
 
-Fade.propTypes = propTypes;
-Fade.defaultProps = defaultProps;
-export default Fade;
+Slide.propTypes = propTypes;
+Slide.defaultProps = defaultProps;
+export default Slide;

@@ -1,0 +1,201 @@
+/*
+ * RevealBase Component For react-reveal
+ *
+ * Copyright © Roman Nosov 2016, 2017
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+import React from 'react';
+import { string, object, number, bool, func, node } from 'prop-types';
+import { namespace, ssr, disableSsr, globalHide } from './lib/globals';
+import debounce from './lib/debounce';
+
+const
+  propTypes = {
+    effect: string,
+    animation: string,
+    duration: number,
+    delay: number,
+    tag: string,
+    className: string,
+    style: object,
+    props: object,
+    step: object,
+    force: bool,
+    fraction: number,
+    onReveal: func,
+    children: node.isRequired,
+  },
+  defaultProps = {
+    duration: 1000,
+    delay: 0,
+    fraction: 0.2,
+    tag: 'div',
+  };
+
+class RevealBase extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { legacyMode: false, style: {} };
+    this.isListener = false;
+    this.isShown = false;
+    this.scrollHandler = debounce(this.reveal.bind(this), 66);
+    this.resizeHandler = debounce(this.show.bind(this), 500);
+    this.reveal = this.reveal.bind(this);
+    this.saveRef = el => this.el = el;
+  }
+
+  static getTop(el) {
+    while (el.offsetTop === void 0)
+      el = el.parentNode;
+    let top = el.offsetTop;
+    for (;el.offsetParent; top += el.offsetTop)
+      el = el.offsetParent;
+    return top;
+  }
+
+  inViewport() {
+    if (!this.el || window.document.hidden) return false;
+    const h = this.el.offsetHeight,
+          delta = window.pageYOffset - RevealBase.getTop(this.el),
+          tail = Math.min(h, window.innerHeight) * ( globalHide || this.props.noHide ? this.props.fraction : 0 );
+    return ( delta > tail - window.innerHeight ) && ( delta < h - tail );
+  }
+
+  hide() {
+    if (!this.props.noHide)
+      this.setState({ style: {
+        visibility: 'hidden',
+        opacity: 0,
+      }});
+  }
+
+  show() {
+    if (!this.el) return;
+    if ( !this.isShown && (this.props.force || this.inViewport()) ) {
+      this.isShown = true;
+      this.setState({ style: {
+        visibility: 'visible',
+        opacity: 1,
+      }});
+      if (this.props.onReveal)
+        window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
+    }
+  }
+
+  log(i, start, end, duration, total) {
+    const minv = Math.log(duration);
+    const maxv = Math.log(total);
+    const scale = (maxv-minv) / (end-start);
+    return Math.exp(minv + scale*(i-start));
+  }
+
+  animate() {
+    this.clean();
+    if(this.props.effect)
+      this.setState({ legacyMode: true });
+    else
+      this.setState({ style: {
+        animationName: ( this.props.animation ? this.props.animation : void 0 ),
+        visibility: 'visible',
+        opacity: 1,
+        animationFillMode: 'both',
+        animationDuration: `${this.props.duration}ms`,
+        animationDelay: `${this.props.delay}ms`,
+      }});
+    this.isShown = true;
+    if (this.props.onReveal)
+      window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
+  }
+
+  clean() {
+    if (this.isListener) {
+      window.removeEventListener('scroll', this.scrollHandler);
+      window.removeEventListener('orientationchange', this.scrollHandler);
+      window.document.removeEventListener('visibilitychange', this.scrollHandler);
+      window.removeEventListener('resize', this.resizeHandler);
+      this.isListener = false;
+    }
+  }
+
+  componentWillUnmount() {
+    this.clean();
+    ssr && disableSsr();
+  }
+
+  reveal() {
+    if (!this.isShown){
+      if (!this.isListener && !this.props.force ) {
+        window.addEventListener('scroll', this.scrollHandler);
+        window.addEventListener('orientationchange', this.scrollHandler);
+        window.document.addEventListener("visibilitychange", this.scrollHandler);
+        window.addEventListener('resize', this.resizeHandler);
+        this.isListener = true;
+      }
+      if ( this.props.force || this.inViewport() )
+        if (this.start) {
+          this.hide();
+          this.start(this.step);
+          return;
+        }
+        else
+          this.animate();
+    }
+  }
+
+  componentDidMount() {
+    if (!this.el) return;
+    if (this.props.step)
+      this.props.step.push(this);
+    if ( ssr && !this.props.noHide && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
+      this.setState({ style: {
+        opacity: 0,
+        transition: 'opacity 1000ms',
+      }});
+      window.setTimeout(this.reveal, 1000);
+    }
+    else this.reveal();
+  }
+
+  render() {
+    const { tag: TagName, id, children, style, className } = this.props,
+      newClass = `${ this.state.legacyMode ? this.props.effect : ( this.props.noHide ? '' : namespace ) }${ className ? ' ' + className : '' }`;
+    let newStyle, newChildren= false;
+    if (!this.state.legacyMode) {
+       newStyle = {...style, ...this.state.style};
+      let reverse = false;
+      if (this.props.cascade && children && this.state.style.animationName) {
+        if (typeof children === 'string') {
+          newChildren = children.split("").map( (ch, index) => <span key={index} style={{display: 'inline-block', whiteSpace:'pre'}}>{ch}</span> );
+          reverse = this.props.reverse;
+        }
+        else
+          newChildren= React.Children.toArray(children);
+        const count = newChildren.length - 1,
+              total =  this.props.duration + (typeof this.props.cascade === 'boolean' ? 1000 : this.props.cascade);
+        let i = reverse ? count : 0;
+        newChildren = newChildren.map( child =>
+          React.cloneElement(child,{style: {...child.props.style, ...this.state.style,
+            animationDuration: Math.round(this.log( reverse ? i-- : i++ ,0 ,count, this.props.duration, total)) + 'ms',
+          }}));
+        newStyle.animationDuration = '0s';
+        newStyle.animationName = 'none';
+      }
+    }
+    return <TagName
+        id={id}
+        {...(this.props.props||void 0)}
+        className={newClass}
+        style={this.state.legacyMode?style:newStyle}
+        children={newChildren||children}
+        ref={this.saveRef}
+    />;
+  }
+
+}
+
+RevealBase.propTypes = propTypes;
+RevealBase.defaultProps = defaultProps;
+export default RevealBase;
