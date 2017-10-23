@@ -28,7 +28,7 @@ const
   },
   defaultProps = {
     duration: 1000,
-    delay: 0,    
+    delay: 0,
     fraction: 0.2,
     tag: 'div',
   };
@@ -41,7 +41,7 @@ class Base extends React.Component {
     this.isListener = false;
     this.isShown = false;
     this.id = newId();
-    ruleMap[this.id] = [];           
+    ruleMap[this.id] = [];
     this.scrollHandler = debounce(this.reveal.bind(this), 66);
     this.resizeHandler = debounce(this.show.bind(this), 500);
     this.reveal = this.reveal.bind(this);
@@ -56,7 +56,7 @@ class Base extends React.Component {
     if (!this.el) return false;
     const h = this.el.offsetHeight,
           delta = window.pageYOffset - Base.getTop(this.el),
-          tail = Math.min(h,window.innerHeight)*(globalHide?this.props.fraction:0); 
+          tail = Math.min(h,window.innerHeight)*(globalHide?this.props.fraction:0);
     return ( delta > tail - window.innerHeight) && (delta < h-tail);
   }
 
@@ -74,7 +74,7 @@ class Base extends React.Component {
     if (!this.el) return;
     if ( !this.isShown && (this.props.force || this.inViewport()) ) {
       this.isShown = true;
-      this.cascade('visibility: visible; opacity: 1;');      
+      this.cascade('visibility: visible; opacity: 1;');
       if (this.props.onReveal)
         window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
     }
@@ -84,9 +84,9 @@ class Base extends React.Component {
     return this.props.cascade ? this.props.cascade(this, rule) : this.newRule(rule);
   }
 
-  animate() {    
+  animate() {
     this.clean();
-    this.clearRules();      
+    //this.clearRules();
     if(!this.props.animation)
       this.setState({ legacyMode: true });
     else {
@@ -102,7 +102,7 @@ class Base extends React.Component {
     }
     this.isShown = true;
     if (this.props.onReveal)
-      window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);      
+      window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
   }
 
   clean() {
@@ -143,19 +143,19 @@ class Base extends React.Component {
         window.addEventListener('resize', this.resizeHandler);
         this.isListener = true;
       }
-      if ( this.props.force || this.inViewport() ) 
+      if ( this.props.force || this.inViewport() )
         if (this.start) {
           this.hide();
-          this.start(this.step);        
+          this.start(this.step);
           return;
         }
-        else        
+        else
           this.animate();
     }
   }
 
   componentDidMount() {
-    if (!this.el) return;        
+    if (!this.el) return;
     if (this.props.reveal)
       this.props.step(this.reveal);
     if (this.props.step)
@@ -164,7 +164,7 @@ class Base extends React.Component {
       this.newRule(`opacity: 0; transition: opacity 1000ms;`);
       window.setTimeout(this.reveal, 1000);
     }
-    else this.reveal();    
+    else this.reveal();
   }
 
   render() {
