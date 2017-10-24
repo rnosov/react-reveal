@@ -41,7 +41,7 @@ class RevealBase extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { legacyMode: false, style: (props.when ? {} : RevealBase.getStyle(false)) };
+    this.state = { legacyMode: false, style: (props.when || !props.out ? {} : RevealBase.getStyle(false)) };
     this.isListener = false;
     this.isAnimated = false;
     this.reveal = this.reveal.bind(this);   
@@ -68,12 +68,12 @@ class RevealBase extends React.Component {
     if (!this.el || window.document.hidden) return false;
     const h = this.el.offsetHeight,
           delta = window.pageYOffset - RevealBase.getTop(this.el),
-          tail = Math.min(h, window.innerHeight) * ( globalHide || this.props.noHide ? this.props.fraction : 0 );
+          tail = Math.min(h, window.innerHeight) * ( globalHide || !this.props.out ? this.props.fraction : 0 );
     return ( delta > tail - window.innerHeight ) && ( delta < h - tail );
   }
 
   hide() {
-    if (!this.props.noHide)
+    if (this.props.out)
       this.setState({ style: RevealBase.getStyle(false) });
   }
 
@@ -93,19 +93,22 @@ class RevealBase extends React.Component {
     const scale = (maxv-minv) / (end-start);
     return Math.exp(minv + scale*(i-start));
   }
-
+  
   animate() {
     this.clean();
     if(this.props.effect)
       this.setState({ legacyMode: true });
-    else
+    else {
+      const inOut = this.props[this.props.when?'in':'out'];
       this.setState({ style: {
         ...RevealBase.getStyle(true),
-        animationName: ( this.props.animation ? this.props.animation : void 0 ),        
+        //animationName: ( this.props.animation ? this.props.animation : void 0 ),        
+        animationName: inOut.animation||inOut.make(),
         animationFillMode: 'both',
         animationDuration: `${this.props.duration}ms`,
         animationDelay: `${this.props.delay}ms`,
       }});
+    }
     this.isAnimated = true;
     if (this.props.onReveal && this.props.when)
       window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
@@ -168,7 +171,7 @@ class RevealBase extends React.Component {
   }
 
   conceal() {
-    if ( !this.isAnimated && !this.props.noHide ) {
+    if ( !this.isAnimated && this.props.out ) {
       //this.listen(-1);      
       if (this.inViewport()) 
         this.animate();    
@@ -181,7 +184,7 @@ class RevealBase extends React.Component {
     if (!this.el) return;
     if (this.props.step)
       this.props.step.push(this);        
-    if ( ssr && !this.props.noHide && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
+    if ( ssr && this.props.out && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { ...RevealBase.getStyle(true), transition: 'opacity 1000ms' } });
       window.setTimeout(this.reveal, 1000);
     }
@@ -189,12 +192,12 @@ class RevealBase extends React.Component {
       this.reveal();        
   }
 
-  render() {
+  render() {    
     const { tag: TagName, id, children, style, className } = this.props,
-      newClass = `${ this.state.legacyMode ? this.props.effect : ( this.props.noHide ? '' : namespace ) }${ className ? ' ' + className : '' }`;
+      newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out ? '' : namespace ) }${ className ? ' ' + className : '' }`;
     let newStyle, newChildren= false;
     if (!this.state.legacyMode) {
-       newStyle = {...style, ...this.state.style};
+       newStyle = {...style, ...this.props[this.props.when?'in':'out'].style, ...this.state.style};
       let reverse = false;
       if (this.props.cascade && children && this.state.style.animationName) {
         if (typeof children === 'string') {
