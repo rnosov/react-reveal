@@ -20,12 +20,11 @@ export function insertRule(rule) {
   }
 }
 
-export function animation(effect, to = false) {
+export function animation(effect) {
   if (!sheet) return '';
     const rule = `
         @keyframes ${namespace}-animation-${counter} {
-          ${effect}
-          ${to?'to {opacity: 1;transform: none;}':''}
+          ${effect}          
         }
       `;
     const effectId = effectMap[effect];

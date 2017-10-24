@@ -19,9 +19,10 @@ const
     right: bool,
     top: bool,
     bottom: bool,
+    when: bool,
   },
   defaultProps = {
-    
+    when: true,
   };
 
 function Rotate({ left, right, up, down, top, bottom, ...props }) {
@@ -32,9 +33,9 @@ function Rotate({ left, right, up, down, top, bottom, ...props }) {
   if ( left || right ) origin=( left ? 'left' : 'right' ) + ' bottom';
   return <Reveal {...props} 
   	animation={animation(`
-from { opacity: 0; transform-origin: ${origin}; transform: rotate3d(0, 0, 1, ${angle});}
-to { opacity: 1; transform-origin: ${origin}; transform: none;}
-`, false)} 
+${props.when?'from':'to'} { opacity: 0; transform-origin: ${origin}; transform: rotate3d(0, 0, 1, ${angle});}
+${!props.when?'from':'to'} { opacity: 1; transform-origin: ${origin}; transform: none;}
+`)} 
   />;  
 }
 

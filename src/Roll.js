@@ -10,18 +10,22 @@
 
 import React from 'react';
 import Reveal from './Reveal';
+import { bool } from 'prop-types';
 import { animation } from './lib/globals';
 
 const
   propTypes = {
-    
+    when: bool,
+
   },
   defaultProps = {
-    
+  	when: true,
   };
 
 function Roll(props) {
-  return <Reveal {...props} animation={animation(`from {opacity: 0;transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);}`, true)} />;
+	const rule = `${props.when?'from':'to'} {opacity: 0;transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);}
+								${!props.when?'from':'to'} {opacity: 1;transform: none}`;
+  return <Reveal {...props} animation={animation(rule)} />;
 }
 
 

@@ -19,16 +19,18 @@ const
     top: bool,
     bottom: bool,
     big: bool,
+    when: bool,
   },
   defaultProps = {
-    
+    when: true,
   };
 
 function Slide({ left, right, up, down, top, bottom, big, ...props }) {
-	const 
-		dist = big ? '2000px' : '100%', 
-		effect=`from { opacity: 1;${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down||top?`-${dist}`:(up||bottom?dist:'0')}, 0);` : ''}}`;
-  return <Reveal {...props} reverse={left} animation={animation(effect, true)} />;
+  const 
+    dist = big ? '2000px' : '100%', 
+    rule=`${props.when?'from':'to'} { ${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down||top?`-${dist}`:(up||bottom?dist:'0')}, 0);` : ''}}
+          ${!props.when?'from':'to'} {transform: none;} `;  
+  return <Reveal {...props} reverse={left} animation={animation(rule)} />;  
 }
 
 

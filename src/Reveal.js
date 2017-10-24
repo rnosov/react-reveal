@@ -7,12 +7,14 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 import React from 'react';
-import { string, object, number, bool, func, node } from 'prop-types';
+import { string, object, number, bool, func, node, any } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide } from './lib/globals';
 import debounce from './lib/debounce';
 
 const
   propTypes = {
+    when: bool,
+    spy: any,
     effect: string,
     animation: string,
     duration: number,
@@ -32,6 +34,7 @@ const
     delay: 0,
     fraction: 0.2,
     tag: 'div',
+    when: true,
   };
 
 class RevealBase extends React.Component {
@@ -40,10 +43,10 @@ class RevealBase extends React.Component {
     super(props);
     this.state = { legacyMode: false, style: {} };
     this.isListener = false;
-    this.isShown = false;
-    this.scrollHandler = debounce(this.reveal.bind(this), 66);
-    this.resizeHandler = debounce(this.show.bind(this), 500);
+    this.isAnimated = false;
     this.reveal = this.reveal.bind(this);
+    this.scrollHandler = debounce(this.reveal, 66);
+    this.resizeHandler = debounce(this.show.bind(this), 500);
     this.saveRef = el => this.el = el;
   }
 
@@ -74,8 +77,8 @@ class RevealBase extends React.Component {
 
   show() {
     if (!this.el) return;
-    if ( !this.isShown && (this.props.force || this.inViewport()) ) {
-      this.isShown = true;
+    if ( !this.isAnimated && (this.props.force || this.inViewport()) ) {
+      this.isAnimated = true;
       this.setState({ style: {
         visibility: 'visible',
         opacity: 1,
@@ -105,7 +108,7 @@ class RevealBase extends React.Component {
         animationDuration: `${this.props.duration}ms`,
         animationDelay: `${this.props.delay}ms`,
       }});
-    this.isShown = true;
+    this.isAnimated = true;
     if (this.props.onReveal)
       window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
   }
@@ -125,24 +128,52 @@ class RevealBase extends React.Component {
     ssr && disableSsr();
   }
 
-  reveal() {
-    if (!this.isShown){
-      if (!this.isListener && !this.props.force ) {
-        window.addEventListener('scroll', this.scrollHandler);
-        window.addEventListener('orientationchange', this.scrollHandler);
-        window.document.addEventListener("visibilitychange", this.scrollHandler);
-        window.addEventListener('resize', this.resizeHandler);
-        this.isListener = true;
-      }
-      if ( this.props.force || this.inViewport() )
-        if (this.start) {
-          this.hide();
-          this.start(this.step);
-          return;
-        }
-        else
-          this.animate();
+  componentWillReceiveProps({ when, spy }) {
+    if ( (when !== this.props.when) || (spy !== this.props.spy) ){
+      this.setState({ style: {} })
     }
+  }
+
+  componentDidUpdate({ when, spy }) {
+    if ( (when !== this.props.when ) || (spy !== this.props.spy)) {
+      this.isAnimated = false;      
+      this.props.when?this.reveal():this.conceal();
+    }         
+  }
+
+  listen() {
+    if (!this.isListener && !this.props.force ) {
+      window.addEventListener('scroll', this.scrollHandler);
+      window.addEventListener('orientationchange', this.scrollHandler);
+      window.document.addEventListener("visibilitychange", this.scrollHandler);
+      window.addEventListener('resize', this.resizeHandler);
+      this.isListener = true;
+    }
+    return this;
+  }
+
+  reveal() {    
+    if (this.props.when){
+      if ( !this.isAnimated ) {
+        this.listen();        
+        if ( this.props.force || this.inViewport() ) {
+          if (this.start) {
+            this.hide();
+            this.start(this.step);
+            return;
+          }
+          else
+            this.animate();
+        }
+      }
+    }
+    else this.hide();
+  }
+
+  conceal()
+  {
+    if (this.inViewport() && !this.props.noHide ) 
+      this.listen().animate();    
   }
 
   componentDidMount() {
