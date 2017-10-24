@@ -9,7 +9,7 @@
 
 export const namespace = 'react-reveal';
 export let ssr = true, disableSsr = () => ssr = false, globalHide = false;
-let counter = 1, effectMap = {}, sheet = false;
+let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floor(Math.random() * 1000000000000000)}-`;
 
 export function insertRule(rule) {
   try {
@@ -22,18 +22,14 @@ export function insertRule(rule) {
 
 export function animation(effect) {
   if (!sheet) return '';
-    const rule = `
-        @keyframes ${namespace}-animation-${counter} {
-          ${effect}          
-        }
-      `;
-    const effectId = effectMap[effect];
-    if (!effectId){
-      sheet.insertRule(rule, sheet.cssRules.length);
-      effectMap[effect] = counter;
-      return `${namespace}-animation-${counter++}`;
-    }
-    return `${namespace}-animation-${effectId}`;
+  const rule = `@keyframes ${name + counter}{${effect}}`;
+  const effectId = effectMap[effect];
+  if (!effectId){
+    sheet.insertRule(rule, sheet.cssRules.length);
+    effectMap[effect] = counter;
+    return `${name}${counter++}`;
+  }
+  return `${name}${effectId}`;
   //return function() {
   //}
 }
