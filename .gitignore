@@ -19,6 +19,9 @@ Wobble.js
 Flip.js
 Reveal.js
 Rotate.js
+LightSpeed.js
 Stepper.js
 Zoom.js
 index.js
+globals.js
+debounce.js
