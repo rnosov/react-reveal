@@ -41,13 +41,18 @@ class RevealBase extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { legacyMode: false, style: {} };
+    this.state = { legacyMode: false, style: (props.when ? {} : RevealBase.getStyle(false)) };
     this.isListener = false;
     this.isAnimated = false;
-    this.reveal = this.reveal.bind(this);
-    this.scrollHandler = debounce(this.reveal, 66);
-    this.resizeHandler = debounce(this.show.bind(this), 500);
+    this.reveal = this.reveal.bind(this);   
+    this.revealHandler = debounce(this.reveal, 66);
+    //this.concealHandler = debounce(this.conceal.bind(this), 66); 
+    this.resizeHandler = debounce(this.resize.bind(this), 500);
     this.saveRef = el => this.el = el;
+  }
+
+  static getStyle(visible) {
+    return { visibility: visible?'visible':'hidden', opacity: visible ? 1 : 0 };
   }
 
   static getTop(el) {
@@ -69,21 +74,15 @@ class RevealBase extends React.Component {
 
   hide() {
     if (!this.props.noHide)
-      this.setState({ style: {
-        visibility: 'hidden',
-        opacity: 0,
-      }});
+      this.setState({ style: RevealBase.getStyle(false) });
   }
 
-  show() {
+  resize() {
     if (!this.el) return;
     if ( !this.isAnimated && (this.props.force || this.inViewport()) ) {
       this.isAnimated = true;
-      this.setState({ style: {
-        visibility: 'visible',
-        opacity: 1,
-      }});
-      if (this.props.onReveal)
+      this.setState({ style: RevealBase.getStyle(this.props.when) });
+      if (this.props.onReveal && this.props.when)
         window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
     }
   }
@@ -101,23 +100,22 @@ class RevealBase extends React.Component {
       this.setState({ legacyMode: true });
     else
       this.setState({ style: {
-        animationName: ( this.props.animation ? this.props.animation : void 0 ),
-        visibility: 'visible',
-        opacity: 1,
+        ...RevealBase.getStyle(true),
+        animationName: ( this.props.animation ? this.props.animation : void 0 ),        
         animationFillMode: 'both',
         animationDuration: `${this.props.duration}ms`,
         animationDelay: `${this.props.delay}ms`,
       }});
     this.isAnimated = true;
-    if (this.props.onReveal)
+    if (this.props.onReveal && this.props.when)
       window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
   }
 
   clean() {
     if (this.isListener) {
-      window.removeEventListener('scroll', this.scrollHandler);
-      window.removeEventListener('orientationchange', this.scrollHandler);
-      window.document.removeEventListener('visibilitychange', this.scrollHandler);
+      window.removeEventListener('scroll', this.revealHandler);
+      window.removeEventListener('orientationchange', this.revealHandler);
+      window.document.removeEventListener('visibilitychange', this.revealHandler);
       window.removeEventListener('resize', this.resizeHandler);
       this.isListener = false;
     }
@@ -130,22 +128,22 @@ class RevealBase extends React.Component {
 
   componentWillReceiveProps({ when, spy }) {
     if ( (when !== this.props.when) || (spy !== this.props.spy) ){
-      this.setState({ style: {} })
+      this.setState({ style: {} });
     }
   }
 
   componentDidUpdate({ when, spy }) {
     if ( (when !== this.props.when ) || (spy !== this.props.spy)) {
-      this.isAnimated = false;      
+      this.isAnimated = false;
       this.props.when?this.reveal():this.conceal();
     }         
   }
 
   listen() {
     if (!this.isListener && !this.props.force ) {
-      window.addEventListener('scroll', this.scrollHandler);
-      window.addEventListener('orientationchange', this.scrollHandler);
-      window.document.addEventListener("visibilitychange", this.scrollHandler);
+      window.addEventListener('scroll', this.revealHandler);
+      window.addEventListener('orientationchange', this.revealHandler);
+      window.document.addEventListener("visibilitychange", this.revealHandler);
       window.addEventListener('resize', this.resizeHandler);
       this.isListener = true;
     }
@@ -153,41 +151,42 @@ class RevealBase extends React.Component {
   }
 
   reveal() {    
-    if (this.props.when){
-      if ( !this.isAnimated ) {
-        this.listen();        
-        if ( this.props.force || this.inViewport() ) {
-          if (this.start) {
-            this.hide();
-            this.start(this.step);
-            return;
-          }
-          else
-            this.animate();
+    if (!this.props.when)
+      return;
+    if ( !this.isAnimated ) {
+      this.listen();        
+      if ( this.props.force || this.inViewport() ) {
+        if (this.start) {
+          this.hide();
+          this.start(this.step);
+          return;
         }
+        else
+          this.animate();
       }
-    }
-    else this.hide();
+    }    
   }
 
-  conceal()
-  {
-    if (this.inViewport() && !this.props.noHide ) 
-      this.listen().animate();    
+  conceal() {
+    if ( !this.isAnimated && !this.props.noHide ) {
+      //this.listen(-1);      
+      if (this.inViewport()) 
+        this.animate();    
+      else //this.setState({ style: RevealBase.getStyle(true)});
+        this.hide();
+    }
   }
 
   componentDidMount() {
     if (!this.el) return;
     if (this.props.step)
-      this.props.step.push(this);
+      this.props.step.push(this);        
     if ( ssr && !this.props.noHide && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
-      this.setState({ style: {
-        opacity: 0,
-        transition: 'opacity 1000ms',
-      }});
+      this.setState({ style: { ...RevealBase.getStyle(true), transition: 'opacity 1000ms' } });
       window.setTimeout(this.reveal, 1000);
     }
-    else this.reveal();
+    else 
+      this.reveal();        
   }
 
   render() {
@@ -203,7 +202,7 @@ class RevealBase extends React.Component {
           reverse = this.props.reverse;
         }
         else
-          newChildren= React.Children.toArray(children);
+          newChildren = React.Children.toArray(children);
         const count = newChildren.length - 1,
               total =  this.props.duration + (typeof this.props.cascade === 'boolean' ? 1000 : this.props.cascade);
         let i = reverse ? count : 0;
