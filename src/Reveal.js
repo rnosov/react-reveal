@@ -16,7 +16,6 @@ const
     when: bool,
     spy: any,
     effect: string,
-    animation: string,
     duration: number,
     delay: number,
     tag: string,
@@ -28,6 +27,8 @@ const
     fraction: number,
     onReveal: func,
     children: node.isRequired,
+    //in: object,
+    //out: object,
   },
   defaultProps = {
     duration: 1000,
@@ -44,9 +45,9 @@ class RevealBase extends React.Component {
     this.state = { legacyMode: false, style: (props.when || !props.out ? {} : RevealBase.getStyle(false)) };
     this.isListener = false;
     this.isAnimated = false;
-    this.reveal = this.reveal.bind(this);   
+    this.reveal = this.reveal.bind(this);
     this.revealHandler = debounce(this.reveal, 66);
-    //this.concealHandler = debounce(this.conceal.bind(this), 66); 
+    //this.concealHandler = debounce(this.conceal.bind(this), 66);
     this.resizeHandler = debounce(this.resize.bind(this), 500);
     this.saveRef = el => this.el = el;
   }
@@ -93,7 +94,7 @@ class RevealBase extends React.Component {
     const scale = (maxv-minv) / (end-start);
     return Math.exp(minv + scale*(i-start));
   }
-  
+
   animate() {
     this.clean();
     if(this.props.effect)
@@ -102,7 +103,7 @@ class RevealBase extends React.Component {
       const inOut = this.props[this.props.when?'in':'out'];
       this.setState({ style: {
         ...RevealBase.getStyle(true),
-        //animationName: ( this.props.animation ? this.props.animation : void 0 ),        
+        //animationName: ( this.props.animation ? this.props.animation : void 0 ),
         animationName: inOut.animation||inOut.make(),
         animationFillMode: 'both',
         animationDuration: `${this.props.duration}ms`,
@@ -139,7 +140,7 @@ class RevealBase extends React.Component {
     if ( (when !== this.props.when ) || (spy !== this.props.spy)) {
       this.isAnimated = false;
       this.props.when?this.reveal():this.conceal();
-    }         
+    }
   }
 
   listen() {
@@ -153,11 +154,11 @@ class RevealBase extends React.Component {
     return this;
   }
 
-  reveal() {    
+  reveal() {
     if (!this.props.when)
       return;
     if ( !this.isAnimated ) {
-      this.listen();        
+      this.listen();
       if ( this.props.force || this.inViewport() ) {
         if (this.start) {
           this.hide();
@@ -167,14 +168,14 @@ class RevealBase extends React.Component {
         else
           this.animate();
       }
-    }    
+    }
   }
 
   conceal() {
     if ( !this.isAnimated && this.props.out ) {
-      //this.listen(-1);      
-      if (this.inViewport()) 
-        this.animate();    
+      //this.listen(-1);
+      if (this.inViewport())
+        this.animate();
       else //this.setState({ style: RevealBase.getStyle(true)});
         this.hide();
     }
@@ -183,21 +184,28 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el) return;
     if (this.props.step)
-      this.props.step.push(this);        
+      this.props.step.push(this);
     if ( ssr && this.props.out && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { ...RevealBase.getStyle(true), transition: 'opacity 1000ms' } });
       window.setTimeout(this.reveal, 1000);
     }
-    else 
-      this.reveal();        
+    else
+      this.reveal();
   }
 
-  render() {    
+  inOut() {
+    const inOut = this.props[this.props.when?'in':'out'];
+    if (this.props.effect || !inOut)
+      return {};
+    return inOut;
+  }
+
+  render() {
     const { tag: TagName, id, children, style, className } = this.props,
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out ? '' : namespace ) }${ className ? ' ' + className : '' }`;
     let newStyle, newChildren= false;
     if (!this.state.legacyMode) {
-       newStyle = {...style, ...this.props[this.props.when?'in':'out'].style, ...this.state.style};
+       newStyle = {...style, ...this.inOut().style, ...this.state.style};
       let reverse = false;
       if (this.props.cascade && children && this.state.style.animationName) {
         if (typeof children === 'string') {
