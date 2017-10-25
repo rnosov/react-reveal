@@ -59,7 +59,7 @@ class RevealBase extends React.Component {
   }
 
   static getStyle(visible) {
-    return { visibility: visible?'visible':'hidden', opacity: visible ? 1 : 0 };
+    return { visibility: visible?'visible':'hidden' };//, opacity: visible ? 1 : 0 };
   }
 
   static getTop(el) {
@@ -81,10 +81,10 @@ class RevealBase extends React.Component {
 
   hide() {
     if (this.props.out)      
-      //this.setState({ style: RevealBase.getStyle(false) }); 
-      this.setState(this.props.collapse
-        ?{ style: {maxHeight: 0, transition: `all ${this.props.duration}ms`,opacity: 0}}//...RevealBase.getStyle(false),  }}
-        :{ style: RevealBase.getStyle(false) }); 
+      this.setState({ style: RevealBase.getStyle(false) }); 
+      //this.setState(this.props.collapse
+      //  ?{ style: {maxHeight: 0, transition: `all ${this.props.duration}ms`,opacity: 0}}//...RevealBase.getStyle(false),  }}
+      //  :{ style: RevealBase.getStyle(false) }); 
   }
 
   resize() {
@@ -93,7 +93,7 @@ class RevealBase extends React.Component {
       this.isAnimated = true;
       this.setState({ style: RevealBase.getStyle(this.props.when) });
       if (this.props.onReveal && this.props.when)
-        window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
+        window.setTimeout(this.props.onReveal, this.totalDuration());
     }
   }
 
@@ -104,6 +104,12 @@ class RevealBase extends React.Component {
     return Math.exp(minv + scale*(i-start));
   }
 
+  totalDuration() {
+    if (this.props.cascade)
+      return this.props.delay + this.props.duration + (this.props.cascade===true?1000:this.props.cascade);  
+    return this.props.delay + this.props.duration;
+  }
+
   animate() {
     this.clean();
     if(this.props.effect)
@@ -111,18 +117,21 @@ class RevealBase extends React.Component {
     else {
       const inOut = this.props[this.props.when?'in':'out'];
       this.setState({ style: {
-        //...RevealBase.getStyle(this.props.when),
-        ...RevealBase.getStyle(true),
+        visibility:'visible',
+        //...RevealBase.getStyle(true),
+        //visibility:this.props.when?'visible':'hidden',
         animationName: inOut.animation||inOut.make(),
         animationFillMode: 'both',
         animationDuration: `${this.props.duration}ms`,
         animationDelay: `${this.props.delay}ms`,
         ...inOut.style,
       }});
+      if(!this.props.when) 
+        window.setTimeout( () => this.setState({ style: {...this.state.style, visibility:'hidden'} }), this.totalDuration());
     }
     this.isAnimated = true;
     if (this.props.onReveal && this.props.when)
-      window.setTimeout(this.props.onReveal, this.props.delay + this.props.duration);
+      window.setTimeout(this.props.onReveal, this.totalDuration());
   }
 
   clean() {

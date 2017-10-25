@@ -36,7 +36,7 @@ export function animation(effect) {
 
 function hideAll() {
   window.removeEventListener('scroll', hideAll, true);
-  insertRule(`.${namespace} { visibility: hidden; opacity: 0; }`);
+  insertRule(`.${namespace} { visibility: hidden; }`);
   window.removeEventListener('orientationchange', hideAll, true);
   window.document.removeEventListener('visibilitychange', hideAll);
   globalHide = true;
