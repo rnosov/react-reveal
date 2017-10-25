@@ -81,8 +81,9 @@ class RevealBase extends React.Component {
 
   hide() {
     if (this.props.out)      
+      //this.setState({ style: RevealBase.getStyle(false) }); 
       this.setState(this.props.collapse
-        ?{ style: {maxHeight: 0, transition: `max-height ${this.props.duration}ms`,...RevealBase.getStyle(false),  }}
+        ?{ style: {maxHeight: 0, transition: `all ${this.props.duration}ms`,opacity: 0}}//...RevealBase.getStyle(false),  }}
         :{ style: RevealBase.getStyle(false) }); 
   }
 
@@ -112,7 +113,6 @@ class RevealBase extends React.Component {
       this.setState({ style: {
         //...RevealBase.getStyle(this.props.when),
         ...RevealBase.getStyle(true),
-        //animationName: ( this.props.animation ? this.props.animation : void 0 ),
         animationName: inOut.animation||inOut.make(),
         animationFillMode: 'both',
         animationDuration: `${this.props.duration}ms`,
@@ -138,14 +138,6 @@ class RevealBase extends React.Component {
   componentWillUnmount() {
     this.clean();
     ssr && disableSsr();
-  }
-
-  componentWillReceiveProps({ when, spy }) {
-    if ( (when !== this.props.when) || (spy !== this.props.spy) ){
-      this.setState({ style: {
-        maxHeight:(this.props.collapse? 0 : void 0)
-      } });
-    }
   }
 
   componentDidUpdate({ when, spy }) {
@@ -179,17 +171,18 @@ class RevealBase extends React.Component {
         }
         else
           this.animate();
-      }
+      }      
     }
   }
 
   conceal() {
     if ( !this.isAnimated && this.props.out ) {
-      //this.listen(-1);
-      if (this.inViewport())
-        this.animate();
-      else //this.setState({ style: RevealBase.getStyle(true)});
-        this.hide();
+      this.animate();      
+      ////this.listen(-1);
+      //if (this.inViewport())
+      //  this.animate();
+      //else //this.setState({ style: RevealBase.getStyle(true)});
+      //  this.hide();
     }
   }
 
@@ -205,14 +198,7 @@ class RevealBase extends React.Component {
       this.reveal();
   }
 
-  //inOut() {
-  //  const inOut = this.props[this.props.when?'in':'out'];
-  //  if (this.props.effect || !inOut)
-  //    return {};
-  //  return inOut;
-  //}
-
-  render() {
+  render() {    
     const { tag: TagName, id, children, style, className } = this.props,
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out ? '' : namespace ) }${ className ? ' ' + className : '' }`;
     let newStyle, newChildren= false;
