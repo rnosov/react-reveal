@@ -1,1 +1,0 @@
-exports[`Flip renders a initial view 1`] = `"<div class=\"react-reveal\" style=\"backface-visibility:visible;\"><div>Test test</div></div>"`;
