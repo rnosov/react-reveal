@@ -36,8 +36,8 @@ function Rotate({ out, left, right, top, bottom, up, down, ...props }, context) 
       if ( (up||bottom) && right ) angle = '-90deg';  
       if ( left || right ) origin=( left ? 'left' : 'right' ) + ' bottom';
       return animation(`
-        ${!reverse?'from':'to'} { opacity: 0; transform-origin: ${origin}; transform: rotate3d(0, 0, 1, ${angle});}
-        ${reverse?'from':'to'} { opacity: 1; transform-origin: ${origin}; transform: none;}
+        ${!reverse?'from':'to'} {${props.collapse?`max-height:0;`:''} opacity: 0; transform-origin: ${origin}; transform: rotate3d(0, 0, 1, ${angle});}
+        ${reverse?'from':'to'} {${props.collapse?`max-height:${props.collapse};`:''} opacity: 1; transform-origin: ${origin}; transform: none;}
       `);      
     }
     

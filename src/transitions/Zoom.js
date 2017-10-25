@@ -32,16 +32,18 @@ function Zoom({ out, left, right, top, bottom, up, down, ...props }, context) {
     function make() {
       const rule = (left||right||up||down||top||bottom) 
         ? `${!reverse?'from':'to'} {
+            ${props.collapse?`max-height:0;`:''}
             opacity: 0;
             transform: scale3d(.1, .1, .1) translate3d(${left||right?(left?'-':'')+'1000px':'0'}, ${up||down||top||bottom?(down||top?'-':'')+'1000px':'0'}, 0);
             animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
           }
           ${reverse?'40%':'60%'} {
+            ${props.collapse?`max-height:${props.collapse};`:''}
             opacity: 1;
             transform: scale3d(.475, .475, .475) translate3d(${left||right?(right?'-':'')+'10px':'0'}, ${up||down||top||bottom?(up||bottom?'-':'')+'60px':'0'}, 0);
             animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
           }`
-        : `${!reverse?'from':'to'} { opacity: 0; transform: scale3d(.1, .1, .1);} ${reverse?'from':'to'} { opacity: 1; transform: none;}`;
+        : `${!reverse?'from':'to'} {${props.collapse?`max-height:0;`:''}opacity: 0; transform: scale3d(.1, .1, .1);} ${reverse?'from':'to'} { ${props.collapse?`max-height:${props.collapse};`:''}opacity: 1; transform: none;}`;
       return animation(rule);
     }
     

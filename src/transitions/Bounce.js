@@ -36,7 +36,8 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
         rule= reverse 
           ?`
             20% {
-                transform: translate3d(${left||right ? (right?'-':'') + '20px' : 0 }, ${down||top||up||bottom? (up||bottom?'-':'') + '10px' : '0' }, 0);
+              ${props.collapse?`max-height:${props.collapse};`:''}
+              transform: translate3d(${left||right ? (right?'-':'') + '20px' : 0 }, ${down||top||up||bottom? (up||bottom?'-':'') + '10px' : '0' }, 0);
               }
             ${ top||bottom||up||down              
               ?`40%, 45% {
@@ -46,6 +47,7 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
               :''            
             }
               to {
+                ${props.collapse?`max-height:0;`:''}
                 opacity: 0;
                 transform: translate3d(${left||right ? (left ? '-' :'' ) + '2000px':'0'}, ${down||top||up||bottom? (down||top?'-':'') +'2000px':'0'}, 0);
             }
@@ -55,6 +57,7 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
           }
         
           from {
+            ${props.collapse?`max-height:0;`:''}
             opacity: 0;
             transform: translate3d(${left||right? ((left?'-':'') + '3000px'):'0'}, ${down||top||up||bottom? ((down||top?'-':'') + '3000px'):'0'}, 0);
           }
@@ -73,6 +76,7 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
           }
         
           to {
+            ${props.collapse?`max-height:${props.collapse};`:''}
             transform: none;
           }`; 
       else 
@@ -82,11 +86,13 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
             }
           
             50%, 55% {
+              ${props.collapse?`max-height:${props.collapse};`:''}
               opacity: 1;
               transform: scale3d(1.1, 1.1, 1.1);
             }
           
             to {
+              ${props.collapse?`max-height:0;`:''}
               opacity: 0;
               transform: scale3d(.3, .3, .3);
           }`
@@ -95,6 +101,7 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
           }
         
           0% {
+            ${props.collapse?`max-height:0;`:''}
             opacity: 0;
             transform: scale3d(.3, .3, .3);
           }
@@ -117,6 +124,7 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
           }
         
           to {
+            ${props.collapse?`max-height:${props.collapse};`:''}
             opacity: 1;
             transform: scale3d(1, 1, 1);
           }`;

@@ -29,6 +29,7 @@ function LightSpeed({ out, ...props }, context) {
       const rule = !reverse
         ? `from {
             transform: translate3d(100%, 0, 0) skewX(-30deg);
+            ${props.collapse?`max-height:0;`:''}
             opacity: 0;
           }
         
@@ -44,14 +45,17 @@ function LightSpeed({ out, ...props }, context) {
         
           to {
             transform: none;
+            ${props.collapse?`max-height:${props.collapse};`:''}
             opacity: 1;
           }`
         : `from {
+            ${props.collapse?`max-height:${props.collapse};`:''}
             opacity: 1;
           }
         
           to {
             transform: translate3d(100%, 0, 0) skewX(30deg);
+            ${props.collapse?`max-height:0;`:''}            
             opacity: 0;
           }
         `;

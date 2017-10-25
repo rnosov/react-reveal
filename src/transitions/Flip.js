@@ -38,7 +38,8 @@ function Flip({ out, left, right, top, bottom, x, y, ...props }, context) {
           rule=`from {
               transform: perspective(400px) rotate3d(${xval}, ${yval}, 0, 90deg);
               animation-timing-function: ease-in;
-              opacity: 0;
+              ${props.collapse?`max-height:0;`:''}
+              opacity: 0;              
             }
           
             40% {
@@ -48,6 +49,7 @@ function Flip({ out, left, right, top, bottom, x, y, ...props }, context) {
           
             60% {
               transform: perspective(400px) rotate3d(${xval}, ${yval}, 0, 10deg);
+              ${props.collapse?`max-height:${props.collapse};`:''}
               opacity: 1;
             }
           
@@ -60,6 +62,7 @@ function Flip({ out, left, right, top, bottom, x, y, ...props }, context) {
             }`; 
         else 
           rule = `from {
+              ${props.collapse?`max-height:${props.collapse};`:''}
               transform: perspective(400px);
             }
           
@@ -70,6 +73,7 @@ function Flip({ out, left, right, top, bottom, x, y, ...props }, context) {
           
             to {
               transform: perspective(400px) rotate3d(${xval}, ${yval}, 0, 90deg);
+              ${props.collapse?`max-height:0;`:''}
               opacity: 0;
             }`; 
         } else 

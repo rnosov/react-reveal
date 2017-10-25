@@ -31,10 +31,10 @@ function Fade({out, left, right, up, down, top, bottom, big, ...props}, context)
     
     function make() {
       const 
-        dist = big ? '2000px' : '100%';
+        xdist = big ? '2000px' : '100%', ydist =  big ? '2000px' : props.collapse || '100%'; 
         return animation(
-          `${!reverse?'from':'to'} {opacity: 0;${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${dist}`:(right?dist:'0')}, ${down||top?`-${dist}`:(up||bottom?dist:'0')}, 0);` : ''}}
-            ${reverse?'from':'to'} {opacity: 1;transform: none;} `);  
+          `${!reverse?'from':'to'} {${props.collapse?`max-height:0;`:''}opacity: 0;${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${xdist}`:(right?xdist:'0')}, ${down||top?`-${ydist}`:(up||bottom?ydist:'0')}, 0);` : ''}}
+            ${reverse?'from':'to'} {${props.collapse?`max-height:${props.collapse};`:''}opacity: 1;transform: none;} `);  
     }
     
     return { reverse: left, make }; 

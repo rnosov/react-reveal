@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 import React from 'react';
-import { string, object, number, bool, func, node, any } from 'prop-types';
+import { string, object, number, bool, func, node, any, oneOfType } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide } from './lib/globals';
 import debounce from './lib/debounce';
 
@@ -16,6 +16,7 @@ const
     when: bool,
     spy: any,
     effect: string,
+    collapse: string,
     duration: number,
     delay: number,
     tag: string,
@@ -27,8 +28,8 @@ const
     fraction: number,
     onReveal: func,
     children: node.isRequired,
-    //in: object,
-    //out: object,
+    in: object,
+    out: oneOfType([object, bool]),
   },
   defaultProps = {
     duration: 1000,
@@ -42,7 +43,12 @@ class RevealBase extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { legacyMode: false, style: (props.when || !props.out ? {} : RevealBase.getStyle(false)) };
+    this.state = { 
+      legacyMode: false, 
+      style: props.when || !props.out 
+        ? {} 
+        : (props.collapse?{maxHeight: 0,...RevealBase.getStyle(false)}:RevealBase.getStyle(false))
+    };
     this.isListener = false;
     this.isAnimated = false;
     this.reveal = this.reveal.bind(this);
@@ -69,13 +75,15 @@ class RevealBase extends React.Component {
     if (!this.el || window.document.hidden) return false;
     const h = this.el.offsetHeight,
           delta = window.pageYOffset - RevealBase.getTop(this.el),
-          tail = Math.min(h, window.innerHeight) * ( globalHide || !this.props.out ? this.props.fraction : 0 );
+          tail = Math.min(h, window.innerHeight) * ( globalHide ? this.props.fraction : 0 );
     return ( delta > tail - window.innerHeight ) && ( delta < h - tail );
   }
 
   hide() {
-    if (this.props.out)
-      this.setState({ style: RevealBase.getStyle(false) });
+    if (this.props.out)      
+      this.setState(this.props.collapse
+        ?{ style: {maxHeight: 0, transition: `max-height ${this.props.duration}ms`,...RevealBase.getStyle(false),  }}
+        :{ style: RevealBase.getStyle(false) }); 
   }
 
   resize() {
@@ -102,12 +110,14 @@ class RevealBase extends React.Component {
     else {
       const inOut = this.props[this.props.when?'in':'out'];
       this.setState({ style: {
+        //...RevealBase.getStyle(this.props.when),
         ...RevealBase.getStyle(true),
         //animationName: ( this.props.animation ? this.props.animation : void 0 ),
         animationName: inOut.animation||inOut.make(),
         animationFillMode: 'both',
         animationDuration: `${this.props.duration}ms`,
         animationDelay: `${this.props.delay}ms`,
+        ...inOut.style,
       }});
     }
     this.isAnimated = true;
@@ -132,7 +142,9 @@ class RevealBase extends React.Component {
 
   componentWillReceiveProps({ when, spy }) {
     if ( (when !== this.props.when) || (spy !== this.props.spy) ){
-      this.setState({ style: {} });
+      this.setState({ style: {
+        maxHeight:(this.props.collapse? 0 : void 0)
+      } });
     }
   }
 
@@ -193,19 +205,19 @@ class RevealBase extends React.Component {
       this.reveal();
   }
 
-  inOut() {
-    const inOut = this.props[this.props.when?'in':'out'];
-    if (this.props.effect || !inOut)
-      return {};
-    return inOut;
-  }
+  //inOut() {
+  //  const inOut = this.props[this.props.when?'in':'out'];
+  //  if (this.props.effect || !inOut)
+  //    return {};
+  //  return inOut;
+  //}
 
   render() {
     const { tag: TagName, id, children, style, className } = this.props,
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out ? '' : namespace ) }${ className ? ' ' + className : '' }`;
     let newStyle, newChildren= false;
     if (!this.state.legacyMode) {
-       newStyle = {...style, ...this.inOut().style, ...this.state.style};
+       newStyle = {...style, ...this.state.style};
       let reverse = false;
       if (this.props.cascade && children && this.state.style.animationName) {
         if (typeof children === 'string') {
