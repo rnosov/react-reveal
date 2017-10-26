@@ -1,7 +1,7 @@
 /*
  * Zoom Component Test Suite
  *
- * Copyright © Roman Nosov 2016
+ * Copyright © Roman Nosov 2017
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
