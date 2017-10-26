@@ -19,6 +19,8 @@ const
     collapse: string,
     duration: number,
     delay: number,
+    count: number,
+    forever: bool,
     tag: string,
     className: string,
     style: object,
@@ -34,6 +36,7 @@ const
   defaultProps = {
     duration: 1000,
     delay: 0,
+    count: 1,
     fraction: 0.2,
     tag: 'div',
     when: true,
@@ -88,12 +91,12 @@ class RevealBase extends React.Component {
   }
 
   resize() {
-    if (!this.el) return;
+    if (!this||!this.el||!this.props.when) return;    
     if ( !this.isAnimated && (this.props.force || this.inViewport()) ) {
       this.isAnimated = true;
       this.setState({ style: RevealBase.getStyle(this.props.when) });
       if (this.props.onReveal && this.props.when)
-        window.setTimeout(this.props.onReveal, this.totalDuration());
+        this.animationEnd(this.props.onReveal);
     }
   }
 
@@ -104,10 +107,22 @@ class RevealBase extends React.Component {
     return Math.exp(minv + scale*(i-start));
   }
 
-  totalDuration() {
-    if (this.props.cascade)
-      return this.props.delay + this.props.duration + (this.props.cascade===true?1000:this.props.cascade);  
-    return this.props.delay + this.props.duration;
+  animationEnd(arg) {
+    if (this.props.forever) return;
+    window.setTimeout( () => {
+      if (!this || !this.el) return;
+      switch (typeof arg) {
+        case 'object': 
+          this.setState({ style: {...this.state.style, ...arg} }); break;
+        case 'function':
+          arg(); break;
+        default:
+          if (!this.props.when && this.props.out)
+            this.setState({ style: { ...this.state.style, visibility: 'hidden' } });
+      }
+    }, this.props.delay + this.props.count*
+      (this.props.duration + this.props.cascade? (this.props.cascade===true?1000:this.props.cascade) : 0)
+    );
   }
 
   animate() {
@@ -116,26 +131,18 @@ class RevealBase extends React.Component {
       this.setState({ legacyMode: true });
     else {
       const inOut = this.props[this.props.when?'in':'out'],
-            animationName = inOut.animation||inOut.make();
-      //if (this.state.style.animationName&&(!this.props.out)) return;
-      if ( this.state.style.animationName === animationName ) 
+            animation = `${inOut.animation||inOut.make()} ${this.props.duration}ms ease ${this.props.delay}ms ${this.props.forever?'infinite':this.props.count} normal both`;      
+      if ( this.state.style.animation === animation ) 
         return;
-      this.setState({ style: {
-        animationName,
-        visibility:'visible',        
-        animationFillMode: 'both',
-        animationDuration: `${this.props.duration}ms`,
-        animationDelay: `${this.props.delay}ms`,
-        ...inOut.style,
-      }});
+      this.setState({ style: { animation, visibility:'visible', ...inOut.style } });
       if (!this.props.out || (this.props.when&&'spy' in this.props))
-        window.setTimeout( () => this.setState({ style: {...this.state.style, animationName: void 0} }), this.totalDuration());
+        this.animationEnd({ animation: void 0 });
       else if(!this.props.when) 
-        window.setTimeout( () => !this.props.when && this.props.out && this.setState({ style: {...this.state.style, visibility:'hidden'} }), this.totalDuration());       
+        this.animationEnd();
     }
     this.isAnimated = true;
     if (this.props.onReveal && this.props.when)
-      window.setTimeout(this.props.onReveal, this.totalDuration());    
+      this.animationEnd(this.props.onReveal);      
   }
 
   clean() {
@@ -174,8 +181,7 @@ class RevealBase extends React.Component {
   }
 
   reveal() {
-    if (!this.props.when)
-      return;
+    if (!this||!this.el||!this.props.when) return;    
     if ( !this.isAnimated ) {
       this.listen(1);
       if ( this.props.force || this.inViewport() ) {
@@ -191,6 +197,7 @@ class RevealBase extends React.Component {
   }
 
   conceal() {
+    if (!this||!this.el||this.props.when) return;
     if ( !this.isAnimated && this.props.out ) {
       //---this.animate();      
       this.listen(-1);
@@ -220,7 +227,7 @@ class RevealBase extends React.Component {
     if (!this.state.legacyMode) {
        newStyle = {...style, ...this.state.style};
       let reverse = false;
-      if (this.props.cascade && children && this.state.style.animationName) {
+      if (this.props.cascade && children && this.state.style.animation) {
         if (typeof children === 'string') {
           newChildren = children.split("").map( (ch, index) => <span key={index} style={{display: 'inline-block', whiteSpace:'pre'}}>{ch}</span> );
           reverse = this.props.reverse;
