@@ -6,6 +6,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
+
+import Step from './Step';
+
 class Stepper {
 	
 	constructor() {		
@@ -89,24 +92,6 @@ class Stepper {
 		if (onceRevealed)
 			window.setTimeout(this.next, this.steps[prev].after);						
 		else this.next();
-	}
-
-}
-
-class Step {
-	
-	constructor(name, after = 1000) {				
-		this.after = after;
-		this.name = name;
-		this.chain = [];
-	}
-	
-	push(api) {		
-		if (this.start) {
-			api.step = this.index;
-			api.start = this.start;
-		}
-		this.chain.push(api);
 	}
 
 }

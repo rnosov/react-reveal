@@ -10,6 +10,7 @@ gulp.task('build', () =>
     .pipe(flatten())
     .pipe(replace("from './lib/debounce';", "from './debounce';"))
     .pipe(replace("from './lib/globals';", "from './globals';"))
+    .pipe(replace("from './lib/Step';", "from './Step';"))
     .pipe(replace("from '../Reveal';", "from './Reveal';"))
     .pipe(replace("from '../lib/globals';", "from './globals';"))
     .pipe(babel())
@@ -19,6 +20,9 @@ gulp.task('build', () =>
 
 gulp.task('clean', function () {
   return gulp.src([
+    './index.js',
+    './Stepper.js',
+    './Step.js',
     './globals.js',
     './debounce.js',
     './Bounce.js',
@@ -38,9 +42,8 @@ gulp.task('clean', function () {
     './Flip.js',
     './Reveal.js',
     './Rotate.js',
-    './Stepper.js',
-    './Zoom.js',
     './LightSpeed.js',
-    './index.js',
+    './Spin.js',
+    './Zoom.js',
   ], {read: false}).pipe(clean());
 });

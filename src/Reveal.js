@@ -9,11 +9,12 @@
 import React from 'react';
 import { string, object, number, bool, func, node, any, oneOfType } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide } from './lib/globals';
+import Step from './lib/Step';
 import debounce from './lib/debounce';
 
 const
   propTypes = {
-    when: bool,
+    when: oneOfType([bool, Step]),
     spy: any,
     effect: string,
     collapse: string,
@@ -25,7 +26,6 @@ const
     className: string,
     style: object,
     props: object,
-    step: object,
     force: bool,
     fraction: number,
     onReveal: func,
@@ -210,7 +210,9 @@ class RevealBase extends React.Component {
 
   componentDidMount() {
     if (!this.el) return;
-    if (this.props.step)
+    if (this.props.when instanceof Step)
+      this.props.when.push(this);
+    else if (this.props.step) // todo: remove in 0.8.0
       this.props.step.push(this);
     if ( ssr && (this.props.out||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
@@ -241,8 +243,7 @@ class RevealBase extends React.Component {
           React.cloneElement(child,{style: {...child.props.style, ...this.state.style,
             animationDuration: Math.round(this.log( reverse ? i-- : i++ ,0 ,count, this.props.duration, total)) + 'ms',
           }}));
-        newStyle.animationDuration = '0s';
-        newStyle.animationName = 'none';
+        newStyle.animation = void 0;       
       }
     }
     return <TagName

@@ -1,7 +1,7 @@
 dist
 node_modules
 npm-debug.log
-/lib
+/Spin.js
 /Bounce.js
 /Fade.js
 /Flash.js
@@ -21,6 +21,7 @@ npm-debug.log
 /Rotate.js
 /LightSpeed.js
 /Stepper.js
+/Step.js
 /Zoom.js
 /index.js
 /globals.js
