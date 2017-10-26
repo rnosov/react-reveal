@@ -7,14 +7,14 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 import React from 'react';
-import { string, object, number, bool, func, node, any, oneOfType } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide } from './lib/globals';
+import { string, object, number, bool, func, node, any, oneOfType, instanceOf } from 'prop-types';
+import { namespace, ssr, disableSsr, globalHide, cascade } from './lib/globals';
 import Step from './lib/Step';
 import debounce from './lib/debounce';
 
 const
   propTypes = {
-    when: oneOfType([bool, Step]),
+    when: oneOfType([bool, instanceOf(Step)]),
     spy: any,
     effect: string,
     collapse: string,
@@ -100,13 +100,6 @@ class RevealBase extends React.Component {
     }
   }
 
-  log(i, start, end, duration, total) {
-    const minv = Math.log(duration);
-    const maxv = Math.log(total);
-    const scale = (maxv-minv) / (end-start);
-    return Math.exp(minv + scale*(i-start));
-  }
-
   animationEnd(arg) {
     if (this.props.forever) return;
     window.setTimeout( () => {
@@ -118,10 +111,11 @@ class RevealBase extends React.Component {
           arg(); break;
         default:
           if (!this.props.when && this.props.out)
-            this.setState({ style: { ...this.state.style, visibility: 'hidden' } });
+            this.setState({ style: { maxHeight: this.props.collapse? 0 : void 0, visibility: 'hidden' } });
+            //this.setState({ style: { ...this.state.style, visibility: 'hidden' } });
       }
     }, this.props.delay + this.props.count*
-      (this.props.duration + this.props.cascade? (this.props.cascade===true?1000:this.props.cascade) : 0)
+      (this.props.duration + (this.props.cascade? (this.props.cascade===true?1000:this.props.cascade) : 0))
     );
   }
 
@@ -188,7 +182,7 @@ class RevealBase extends React.Component {
         if (this.start) {
           this.hide();
           this.start(this.step);
-          return;
+          //return;
         }
         else
           this.animate();
@@ -222,27 +216,32 @@ class RevealBase extends React.Component {
       this.reveal();
   }
 
-  render() {
-    const { tag: TagName, id, children, style, className } = this.props,
-      newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
-    let newStyle, newChildren= false;
-    if (!this.state.legacyMode) {
-       newStyle = {...style, ...this.state.style};
-      let reverse = false;
-      if (this.props.cascade && children && this.state.style.animation) {
-        if (typeof children === 'string') {
+  cascade(children) {    
+    let newChildren, reverse = false;
+    if (typeof children === 'string') {
           newChildren = children.split("").map( (ch, index) => <span key={index} style={{display: 'inline-block', whiteSpace:'pre'}}>{ch}</span> );
           reverse = this.props.reverse;
         }
         else
           newChildren = React.Children.toArray(children);
-        const count = newChildren.length - 1,
-              total =  this.props.duration + (typeof this.props.cascade === 'boolean' ? 1000 : this.props.cascade);
-        let i = reverse ? count : 0;
-        newChildren = newChildren.map( child =>
-          React.cloneElement(child,{style: {...child.props.style, ...this.state.style,
-            animationDuration: Math.round(this.log( reverse ? i-- : i++ ,0 ,count, this.props.duration, total)) + 'ms',
-          }}));
+    const count = newChildren.length - 1,
+          total =  this.props.duration + (typeof this.props.cascade === 'boolean' ? 1000 : this.props.cascade);
+    let i = reverse ? count : 0;
+    newChildren = newChildren.map( child =>
+      React.cloneElement(child,{style: {...child.props.style, ...this.state.style,
+        animationDuration: Math.round(cascade( reverse ? i-- : i++ ,0 ,count, this.props.duration, total)) + 'ms',
+      }}));
+    return newChildren;
+  }
+
+  render() {
+    const { tag: TagName, id, children, style, className } = this.props,
+      newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
+    let newStyle, newChildren = false;
+    if (!this.state.legacyMode) {
+       newStyle = {...style, ...this.state.style};
+      if (this.props.cascade && children && this.state.style.animation) {
+        newChildren = this.cascade(children);
         newStyle.animation = void 0;       
       }
     }

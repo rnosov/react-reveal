@@ -20,6 +20,11 @@ export function insertRule(rule) {
   }
 }
 
+export function cascade(i, start, end, duration, total) {
+  const minv = Math.log(duration), maxv = Math.log(total), scale = (maxv-minv) / (end-start);
+  return Math.exp(minv + scale*(i-start));
+}
+
 export function animation(effect) {
   if (!sheet) return '';
   const rule = `@keyframes ${name + counter}{${effect}}`;
@@ -30,8 +35,6 @@ export function animation(effect) {
     return `${name}${counter++}`;
   }
   return `${name}${effectId}`;
-  //return function() {
-  //}
 }
 
 function hideAll() {
@@ -55,7 +58,7 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
       && Date.now() - window.performance.timing.domLoading<500)
     ssr = false;
   let element = document.createElement('style');
-  document.head.appendChild(element);
+  document.body.appendChild(element);
   if (element.sheet && element.sheet.cssRules && element.sheet.insertRule) {
     sheet = element.sheet;
     window.addEventListener('scroll', hideAll, true);
