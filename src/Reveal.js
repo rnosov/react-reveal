@@ -115,17 +115,20 @@ class RevealBase extends React.Component {
     if(this.props.effect)
       this.setState({ legacyMode: true });
     else {
-      const inOut = this.props[this.props.when?'in':'out'];
-      if (this.state.style.animationName&&!this.props.out) return;
+      const inOut = this.props[this.props.when?'in':'out'],
+            animationName = inOut.animation||inOut.make();
+      //if (this.state.style.animationName&&(!this.props.out)) return;
+      if ( this.state.style.animationName === animationName ) 
+        return;
       this.setState({ style: {
+        animationName,
         visibility:'visible',        
-        animationName: inOut.animation||inOut.make(),
         animationFillMode: 'both',
         animationDuration: `${this.props.duration}ms`,
         animationDelay: `${this.props.delay}ms`,
         ...inOut.style,
       }});
-      if (!this.props.out )
+      if (!this.props.out || (this.props.when&&'spy' in this.props))
         window.setTimeout( () => this.setState({ style: {...this.state.style, animationName: void 0} }), this.totalDuration());
       else if(!this.props.when) 
         window.setTimeout( () => !this.props.when && this.props.out && this.setState({ style: {...this.state.style, visibility:'hidden'} }), this.totalDuration());       
