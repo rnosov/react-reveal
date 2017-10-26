@@ -205,8 +205,8 @@ class RevealBase extends React.Component {
     if (!this.el) return;
     if (this.props.step)
       this.props.step.push(this);
-    if ( ssr && this.props.out && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
-      this.setState({ style: { ...RevealBase.getStyle(true), transition: 'opacity 1000ms' } });
+    if ( ssr && (this.props.out||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
+      this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
       window.setTimeout(this.reveal, 1000);
     }
     else
@@ -215,7 +215,7 @@ class RevealBase extends React.Component {
 
   render() {
     const { tag: TagName, id, children, style, className } = this.props,
-      newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out ? '' : namespace ) }${ className ? ' ' + className : '' }`;
+      newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
     let newStyle, newChildren= false;
     if (!this.state.legacyMode) {
        newStyle = {...style, ...this.state.style};
