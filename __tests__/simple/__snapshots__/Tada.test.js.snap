@@ -1,1 +1,1 @@
-exports[`Tada renders a initial view 1`] = `"<div class=\"\"><div>Test test</div></div>"`;
+exports[`Tada renders a initial view 1`] = `"<div><div>Test test</div></div>"`;
