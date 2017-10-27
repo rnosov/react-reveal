@@ -58,7 +58,7 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
       && Date.now() - window.performance.timing.domLoading<500)
     ssr = false;
   let element = document.createElement('style');
-  document.body.appendChild(element);
+  document.head.appendChild(element);
   if (element.sheet && element.sheet.cssRules && element.sheet.insertRule) {
     sheet = element.sheet;
     window.addEventListener('scroll', hideAll, true);

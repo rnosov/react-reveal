@@ -46,23 +46,18 @@ class RevealBase extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { 
-      legacyMode: false, 
-      style: props.when || !props.out 
-        ? {} 
-        : (props.collapse?{maxHeight: 0,...RevealBase.getStyle(false)}:RevealBase.getStyle(false))
+    this.state = {
+      legacyMode: false,
+      style: props.when || !props.out
+        ? {}
+        : { maxHeight: props.collapse ? 0 : void 0, visibility: 'hidden'  }
+        //: (props.collapse?{maxHeight: 0,...RevealBase.getStyle(false)}:RevealBase.getStyle(false))
     };
-    this.isListener = 0;
+    this.isListener = false;
     this.isAnimated = false;
-    this.reveal = this.reveal.bind(this);
-    this.revealHandler = debounce(this.reveal, 66);
-    this.concealHandler = debounce(this.conceal.bind(this), 66);
+    this.revealHandler = debounce(this.reveal.bind(this), 66);
     this.resizeHandler = debounce(this.resize.bind(this), 500);
     this.saveRef = el => this.el = el;
-  }
-
-  static getStyle(visible) {
-    return { visibility: visible?'visible':'hidden' };//, opacity: visible ? 1 : 0 };
   }
 
   static getTop(el) {
@@ -83,40 +78,44 @@ class RevealBase extends React.Component {
   }
 
   hide() {
-    if (this.props.out)      
-      this.setState({ style: RevealBase.getStyle(false) }); 
-      //this.setState(this.props.collapse
-      //  ?{ style: {maxHeight: 0, transition: `all ${this.props.duration}ms`,opacity: 0}}//...RevealBase.getStyle(false),  }}
-      //  :{ style: RevealBase.getStyle(false) }); 
+    if (this.props.out)
+      this.setState({ style: { visibility: 'hidden' } });
   }
 
   resize() {
-    if (!this||!this.el||!this.props.when) return;    
+    if (!this||!this.el||!this.props.when) return;
     if ( !this.isAnimated && (this.props.force || this.inViewport()) ) {
       this.isAnimated = true;
-      this.setState({ style: RevealBase.getStyle(this.props.when) });
+      this.setState({ style: { visibility: this.props.when || !this.props.out ? 'visible' : 'hidden' } });
       if (this.props.onReveal && this.props.when)
-        this.animationEnd(this.props.onReveal);
+        this.props.onReveal();
     }
   }
 
-  animationEnd(arg) {
-    if (this.props.forever) return;
-    window.setTimeout( () => {
-      if (!this || !this.el) return;
-      switch (typeof arg) {
-        case 'object': 
-          this.setState({ style: {...this.state.style, ...arg} }); break;
-        case 'function':
-          arg(); break;
-        default:
-          if (!this.props.when && this.props.out)
-            this.setState({ style: { maxHeight: this.props.collapse? 0 : void 0, visibility: 'hidden' } });
-            //this.setState({ style: { ...this.state.style, visibility: 'hidden' } });
-      }
-    }, this.props.delay + this.props.count*
-      (this.props.duration + (this.props.cascade? (this.props.cascade===true?1000:this.props.cascade) : 0))
-    );
+  //animationEnd(style) {
+  //  if (this.props.forever)
+  //    return;
+  //  if (this.timeout)
+  //    window.clearTimeout(this.timeout);
+  //  this.timeout = window.setTimeout( () => {
+  //    if (!this || !this.el)
+  //      return;
+  //    this.setState({ style });
+  //  }, this.props.delay + this.props.count*
+  //    (this.props.duration + (this.props.cascade? (this.props.cascade===true?1000:this.props.cascade) : 0))
+  //  );
+  //}
+
+  animationEnd(style) {
+    if (this.props.forever)
+      return;
+    const handler = () => {
+      if (!this || !this.el)
+        return;
+      this.el.removeEventListener('animationend', handler);
+      this.setState({ style });
+    };
+    this.el.addEventListener('animationend', handler);
   }
 
   animate() {
@@ -124,27 +123,30 @@ class RevealBase extends React.Component {
     if(this.props.effect)
       this.setState({ legacyMode: true });
     else {
-      const inOut = this.props[this.props.when?'in':'out'],
-            animation = `${inOut.animation||inOut.make()} ${this.props.duration}ms ease ${this.props.delay}ms ${this.props.forever?'infinite':this.props.count} normal both`;      
-      if ( this.state.style.animation === animation ) 
+      const inOut = this.props[this.props.when || !this.props.out ?'in':'out'],
+            animation = this.props.out||this.props.when
+            ?`${inOut.animation||inOut.make()} ${this.props.duration}ms ease ${this.props.delay}ms ${this.props.forever?'infinite':this.props.count} normal both`
+            : void 0
+      ;
+      if ( this.state.style.animation === animation )
         return;
-      this.setState({ style: { animation, visibility:'visible', ...inOut.style } });
+      this.setState({ style: { animation, visibility: 'visible', ...inOut.style } });
       if (!this.props.out || (this.props.when&&'spy' in this.props))
-        this.animationEnd({ animation: void 0 });
-      else if(!this.props.when) 
-        this.animationEnd();
+        this.animationEnd({ animation: void 0, visibility: 'visible' });
+      else if(!this.props.when)
+        this.animationEnd({ maxHeight: this.props.collapse? 0 : void 0, visibility: 'hidden' });
     }
     this.isAnimated = true;
     if (this.props.onReveal && this.props.when)
-      this.animationEnd(this.props.onReveal);      
+      this.props.onReveal();
   }
 
   clean() {
     if (this.isListener) {
-      const handler = this[this.isListener === -1?'concealHandler':'revealHandler'];
-      window.removeEventListener('scroll', handler);
-      window.removeEventListener('orientationchange', handler);
-      window.document.removeEventListener('visibilitychange', handler);
+      //const handler = this[this.isListener === -1?'concealHandler':'revealHandler'];
+      window.removeEventListener('scroll', this.revealHandler);
+      window.removeEventListener('orientationchange', this.revealHandler);
+      window.document.removeEventListener('visibilitychange', this.revealHandler);
       window.removeEventListener('resize', this.resizeHandler);
       this.isListener = false;
     }
@@ -158,47 +160,36 @@ class RevealBase extends React.Component {
   componentDidUpdate({ when, spy }) {
     if ( (when !== this.props.when ) || (spy !== this.props.spy)) {
       this.isAnimated = false;
-      this.props.when?this.reveal():this.conceal();
+      this.reveal();
+      //this.props.when?this.reveal():this.conceal();
     }
   }
 
-  listen(dir) {
+  listen() {
     if (!this.isListener && !this.props.force ) {
-      this.isListener = dir;
-      const handler = this[this.isListener === -1?'concealHandler':'revealHandler'];
-      window.addEventListener('scroll', handler);
-      window.addEventListener('orientationchange', handler);
-      window.document.addEventListener("visibilitychange", handler);
+      this.isListener = true;
+      window.addEventListener('scroll', this.revealHandler);
+      window.addEventListener('orientationchange', this.revealHandler);
+      window.document.addEventListener("visibilitychange", this.revealHandler);
       window.addEventListener('resize', this.resizeHandler);
     }
     return this;
   }
 
   reveal() {
-    if (!this||!this.el||!this.props.when) return;    
+    if (!this||!this.el) return;
     if ( !this.isAnimated ) {
-      this.listen(1);
       if ( this.props.force || this.inViewport() ) {
         if (this.start) {
           this.hide();
+          this.listen();
           this.start(this.step);
-          //return;
+          return;
         }
-        else
-          this.animate();
-      }      
-    }
-  }
-
-  conceal() {
-    if (!this||!this.el||this.props.when) return;
-    if ( !this.isAnimated && this.props.out ) {
-      //---this.animate();      
-      this.listen(-1);
-      if (this.inViewport())
         this.animate();
-      //else this.setState({ style: RevealBase.getStyle(true)});
-        //this.hide();
+      }
+      else
+        this.listen();
     }
   }
 
@@ -210,27 +201,33 @@ class RevealBase extends React.Component {
       this.props.step.push(this);
     if ( ssr && (this.props.out||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
-      window.setTimeout(this.reveal, 1000);
+      window.setTimeout(this.reveal.bind(this), 1000);
     }
-    else
+    else if(this.props.when)
       this.reveal();
   }
 
-  cascade(children) {    
-    let newChildren, reverse = false;
+  cascade(children) {
+    let newChildren;//, reverse = false;
     if (typeof children === 'string') {
           newChildren = children.split("").map( (ch, index) => <span key={index} style={{display: 'inline-block', whiteSpace:'pre'}}>{ch}</span> );
-          reverse = this.props.reverse;
+          //reverse = this.props.reverse;
         }
         else
           newChildren = React.Children.toArray(children);
     const count = newChildren.length - 1,
           total =  this.props.duration + (typeof this.props.cascade === 'boolean' ? 1000 : this.props.cascade);
-    let i = reverse ? count : 0;
+    //let i = reverse ? count : 0;
+    let i = 0;
     newChildren = newChildren.map( child =>
-      React.cloneElement(child,{style: {...child.props.style, ...this.state.style,
-        animationDuration: Math.round(cascade( reverse ? i-- : i++ ,0 ,count, this.props.duration, total)) + 'ms',
-      }}));
+      React.cloneElement(child,{
+        style: {
+          ...child.props.style,
+          ...this.state.style,
+          animationDuration: Math.round(cascade( /*reverse ? i-- : i++ */i++,0 ,count, this.props.duration, total)) + 'ms',
+        },
+        //ref: i === count? (el => this.finalEl = el) : void 0,
+      }));
     return newChildren;
   }
 
@@ -242,7 +239,7 @@ class RevealBase extends React.Component {
        newStyle = {...style, ...this.state.style};
       if (this.props.cascade && children && this.state.style.animation) {
         newChildren = this.cascade(children);
-        newStyle.animation = void 0;       
+        newStyle.animation = void 0;
       }
     }
     return <TagName
