@@ -50,7 +50,8 @@ class RevealBase extends React.Component {
       legacyMode: false,
       style: {
         //maxHeight: props.collapse?(this.props.when ? this.props.collapse : 0) : void 0,
-        visibility: props.collapse ? (props.when || !props.out ? 'visible' : 'hidden') : void 0,
+        //visibility: props.collapse ? (props.when || !props.out ? 'visible' : 'hidden') : void 0,
+        //display: props.collapse && !props.when && props.out? 'none' : void 0,
       },
     };
     this.isListener = false;
@@ -92,20 +93,6 @@ class RevealBase extends React.Component {
     }
   }
 
-  //animationEnd(style) {
-  //  if (this.props.forever)
-  //    return;
-  //  if (this.timeout)
-  //    window.clearTimeout(this.timeout);
-  //  this.timeout = window.setTimeout( () => {
-  //    if (!this || !this.el)
-  //      return;
-  //    this.setState({ style });
-  //  }, this.props.delay + this.props.count*
-  //    (this.props.duration + (this.props.cascade? (this.props.cascade===true?1000:this.props.cascade) : 0))
-  //  );
-  //}
-
   animationEnd(style, forever) {
     if (forever)
       return;
@@ -125,11 +112,6 @@ class RevealBase extends React.Component {
     else {
       const inOut = props[props.when || !props.out ?'in':'out'],
             animationName = props.out||props.when ? inOut.animation || inOut.make() : void 0;
-
-            //animation = props.out||props.when
-            //?`${inOut.animation||inOut.make()} ${props.duration}ms ease ${props.delay}ms ${props.forever?'infinite':props.count} normal both`
-            //: void 0
-            //;
       if ( this.state.style.animationName === animationName )
         return;
       this.setState({ style: {
@@ -145,7 +127,6 @@ class RevealBase extends React.Component {
         this.animationEnd({ animation: void 0, visibility: 'visible' }, props.forever);
       else if(!props.when)
         this.animationEnd({ visibility: 'hidden' }, props.forever);
-        //this.animationEnd({ maxHeight: props.collapse? 0 : void 0, visibility: 'hidden' }, props.forever);
     }
     this.isAnimated = true;
     if (props.onReveal && props.when)
@@ -249,17 +230,17 @@ class RevealBase extends React.Component {
         this.setState({ emulation: 2 }, () => window.setTimeout( () =>
           raf( () => this.setState({ emulation: 0 }) ), 0)
         )
-      ), 0);
+      ),0);
   }
 
   collapse(style) {
     if (this.props.collapse&&this.props.out&&!this.state.style.transition)
       switch (this.state.emulation) {
         case 1:
-          return {...style, top: '-1000px', left:'-1000px', position: 'absolute', visibility: 'hidden'};
+          return {...style, left:'-1000px', top:'-1000px', position: 'fixed', visibility: 'hidden', display: 'block'};
         case 2:
           this.height = this.el.offsetHeight;
-          return {...style, height: 0, visibility: 'hidden' };
+          return {...style, height: 0, visibility: 'hidden', display: 'block' };
         default:
           const delta = this.props.duration>>2,
                 duration = this.props.when ? delta : this.props.duration - delta,
@@ -269,7 +250,8 @@ class RevealBase extends React.Component {
           //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
           return {...style,
             height: this.props.when ? ( this.height ? this.height : void 0 ) : 0,
-            //display: this.props.when ? void 0 : 'none',
+            display: 'block',
+            visibility: this.props.when || !this.props.out ? 'visible' : 'hidden',
             transition: `height ${duration}ms ease ${delay}ms`,
           };
       }
@@ -277,17 +259,13 @@ class RevealBase extends React.Component {
   }
 
   render() {
-    //console.log('render:', this.state, this.props.when, this.cc++);
     const { tag: TagName, id, children, style, className } = this.props,
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
     let newStyle, newChildren = false;
     if (!this.state.legacyMode) {
        newStyle = {...style, ...(this.state.emulation ? void 0 : this.state.style) };
-       //newStyle = {...style, ...( this.state.emulation ? void 0 : this.state.style )};
-      if (this.props.cascade && children && this.state.style.animationName /*&& !('collapse' in this.props)*/) {
+      if (this.props.cascade && !this.state.emulation && children && this.state.style.animationName) {
         newChildren = this.cascade(children);
-        //if (!this.props.when)console.log(newChildren);
-        //if (!this.props.when&&newChildren)console.log(...newChildren.map( el => el.props.style.animationDuration));
         newStyle.animationName = void 0;
       }
     }
@@ -296,7 +274,7 @@ class RevealBase extends React.Component {
         id={id}
         {...(this.props.props||void 0)}
         className={newClass}
-        style={this.state.legacyMode?style:this.collapse(newStyle)}//this.collapse(newStyle)}
+        style={this.state.legacyMode?style:this.collapse(newStyle)}
         children={newChildren||children}
         ref={this.saveRef}
       />
