@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-export const namespace = 'react-reveal';
+export const namespace = 'react-reveal', raf = window.requestAnimationFrame;
 export let ssr = true, disableSsr = () => ssr = false, globalHide = false;
 let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floor(Math.random() * 1000000000000000)}-`;
 

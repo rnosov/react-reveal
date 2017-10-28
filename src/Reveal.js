@@ -8,7 +8,7 @@
  */
 import React from 'react';
 import { string, object, number, bool, func, node, any, oneOfType, instanceOf } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, cascade, raf } from './lib/globals';
 import Step from './lib/Step';
 import debounce from './lib/debounce';
 
@@ -48,14 +48,14 @@ class RevealBase extends React.Component {
     super(props);
     this.state = {
       legacyMode: false,
-      style: props.when || !props.out
-        ? {}
-        : { maxHeight: props.collapse ? 0 : void 0, visibility: 'hidden'  }
-        //: (props.collapse?{maxHeight: 0,...RevealBase.getStyle(false)}:RevealBase.getStyle(false))
+      style: {
+        //maxHeight: props.collapse?(this.props.when ? this.props.collapse : 0) : void 0,
+        visibility: props.collapse ? (props.when || !props.out ? 'visible' : 'hidden') : void 0,
+      },
     };
     this.isListener = false;
     this.isAnimated = false;
-    this.revealHandler = debounce(this.reveal.bind(this), 66);
+    this.revealHandler = debounce(this.reveal.bind(this, this.props), 66);
     this.resizeHandler = debounce(this.resize.bind(this), 500);
     this.saveRef = el => this.el = el;
   }
@@ -106,8 +106,8 @@ class RevealBase extends React.Component {
   //  );
   //}
 
-  animationEnd(style) {
-    if (this.props.forever)
+  animationEnd(style, forever) {
+    if (forever)
       return;
     const handler = () => {
       if (!this || !this.el)
@@ -118,27 +118,38 @@ class RevealBase extends React.Component {
     this.el.addEventListener('animationend', handler);
   }
 
-  animate() {
+  animate(props) {
     this.clean();
-    if(this.props.effect)
+    if(props.effect)
       this.setState({ legacyMode: true });
     else {
-      const inOut = this.props[this.props.when || !this.props.out ?'in':'out'],
-            animation = this.props.out||this.props.when
-            ?`${inOut.animation||inOut.make()} ${this.props.duration}ms ease ${this.props.delay}ms ${this.props.forever?'infinite':this.props.count} normal both`
-            : void 0
-      ;
-      if ( this.state.style.animation === animation )
+      const inOut = props[props.when || !props.out ?'in':'out'],
+            animationName = props.out||props.when ? inOut.animation || inOut.make() : void 0;
+
+            //animation = props.out||props.when
+            //?`${inOut.animation||inOut.make()} ${props.duration}ms ease ${props.delay}ms ${props.forever?'infinite':props.count} normal both`
+            //: void 0
+            //;
+      if ( this.state.style.animationName === animationName )
         return;
-      this.setState({ style: { animation, visibility: 'visible', ...inOut.style } });
-      if (!this.props.out || (this.props.when&&'spy' in this.props))
-        this.animationEnd({ animation: void 0, visibility: 'visible' });
-      else if(!this.props.when)
-        this.animationEnd({ maxHeight: this.props.collapse? 0 : void 0, visibility: 'hidden' });
+      this.setState({ style: {
+        animationName,
+        animationDuration: `${props.duration}ms`,
+        animationDelay: `${props.delay}ms`,
+        animationIterationCount: props.forever?'infinite':props.count,
+        animationFillMode: 'both',
+        visibility: 'visible',
+        ...inOut.style
+      } });
+      if (!props.out || (props.when&&'spy' in props))
+        this.animationEnd({ animation: void 0, visibility: 'visible' }, props.forever);
+      else if(!props.when)
+        this.animationEnd({ visibility: 'hidden' }, props.forever);
+        //this.animationEnd({ maxHeight: props.collapse? 0 : void 0, visibility: 'hidden' }, props.forever);
     }
     this.isAnimated = true;
-    if (this.props.onReveal && this.props.when)
-      this.props.onReveal();
+    if (props.onReveal && props.when)
+      props.onReveal();
   }
 
   clean() {
@@ -157,39 +168,31 @@ class RevealBase extends React.Component {
     ssr && disableSsr();
   }
 
-  componentDidUpdate({ when, spy }) {
-    if ( (when !== this.props.when ) || (spy !== this.props.spy)) {
-      this.isAnimated = false;
-      this.reveal();
-      //this.props.when?this.reveal():this.conceal();
-    }
-  }
-
-  listen() {
-    if (!this.isListener && !this.props.force ) {
+  listen(force) {
+    if (!this.isListener && !force ) {
       this.isListener = true;
       window.addEventListener('scroll', this.revealHandler);
       window.addEventListener('orientationchange', this.revealHandler);
       window.document.addEventListener("visibilitychange", this.revealHandler);
       window.addEventListener('resize', this.resizeHandler);
     }
-    return this;
+    //return this;
   }
 
-  reveal() {
+  reveal(props) {
     if (!this||!this.el) return;
     if ( !this.isAnimated ) {
-      if ( this.props.force || this.inViewport() ) {
+      if ( props.force || this.inViewport() ) {
         if (this.start) {
           this.hide();
-          this.listen();
+          this.listen(props.force);
           this.start(this.step);
           return;
         }
-        this.animate();
+        this.animate(props);
       }
       else
-        this.listen();
+        this.listen(props.force);
     }
   }
 
@@ -204,7 +207,7 @@ class RevealBase extends React.Component {
       window.setTimeout(this.reveal.bind(this), 1000);
     }
     else if(this.props.when)
-      this.reveal();
+      this.reveal(this.props);
   }
 
   cascade(children) {
@@ -231,25 +234,73 @@ class RevealBase extends React.Component {
     return newChildren;
   }
 
+  componentWillReceiveProps (props) {
+    if (props.collapse && props.when && !this.state.emulation)
+      this.setState({ emulation: 1 });
+    if ( (props.when !== this.props.when ) || (props.spy !== this.props.spy)) {
+      this.isAnimated = false;
+      this.reveal(props);
+    }
+  }
+
+  componentDidUpdate({ when, spy }, { emulation }) {
+    if (this.state.emulation&&!emulation)
+      window.setTimeout( () => raf( () =>
+        this.setState({ emulation: 2 }, () => window.setTimeout( () =>
+          raf( () => this.setState({ emulation: 0 }) ), 0)
+        )
+      ), 0);
+  }
+
+  collapse(style) {
+    if (this.props.collapse&&this.props.out&&!this.state.style.transition)
+      switch (this.state.emulation) {
+        case 1:
+          return {...style, top: '-1000px', left:'-1000px', position: 'absolute', visibility: 'hidden'};
+        case 2:
+          this.height = this.el.offsetHeight;
+          return {...style, height: 0, visibility: 'hidden' };
+        default:
+          const delta = this.props.duration>>2,
+                duration = this.props.when ? delta : this.props.duration - delta,
+                delay = this.props.delay + (this.props.when ? 0 : delta);
+          //const delta = this.props.duration>>2,
+          //      duration = delta,
+          //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
+          return {...style,
+            height: this.props.when ? ( this.height ? this.height : void 0 ) : 0,
+            //display: this.props.when ? void 0 : 'none',
+            transition: `height ${duration}ms ease ${delay}ms`,
+          };
+      }
+    return style;
+  }
+
   render() {
+    //console.log('render:', this.state, this.props.when, this.cc++);
     const { tag: TagName, id, children, style, className } = this.props,
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
     let newStyle, newChildren = false;
     if (!this.state.legacyMode) {
-       newStyle = {...style, ...this.state.style};
-      if (this.props.cascade && children && this.state.style.animation) {
+       newStyle = {...style, ...(this.state.emulation ? void 0 : this.state.style) };
+       //newStyle = {...style, ...( this.state.emulation ? void 0 : this.state.style )};
+      if (this.props.cascade && children && this.state.style.animationName /*&& !('collapse' in this.props)*/) {
         newChildren = this.cascade(children);
-        newStyle.animation = void 0;
+        //if (!this.props.when)console.log(newChildren);
+        //if (!this.props.when&&newChildren)console.log(...newChildren.map( el => el.props.style.animationDuration));
+        newStyle.animationName = void 0;
       }
     }
-    return <TagName
+    return (
+      <TagName
         id={id}
         {...(this.props.props||void 0)}
         className={newClass}
-        style={this.state.legacyMode?style:newStyle}
+        style={this.state.legacyMode?style:this.collapse(newStyle)}//this.collapse(newStyle)}
         children={newChildren||children}
         ref={this.saveRef}
-    />;
+      />
+    );
   }
 
 }
