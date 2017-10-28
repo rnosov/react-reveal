@@ -2,7 +2,7 @@
  * Flash React Component
  *
  * Copyright © Roman Nosov 2017
- * CSS Effect - Copyright (c) 2016 Daniel Eden 
+ * Original CSS Effect - Copyright (c) 2016 Daniel Eden
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
@@ -32,16 +32,16 @@ from, 50%, to {
 `;
 
 function Flash({ out, ...props }, context) {
-  
+
   function factory(reverse) {
-    
+
     function make() {
-      return animation(rule);  
+      return animation(rule);
     }
-    
-    return reverse ? false : { make }; 
+
+    return reverse ? false : { make };
   }
-  
+
   return context
     ? <Reveal {...props} in={factory(false)} out={factory(true)} />
     : factory(out)

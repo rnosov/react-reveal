@@ -22,19 +22,19 @@ const
   };
 
 function Roll({ out, ...props }, context) {
-  
+
   function factory(reverse) {
-    
+
     function make() {
       return animation(`
-      	${!reverse?'from':'to'} {${props.collapse?`max-height:0;`:''}opacity: 0;transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);}
-				${reverse?'from':'to'} {${props.collapse?`max-height:${props.collapse};`:''}opacity: 1;transform: none}
-			`);  
+      	${!reverse?'from':'to'} {opacity: 0;transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);}
+				${reverse?'from':'to'} {opacity: 1;transform: none}
+			`);
     }
-    
-    return { make }; 
+
+    return { make };
   }
-  
+
   return context
     ? <Reveal {...props} in={factory(false)} out={factory(true)} />
     : factory(out)

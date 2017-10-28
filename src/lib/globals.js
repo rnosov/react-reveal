@@ -6,8 +6,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
+import {version} from 'react';
 
-export const namespace = 'react-reveal', raf = window.requestAnimationFrame;
+export const namespace = 'react-reveal', is16 = parseInt(version, 10) >= 16;
 export let ssr = true, disableSsr = () => ssr = false, globalHide = false;
 let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floor(Math.random() * 1000000000000000)}-`;
 

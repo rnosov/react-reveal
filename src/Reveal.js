@@ -8,16 +8,16 @@
  */
 import React from 'react';
 import { string, object, number, bool, func, node, any, oneOfType, instanceOf } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade, raf } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, cascade, is16 } from './lib/globals';
 import Step from './lib/Step';
 import debounce from './lib/debounce';
 
 const
   propTypes = {
-    when: oneOfType([bool, instanceOf(Step)]),
+    when: oneOfType([ bool, instanceOf(Step) ]),
     spy: any,
     effect: string,
-    collapse: string,
+    collapse: bool,
     duration: number,
     delay: number,
     count: number,
@@ -31,7 +31,7 @@ const
     onReveal: func,
     children: node.isRequired,
     in: object,
-    out: oneOfType([object, bool]),
+    out: oneOfType([ object, bool ]),
   },
   defaultProps = {
     duration: 1000,
@@ -96,13 +96,15 @@ class RevealBase extends React.Component {
   animationEnd(style, forever) {
     if (forever)
       return;
+    const el = this.finalEl || this.el;
     const handler = () => {
-      if (!this || !this.el)
+      if (!this || !el)
         return;
-      this.el.removeEventListener('animationend', handler);
-      this.setState({ style });
+      el.removeEventListener('animationend', handler);
+      this.isAnimated = false;
+      this.setState( { style });
     };
-    this.el.addEventListener('animationend', handler);
+    el.addEventListener('animationend', handler);
   }
 
   animate(props) {
@@ -200,7 +202,7 @@ class RevealBase extends React.Component {
         else
           newChildren = React.Children.toArray(children);
     const count = newChildren.length - 1,
-          total =  this.props.duration + (typeof this.props.cascade === 'boolean' ? 1000 : this.props.cascade);
+          total =  this.props.duration + ( this.props.cascade === true ? 1000 : this.props.cascade);
     //let i = reverse ? count : 0;
     let i = 0;
     newChildren = newChildren.map( child =>
@@ -210,51 +212,55 @@ class RevealBase extends React.Component {
           ...this.state.style,
           animationDuration: Math.round(cascade( /*reverse ? i-- : i++ */i++,0 ,count, this.props.duration, total)) + 'ms',
         },
-        //ref: i === count? (el => this.finalEl = el) : void 0,
+        ref: i === count? (el => this.finalEl = el) : void 0,
       }));
     return newChildren;
   }
 
   componentWillReceiveProps (props) {
-    if (props.collapse && props.when && !this.state.emulation)
-      this.setState({ emulation: 1 });
     if ( (props.when !== this.props.when ) || (props.spy !== this.props.spy)) {
       this.isAnimated = false;
       this.reveal(props);
     }
   }
 
-  componentDidUpdate({ when, spy }, { emulation }) {
-    if (this.state.emulation&&!emulation)
-      window.setTimeout( () => raf( () =>
-        this.setState({ emulation: 2 }, () => window.setTimeout( () =>
-          raf( () => this.setState({ emulation: 0 }) ), 0)
-        )
-      ),0);
+  dummy(el) {
+    if (this.props.collapse) {
+      const arr = [
+        <el.type {...el.props}  key={1} ref={this.saveRef} />,
+        <el.type {...el.props}  key={2} ref={ el => this.dummyEl = el } style={{
+          ...el.props.style,
+          position:'fixed',
+          left:'-1000em',
+          top:'-1000em',
+          height: 'auto',
+          display: 'block',
+          animationName: 'none',
+          animationDuration: '0s',
+          transition: 'none',
+          visibility: 'hidden',
+        }} />
+      ];
+      return is16 ? arr : <span>{arr}</span>;
+    }
+    return el;
   }
-
+      //    //const delta = this.props.duration>>2,
+      //    //      duration = delta,
+      //    //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
   collapse(style) {
-    if (this.props.collapse&&this.props.out&&!this.state.style.transition)
-      switch (this.state.emulation) {
-        case 1:
-          return {...style, left:'-1000px', top:'-1000px', position: 'fixed', visibility: 'hidden', display: 'block'};
-        case 2:
-          this.height = this.el.offsetHeight;
-          return {...style, height: 0, visibility: 'hidden', display: 'block' };
-        default:
-          const delta = this.props.duration>>2,
-                duration = this.props.when ? delta : this.props.duration - delta,
-                delay = this.props.delay + (this.props.when ? 0 : delta);
-          //const delta = this.props.duration>>2,
-          //      duration = delta,
-          //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
-          return {...style,
-            height: this.props.when ? ( this.height ? this.height : void 0 ) : 0,
-            display: 'block',
-            visibility: this.props.when || !this.props.out ? 'visible' : 'hidden',
-            transition: `height ${duration}ms ease ${delay}ms`,
-          };
-      }
+    if (this.props.collapse&&this.props.out&&!this.state.style.transition) {
+      const total = this.props.duration + (this.props.cascade ? ( this.props.cascade === true ? 1000 : this.props.cascade) : 0),
+            delta = total>>2,
+            duration = this.props.when ? delta : total - delta,
+            delay = this.props.delay + (this.props.when ? 0 : delta);
+      return {
+        ...style,
+        height: (!this.props.when ? 0 : this.dummyEl.offsetHeight),
+        visibility: this.props.when || this.isAnimated ? 'visible' : 'hidden',
+        transition: `height ${duration}ms ease ${delay}ms`,
+      };
+    }
     return style;
   }
 
@@ -263,18 +269,18 @@ class RevealBase extends React.Component {
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
     let newStyle, newChildren = false;
     if (!this.state.legacyMode) {
-       newStyle = {...style, ...(this.state.emulation ? void 0 : this.state.style) };
-      if (this.props.cascade && !this.state.emulation && children && this.state.style.animationName) {
+       newStyle = {...style, ...(this.collapse(this.state.style)) };
+      if (this.props.cascade && children && this.state.style.animationName) {
         newChildren = this.cascade(children);
         newStyle.animationName = void 0;
       }
     }
-    return (
+    return this.dummy(
       <TagName
         id={id}
         {...(this.props.props||void 0)}
         className={newClass}
-        style={this.state.legacyMode?style:this.collapse(newStyle)}
+        style={this.state.legacyMode?style:newStyle}
         children={newChildren||children}
         ref={this.saveRef}
       />
