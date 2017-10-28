@@ -6,9 +6,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-import {version} from 'react';
+//import {version} from 'react';
 
-export const namespace = 'react-reveal', is16 = parseInt(version, 10) >= 16;
+export const namespace = 'react-reveal', is16 = false;//parseInt(version, 10) >= 16;
 export let ssr = true, disableSsr = () => ssr = false, globalHide = false;
 let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floor(Math.random() * 1000000000000000)}-`;
 
@@ -40,7 +40,7 @@ export function animation(effect) {
 
 function hideAll() {
   window.removeEventListener('scroll', hideAll, true);
-  insertRule(`.${namespace} { visibility: hidden; }`);
+  insertRule(`.${namespace} { opacity: 0; }`);
   window.removeEventListener('orientationchange', hideAll, true);
   window.document.removeEventListener('visibilitychange', hideAll);
   globalHide = true;

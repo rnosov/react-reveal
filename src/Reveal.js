@@ -56,7 +56,7 @@ class RevealBase extends React.Component {
     };
     this.isListener = false;
     this.isAnimated = false;
-    this.revealHandler = debounce(this.reveal.bind(this, this.props), 66);
+    this.revealHandler = debounce(this.reveal.bind(this, false), 66);
     this.resizeHandler = debounce(this.resize.bind(this), 500);
     this.saveRef = el => this.el = el;
   }
@@ -80,14 +80,14 @@ class RevealBase extends React.Component {
 
   hide() {
     if (this.props.out)
-      this.setState({ style: { visibility: 'hidden' } });
+      this.setState({ style: { opacity: 0 } });
   }
 
   resize() {
     if (!this||!this.el||!this.props.when) return;
     if ( !this.isAnimated && (this.props.force || this.inViewport()) ) {
       this.isAnimated = true;
-      this.setState({ style: { visibility: this.props.when || !this.props.out ? 'visible' : 'hidden' } });
+      this.setState({ style: { opacity: this.props.when || !this.props.out ? 1 : 0 } });
       if (this.props.onReveal && this.props.when)
         this.props.onReveal();
     }
@@ -116,17 +116,20 @@ class RevealBase extends React.Component {
             animationName = props.out||props.when ? inOut.animation || inOut.make() : void 0;
       if ( this.state.style.animationName === animationName )
         return;
+      this.isAnimated = true;
       this.setState({ style: {
         animationName,
         animationDuration: `${props.duration}ms`,
         animationDelay: `${props.delay}ms`,
         animationIterationCount: props.forever?'infinite':props.count,
         animationFillMode: 'both',
-        visibility: 'visible',
+        opacity: 1,
+        //visibility: 'visible',
         ...inOut.style
       } });
       if (!props.out || (props.when&&'spy' in props))
-        this.animationEnd({ animation: void 0, visibility: 'visible' }, props.forever);
+        this.animationEnd({ animationName: void 0 }, props.forever);
+        //this.animationEnd({ animation: void 0, opacity: 1 }, props.forever);
       else if(!props.when)
         this.animationEnd({ visibility: 'hidden' }, props.forever);
     }
@@ -164,6 +167,8 @@ class RevealBase extends React.Component {
 
   reveal(props) {
     if (!this||!this.el) return;
+    if (!props)
+      props = this.props;
     if ( !this.isAnimated ) {
       if ( props.force || this.inViewport() ) {
         if (this.start) {
@@ -230,15 +235,15 @@ class RevealBase extends React.Component {
         <el.type {...el.props}  key={1} ref={this.saveRef} />,
         <el.type {...el.props}  key={2} ref={ el => this.dummyEl = el } style={{
           ...el.props.style,
-          position:'fixed',
-          left:'-1000em',
-          top:'-1000em',
+          position:'absolute',
+          left:'-9999em',
+          top:'-9999em',
           height: 'auto',
           display: 'block',
           animationName: 'none',
           animationDuration: '0s',
           transition: 'none',
-          visibility: 'hidden',
+          opacity: 0,
         }} />
       ];
       return is16 ? arr : <span>{arr}</span>;
@@ -256,9 +261,9 @@ class RevealBase extends React.Component {
             delay = this.props.delay + (this.props.when ? 0 : delta);
       return {
         ...style,
-        height: (!this.props.when ? 0 : this.dummyEl.offsetHeight),
-        visibility: this.props.when || this.isAnimated ? 'visible' : 'hidden',
-        transition: `height ${duration}ms ease ${delay}ms`,
+        height: this.isAnimated?(!this.props.when ? 0 : this.dummyEl.offsetHeight):0,
+        visibility: this.isAnimated ? 'visible' : 'hidden',//(this.props.when ? 'visible' : 'hidden'),
+        transition: this.isAnimated?`height ${duration}ms ease ${delay}ms`:void 0,
       };
     }
     return style;
