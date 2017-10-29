@@ -27,6 +27,7 @@ const
     style: object,
     props: object,
     force: bool,
+    bypass: bool,
     fraction: number,
     onReveal: func,
     children: node.isRequired,
@@ -49,15 +50,16 @@ class RevealBase extends React.Component {
     this.state = {
       legacyMode: false,
       style: {
-        //maxHeight: props.collapse?(this.props.when ? this.props.collapse : 0) : void 0,
-        //visibility: props.collapse ? (props.when || !props.out ? 'visible' : 'hidden') : void 0,
-        //display: props.collapse && !props.when && props.out? 'none' : void 0,
+        height: props.collapse ? 0 : void 0,
+        visibility: props.collapse ? (props.when || !props.out ? 'visible' : 'hidden') : void 0,
+        opacity: !props.when && props.out ? 0 : void 0,
       },
     };
     this.isListener = false;
-    this.isAnimated = false;
+    this.isShown = !!this.props.bypass;
     this.revealHandler = debounce(this.reveal.bind(this, false), 66);
     this.resizeHandler = debounce(this.resize.bind(this), 500);
+    this.invisible = debounce(this.invisible, 200);
     this.saveRef = el => this.el = el;
   }
 
@@ -84,16 +86,23 @@ class RevealBase extends React.Component {
   }
 
   resize() {
-    if (!this||!this.el||!this.props.when) return;
-    if ( !this.isAnimated && (this.props.force || this.inViewport()) ) {
-      this.isAnimated = true;
+    if (!this||!this.el||!this.props.when)
+      return;
+    if ( this.inViewport() ) {
+      this.clean();
+      this.isShown = !!this.props.when;
       this.setState({ style: { opacity: this.props.when || !this.props.out ? 1 : 0 } });
       if (this.props.onReveal && this.props.when)
         this.props.onReveal();
     }
   }
 
-  animationEnd(style, forever) {
+  invisible() {
+    if (this && !this.isShown)
+      this.setState( { style: { ...this.state.style, visibility: 'hidden' } });
+  }
+
+  animationEnd(func, forever) {
     if (forever)
       return;
     const el = this.finalEl || this.el;
@@ -101,46 +110,59 @@ class RevealBase extends React.Component {
       if (!this || !el)
         return;
       el.removeEventListener('animationend', handler);
-      this.isAnimated = false;
-      this.setState( { style });
+      func.call(this);
     };
     el.addEventListener('animationend', handler);
   }
 
+      //    //const delta = this.props.duration>>2,
+      //    //      duration = delta,
+      //    //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
+  collapse(style, props) {
+    if (props.collapse&&props.out) {//&&!this.state.style.transition) {
+      const total = props.duration + (props.cascade ? ( props.cascade === true ? 1000 : props.cascade) : 0),
+            delta = total>>2,
+            duration = props.when ? delta : total - delta,
+            delay = props.delay + (props.when ? 0 : delta);
+      return {
+        ...style,
+        height: props.when ? this.dummyEl.offsetHeight : 0,
+        transition: `height ${duration}ms ease ${delay}ms`,
+      };
+    }
+    return style;
+  }
+
   animate(props) {
+    if (!this || !this.el)
+      return;
     this.clean();
     if(props.effect)
       this.setState({ legacyMode: true });
     else {
       const inOut = props[props.when || !props.out ?'in':'out'],
             animationName = props.out||props.when ? inOut.animation || inOut.make() : void 0;
-      if ( this.state.style.animationName === animationName )
+      if ( this.isShown === !!props.when )//&&!('spy' in props))
         return;
-      this.isAnimated = true;
-      this.setState({ style: {
+      this.isShown = !!props.when;
+      this.setState({ style: this.collapse({
         animationName,
         animationDuration: `${props.duration}ms`,
         animationDelay: `${props.delay}ms`,
-        animationIterationCount: props.forever?'infinite':props.count,
+        animationIterationCount: props.forever ? 'infinite' : props.count,
         animationFillMode: 'both',
         opacity: 1,
-        //visibility: 'visible',
         ...inOut.style
-      } });
-      if (!props.out || (props.when&&'spy' in props))
-        this.animationEnd({ animationName: void 0 }, props.forever);
-        //this.animationEnd({ animation: void 0, opacity: 1 }, props.forever);
-      else if(!props.when)
-        this.animationEnd({ visibility: 'hidden' }, props.forever);
+      }, props) });
+      if(!props.when && props.out)
+        this.animationEnd( this.invisible, props.forever);
     }
-    this.isAnimated = true;
     if (props.onReveal && props.when)
       props.onReveal();
   }
 
   clean() {
     if (this.isListener) {
-      //const handler = this[this.isListener === -1?'concealHandler':'revealHandler'];
       window.removeEventListener('scroll', this.revealHandler);
       window.removeEventListener('orientationchange', this.revealHandler);
       window.document.removeEventListener('visibilitychange', this.revealHandler);
@@ -154,45 +176,51 @@ class RevealBase extends React.Component {
     ssr && disableSsr();
   }
 
-  listen(force) {
-    if (!this.isListener && !force ) {
+  listen() {
+    if (!this.isListener) {
       this.isListener = true;
       window.addEventListener('scroll', this.revealHandler);
       window.addEventListener('orientationchange', this.revealHandler);
       window.document.addEventListener("visibilitychange", this.revealHandler);
       window.addEventListener('resize', this.resizeHandler);
     }
-    //return this;
   }
 
   reveal(props) {
     if (!this||!this.el) return;
     if (!props)
       props = this.props;
-    if ( !this.isAnimated ) {
-      if ( props.force || this.inViewport() ) {
-        if (this.start) {
-          this.hide();
-          this.listen(props.force);
-          this.start(this.step);
-          return;
-        }
-        this.animate(props);
+    if ( this.inViewport() ) {
+      if (this.start) {
+        this.hide();
+        this.listen();
+        this.start(this.step);
+        return;
+      }
+      if ( props.when && this.isShown && 'spy' in props ){
+        this.isShown = false;
+        this.setState({ style: {} });
+        window.setTimeout( () => this.animate.call(this, props), 200 );
       }
       else
-        this.listen(props.force);
+        this.animate(props);
     }
+    else
+      this.listen();
   }
 
   componentDidMount() {
-    if (!this.el) return;
+    if (!this.el || this.props.bypass)
+      return;
+    if (this.props.force)
+      return this.animate(this.props);
     if (this.props.when instanceof Step)
       this.props.when.push(this);
     else if (this.props.step) // todo: remove in 0.8.0
       this.props.step.push(this);
     if ( ssr && (this.props.out||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
-      window.setTimeout(this.reveal.bind(this), 1000);
+      window.setTimeout(this.revealHandler, 1000);
     }
     else if(this.props.when)
       this.reveal(this.props);
@@ -223,18 +251,21 @@ class RevealBase extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if ( (props.when !== this.props.when ) || (props.spy !== this.props.spy)) {
-      this.isAnimated = false;
+    if ( (props.when !== this.props.when) || (props.spy !== this.props.spy))
       this.reveal(props);
-    }
   }
 
   dummy(el) {
-    if (this.props.collapse) {
-      const arr = [
-        <el.type {...el.props}  key={1} ref={this.saveRef} />,
-        <el.type {...el.props}  key={2} ref={ el => this.dummyEl = el } style={{
-          ...el.props.style,
+    const arr = [
+      el,
+      <el.type
+        {...(this.props.props||void 0)}
+        className={this.props.className}
+        children={this.props.children}
+        key={2}
+        ref={ el => this.dummyEl = el }
+        style={{
+          ...this.props.style,
           position:'absolute',
           left:'-9999em',
           top:'-9999em',
@@ -244,52 +275,32 @@ class RevealBase extends React.Component {
           animationDuration: '0s',
           transition: 'none',
           opacity: 0,
-        }} />
-      ];
-      return is16 ? arr : <span>{arr}</span>;
-    }
-    return el;
-  }
-      //    //const delta = this.props.duration>>2,
-      //    //      duration = delta,
-      //    //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
-  collapse(style) {
-    if (this.props.collapse&&this.props.out&&!this.state.style.transition) {
-      const total = this.props.duration + (this.props.cascade ? ( this.props.cascade === true ? 1000 : this.props.cascade) : 0),
-            delta = total>>2,
-            duration = this.props.when ? delta : total - delta,
-            delay = this.props.delay + (this.props.when ? 0 : delta);
-      return {
-        ...style,
-        height: this.isAnimated?(!this.props.when ? 0 : this.dummyEl.offsetHeight):0,
-        visibility: this.isAnimated ? 'visible' : 'hidden',//(this.props.when ? 'visible' : 'hidden'),
-        transition: this.isAnimated?`height ${duration}ms ease ${delay}ms`:void 0,
-      };
-    }
-    return style;
+        }}
+      />
+    ];
+    return is16 ? arr : <span>{arr}</span>;
   }
 
   render() {
-    const { tag: TagName, id, children, style, className } = this.props,
+    const { tag, id, children, style, className } = this.props,
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
     let newStyle, newChildren = false;
     if (!this.state.legacyMode) {
-       newStyle = {...style, ...(this.collapse(this.state.style)) };
+       newStyle = {...style, ...this.state.style };
       if (this.props.cascade && children && this.state.style.animationName) {
         newChildren = this.cascade(children);
         newStyle.animationName = void 0;
       }
     }
-    return this.dummy(
-      <TagName
-        id={id}
-        {...(this.props.props||void 0)}
-        className={newClass}
-        style={this.state.legacyMode?style:newStyle}
-        children={newChildren||children}
-        ref={this.saveRef}
-      />
-    );
+    const el = React.createElement(tag, {
+      ...(this.props.props||void 0),
+      id,
+      className: newClass,
+      style: this.state.legacyMode ? style : newStyle,
+      key: this.props.collapse ? 1 : void 0,
+      ref: this.saveRef
+    }, newChildren||children);
+    return this.props.collapse ? this.dummy(el) : el;
   }
 
 }

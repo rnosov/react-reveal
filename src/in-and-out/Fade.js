@@ -25,16 +25,28 @@ const
 
   };
 
-function Fade({out, left, right, up, down, top, bottom, big, ...props}, context) {
+function Fade({out, left, right, up, down, top, bottom, big, opposite, ...props}, context) {
 
   function factory(reverse) {
 
     function make() {
-      const
-        xdist = big ? '2000px' : '100%', ydist =  big ? '2000px' : '100%';
-        return animation(
-          `${!reverse?'from':'to'} {opacity: 0;${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${xdist}`:(right?xdist:'0')}, ${down||top?`-${ydist}`:(up||bottom?ydist:'0')}, 0);` : ''}}
-            ${reverse?'from':'to'} {opacity: 1;transform: none;} `);
+      const transform = left||right||up||down||top||bottom;
+      let x, y, dist;
+      if (transform) {
+        dist = big ? '2000px' : '100%';
+        if (opposite && reverse) {
+          x = left ? dist : ( right ? `-${dist}` : '0' );
+          y = down || top ? dist : ( up || bottom ? `-${dist}` : '0' ) ;
+        }
+        else {
+          x = left ? `-${dist}` : ( right ? dist : '0' );
+          y = down || top ? `-${dist}` : ( up || bottom ? dist : '0' );
+        }
+      }
+      return animation(
+        `${!reverse?'from':'to'} {opacity: 0;${ transform ? ` transform: translate3d(${x}, ${y}, 0);` : ''}}
+          ${reverse?'from':'to'} {opacity: 1;transform: none;} `
+      );
     }
 
     return { reverse: left, make };
