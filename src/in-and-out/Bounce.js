@@ -20,35 +20,56 @@ const
     right: bool,
     top: bool,
     bottom: bool,
-    big: bool,
+    opposite: bool,
   },
   defaultProps = {
 
   };
 
-function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
+function Bounce({out, left, right, up, down, top, bottom, opposite, ...props}, context) {
 
   function factory(reverse) {
 
     function make() {
-      let rule;
-      if (left||right||up||down||top||bottom)
-        rule= reverse
+      const
+        transformX = left || right,
+        transformY = top || bottom || up || down,
+        transform = transformX || transformY;
+      let rule, x0, y0, x20, y20, y40, x60, y60, x75, y75, x90, y90, x100, y100;
+      if (reverse) {
+          x20  = transformX ? ( (opposite?left:right) ?'-':'') + '20px' : 0;
+          y20  = transformY ? ( (opposite?(down||top):(up||bottom))?'':'-') + '10px' : '0';
+          y40  = ( down||top ? (opposite?'-':''):(opposite?'':'-')) + '20px';
+          x100 = transformX ? ( (opposite?right:left) ? '-' :'' ) + '2000px':'0';
+          y100 = transformY ? ( (opposite?(up||bottom):(down||top))?'-':'') +'2000px':'0';
+      }
+      else {
+        x0  = transformX ? ((left?'-':'') + '3000px'):'0';
+        y0  = transformY ? ((down||top?'-':'') + '3000px'):'0';
+        x60 = transformX ? ((right?'-':'') + '25px'):'0';
+        y60 = transformY ? ((up||bottom?'-':'') + '25px'):'0';
+        x75 = transformX ? ((left?'-':'') + '10px'):'0';
+        y75 = transformY ? ((down||top?'-':'') + '10px'):'0';
+        x90 = transformX ? ((right?'-':'') + '5px'):'0';
+        y90 = transformY ? ((up||bottom?'-':'') + '5px'):'0';
+      }
+
+      if (transform)
+        rule = reverse
           ?`
             20% {
-
-              transform: translate3d(${left||right ? (right?'-':'') + '20px' : 0 }, ${down||top||up||bottom? (up||bottom?'-':'') + '10px' : '0' }, 0);
+              transform: translate3d(${x20}, ${y20}, 0);
               }
-            ${ top||bottom||up||down
+            ${ transformY
               ?`40%, 45% {
                 opacity: 1;
-                transform: translate3d(0, ${down||top?'-':''}20px, 0);
+                transform: translate3d(0, ${y40}, 0);
               }`
               :''
             }
               to {
                 opacity: 0;
-                transform: translate3d(${left||right ? (left ? '-' :'' ) + '2000px':'0'}, ${down||top||up||bottom? (down||top?'-':'') +'2000px':'0'}, 0);
+                transform: translate3d(${x100}, ${y100}, 0);
             }
           `
           :`from, 60%, 75%, 90%, to {
@@ -57,24 +78,23 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
 
           from {
             opacity: 0;
-            transform: translate3d(${left||right? ((left?'-':'') + '3000px'):'0'}, ${down||top||up||bottom? ((down||top?'-':'') + '3000px'):'0'}, 0);
+            transform: translate3d(${x0}, ${y0}, 0);
           }
 
           60% {
             opacity: 1;
-            transform: translate3d(${left||right? ((right?'-':'') + '25px'):'0'}, ${down||top||up||bottom? ((up||bottom?'-':'') + '25px'):'0'}, 0);
+            transform: translate3d(${x60}, ${y60}, 0);
           }
 
           75% {
-            transform: translate3d(${left||right? ((left?'-':'') + '10px'):'0'}, ${down||top||up||bottom? ((down||top?'-':'') + '10px'):'0'}, 0);
+            transform: translate3d(${x75}, ${y75}, 0);
           }
 
           90% {
-            transform: translate3d(${left||right? ((right?'-':'') + '5px'):'0'}, ${down||top||up||bottom? ((up||bottom?'-':'') + '5px'):'0'}, 0);
+            transform: translate3d(${x90}, ${y90}, 0);
           }
 
           to {
-
             transform: none;
           }`;
       else
@@ -122,6 +142,7 @@ function Bounce({out, left, right, up, down, top, bottom, ...props}, context) {
             opacity: 1;
             transform: scale3d(1, 1, 1);
           }`;
+      if (reverse) console.log(rule);
       return animation(rule);
     }
 

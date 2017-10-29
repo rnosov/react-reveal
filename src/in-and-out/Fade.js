@@ -20,6 +20,7 @@ const
     top: bool,
     bottom: bool,
     big: bool,
+    opposite: bool,
   },
   defaultProps = {
 
@@ -31,24 +32,17 @@ function Fade({out, left, right, up, down, top, bottom, big, opposite, ...props}
 
     function make() {
       const transform = left||right||up||down||top||bottom;
-      let x, y, dist;
+      let x, y;
       if (transform) {
-        dist = big ? '2000px' : '100%';
-        if (opposite && reverse) {
-          x = left ? dist : ( right ? `-${dist}` : '0' );
-          y = down || top ? dist : ( up || bottom ? `-${dist}` : '0' ) ;
-        }
-        else {
-          x = left ? `-${dist}` : ( right ? dist : '0' );
-          y = down || top ? `-${dist}` : ( up || bottom ? dist : '0' );
-        }
+        const dist = big ? '2000px' : '100%', change = opposite && reverse;
+        x = left ? (change ? '':'-') + dist : ( right ? (change ? '-':'') + dist : '0' );
+        y = down || top ? (change ? '':'-') + dist : ( up || bottom ? (change ? '-':'') + dist : '0' ) ;
       }
       return animation(
         `${!reverse?'from':'to'} {opacity: 0;${ transform ? ` transform: translate3d(${x}, ${y}, 0);` : ''}}
-          ${reverse?'from':'to'} {opacity: 1;transform: none;} `
+         ${ reverse?'from':'to'} {opacity: 1;transform: none;} `
       );
     }
-
     return { reverse: left, make };
   }
 

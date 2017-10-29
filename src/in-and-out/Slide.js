@@ -20,21 +20,28 @@ const
     top: bool,
     bottom: bool,
     big: bool,
+    opposite: bool,
   },
   defaultProps = {
 
   };
 
-function Slide({out, left, right, up, down, top, bottom, big, ...props}, context) {
+function Slide({out, left, right, up, down, top, bottom, big, opposite, ...props}, context) {
 
   function factory(reverse) {
 
     function make() {
-      const
-        xdist = big ? '2000px' : '100%', ydist =  big ? '2000px' : props.collapse || '100%';
-        return animation(
-          `${!reverse?'from':'to'} {${left||right||up||down||top||bottom ? ` transform: translate3d(${left?`-${xdist}`:(right?xdist:'0')}, ${down||top?`-${ydist}`:(up||bottom?ydist:'0')}, 0);` : ''}}
-            ${reverse?'from':'to'} {transform: none;} `);
+      const transform = left||right||up||down||top||bottom;
+      let x, y;
+      if (transform) {
+        const dist = big ? '2000px' : '100%', change = opposite && reverse;
+        x = left ? (change ? '':'-') + dist : ( right ? (change ? '-':'') + dist : '0' );
+        y = down || top ? (change ? '':'-') + dist : ( up || bottom ? (change ? '-':'') + dist : '0' ) ;
+      }
+      return animation(
+        `${!reverse?'from':'to'} {${ transform ? ` transform: translate3d(${x}, ${y}, 0);` : ''}}
+         ${ reverse?'from':'to'} {transform: none;} `
+      );
     }
 
     return { reverse: left, make };

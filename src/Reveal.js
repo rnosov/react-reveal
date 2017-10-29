@@ -8,7 +8,7 @@
  */
 import React from 'react';
 import { string, object, number, bool, func, node, any, oneOfType, instanceOf } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade, is16 } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, cascade } from './lib/globals';
 import Step from './lib/Step';
 import debounce from './lib/debounce';
 
@@ -17,7 +17,7 @@ const
     when: oneOfType([ bool, instanceOf(Step) ]),
     spy: any,
     effect: string,
-    collapse: bool,
+    collapse: oneOfType([bool, string]),
     duration: number,
     delay: number,
     count: number,
@@ -59,7 +59,7 @@ class RevealBase extends React.Component {
     this.isShown = !!this.props.bypass;
     this.revealHandler = debounce(this.reveal.bind(this, false), 66);
     this.resizeHandler = debounce(this.resize.bind(this), 500);
-    this.invisible = debounce(this.invisible, 200);
+    this.invisible = debounce(this.invisible, 500);
     this.saveRef = el => this.el = el;
   }
 
@@ -126,7 +126,7 @@ class RevealBase extends React.Component {
             delay = props.delay + (props.when ? 0 : delta);
       return {
         ...style,
-        height: props.when ? this.dummyEl.offsetHeight : 0,
+        height: props.when ? ( props.collapse === true ? this.dummyEl.offsetHeight : props.collapse) : 0,
         transition: `height ${duration}ms ease ${delay}ms`,
       };
     }
@@ -256,6 +256,8 @@ class RevealBase extends React.Component {
   }
 
   dummy(el) {
+    if (this.props.collapse !== true)
+      return el;
     const arr = [
       el,
       <el.type
@@ -278,7 +280,8 @@ class RevealBase extends React.Component {
         }}
       />
     ];
-    return is16 ? arr : <span>{arr}</span>;
+    return <span>{arr}</span>;
+    //return is16 ? arr : <span>{arr}</span>;
   }
 
   render() {

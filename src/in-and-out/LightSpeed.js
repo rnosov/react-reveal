@@ -16,19 +16,24 @@ import { animation } from '../lib/globals';
 const
   propTypes = {
     out: bool,
+    left: bool,
+    right: bool,
+    opposite: bool,
   },
   defaultProps = {
 
   };
 
-function LightSpeed({ out, ...props }, context) {
+function LightSpeed({ out, left, right, opposite, ...props }, context) {
 
   function factory(reverse) {
 
     function make() {
+      const dist = '100%', change = opposite && reverse,
+        x = left ? (change ? '':'-') + dist : ( right ? (change ? '-':'') + dist : '0' );
       const rule = !reverse
         ? `from {
-            transform: translate3d(100%, 0, 0) skewX(-30deg);
+            transform: translate3d(${x}, 0, 0) skewX(-30deg);
             opacity: 0;
           }
 
@@ -51,7 +56,7 @@ function LightSpeed({ out, ...props }, context) {
           }
 
           to {
-            transform: translate3d(100%, 0, 0) skewX(30deg);
+            transform: translate3d(${x}, 0, 0) skewX(30deg);
             opacity: 0;
           }
         `;

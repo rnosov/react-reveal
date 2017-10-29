@@ -20,20 +20,23 @@ const
     right: bool, // y
     top: bool, // x
     bottom: bool,
+    opposite: bool,
   },
   defaultProps = {
 
   };
 
-function Flip({ out, left, right, top, bottom, x, y, ...props }, context) {
+function Flip({ out, left, right, top, bottom, x, y, opposite, ...props }, context) {
 
   function factory(reverse) {
 
     function make() {
       let rule;
       if (x||y||left||right||top||bottom) {
-        const xval = x||top||bottom ? (bottom?'-':'') + '1' : '0',
-              yval = y||right||left ? (left?'-':'') +'1' : '0';
+        const
+          change = reverse && opposite,
+          xval = x||top||bottom ? (bottom?(change?'':'-'):(change?'-':'')) + '1' : '0',
+          yval = y||right||left ? (left?(change?'':'-'):(change?'-':'')) +'1' : '0';
         if (!reverse)
           rule=`from {
               transform: perspective(400px) rotate3d(${xval}, ${yval}, 0, 90deg);
