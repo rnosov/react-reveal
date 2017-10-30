@@ -6,6 +6,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
+
 import React from 'react';
 import { string, object, number, bool, func, node, any, oneOfType, instanceOf } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide, cascade } from './lib/globals';
@@ -14,7 +15,7 @@ import debounce from './lib/debounce';
 
 const
   propTypes = {
-    when: oneOfType([ bool, instanceOf(Step) ]),
+    when: bool,
     spy: any,
     effect: string,
     collapse: oneOfType([bool, string]),
@@ -23,6 +24,7 @@ const
     count: number,
     forever: bool,
     tag: string,
+    step: oneOfType([instanceOf(Step), string]),
     className: string,
     style: object,
     props: object,
@@ -41,6 +43,9 @@ const
     fraction: 0.2,
     tag: 'div',
     when: true,
+  },
+  contextTypes = {
+    stepper: object,
   };
 
 class RevealBase extends React.Component {
@@ -119,7 +124,7 @@ class RevealBase extends React.Component {
       //    //      duration = delta,
       //    //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
   collapse(style, props) {
-    if (props.collapse&&props.out) {//&&!this.state.style.transition) {
+    if (props.collapse&&props.out) {
       const total = props.duration + (props.cascade ? ( props.cascade === true ? 1000 : props.cascade) : 0),
             delta = total>>2,
             duration = props.when ? delta : total - delta,
@@ -214,10 +219,10 @@ class RevealBase extends React.Component {
       return;
     if (this.props.force)
       return this.animate(this.props);
-    if (this.props.when instanceof Step)
-      this.props.when.push(this);
-    else if (this.props.step) // todo: remove in 0.8.0
+    if (this.props.step instanceof Step)
       this.props.step.push(this);
+    else if (this.props.step && this.context.stepper)
+      this.context.stepper.get(this.props.step).push(this);
     if ( ssr && (this.props.out||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
       window.setTimeout(this.revealHandler, 1000);
@@ -310,4 +315,5 @@ class RevealBase extends React.Component {
 
 RevealBase.propTypes = propTypes;
 RevealBase.defaultProps = defaultProps;
+RevealBase.contextTypes = contextTypes;
 export default RevealBase;

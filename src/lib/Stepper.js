@@ -35,10 +35,15 @@ class Stepper {
 //else {
 //}
 	is(name) {
-		if (name in this.stepMap)//.hasOwnProperty(name))
-			return this.stepMap[name];
-		else console.warn(`Animation step ${name} is missing`);
+		return this.get(name);
 	}
+
+  get(name) {
+    if (name in this.stepMap)//.hasOwnProperty(name))
+      return this.stepMap[name];
+    else console.warn(`Animation step ${name} is missing`);
+  }
+
 
 	start(step) {
 		if (this.hasStarted) {
