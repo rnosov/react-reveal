@@ -8,9 +8,7 @@ const replace = require('gulp-replace');
 gulp.task('build', () =>
   gulp.src('./src/**/*.js')
     .pipe(flatten())
-    .pipe(replace("from './lib/debounce';", "from './debounce';"))
-    .pipe(replace("from './lib/globals';", "from './globals';"))
-    .pipe(replace("from './lib/Step';", "from './Step';"))
+    .pipe(replace("from './lib/", "from './"))
     .pipe(replace("from '../Reveal';", "from './Reveal';"))
     .pipe(replace("from '../lib/globals';", "from './globals';"))
     .pipe(babel())
@@ -21,6 +19,7 @@ gulp.task('build', () =>
 gulp.task('clean', function () {
   return gulp.src([
     './index.js',
+    './Animation.js',
     './Stepper.js',
     './Step.js',
     './globals.js',
