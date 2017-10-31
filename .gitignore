@@ -1,6 +1,8 @@
 dist
 node_modules
 npm-debug.log
+/Carousel.js
+/Skin.js
 /Animation.js
 /Spin.js
 /Bounce.js

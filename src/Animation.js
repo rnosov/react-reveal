@@ -8,13 +8,15 @@
  */
 
 import React from 'react';
-import { /*string, object, number, bool, func,  any, oneOfType, */node, object, instanceOf } from 'prop-types';
+import { string, node, object, instanceOf } from 'prop-types';
 import Stepper from './lib/Stepper';
 
 const
   propTypes = {
     steps: instanceOf(Stepper).isRequired,
     children: node.isRequired,
+    tag: string,
+    props: object,
   },
   defaultProps = {
 
@@ -39,7 +41,9 @@ class Animation extends React.Component {
   }
 
   render() {
-    return this.props.children;
+    return this.props.tag
+      ? <this.props.tag {...this.props.props}>{this.props.children}</this.props.tag>
+      : this.props.children;
   }
 
 }

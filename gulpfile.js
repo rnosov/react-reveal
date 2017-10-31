@@ -19,6 +19,8 @@ gulp.task('build', () =>
 gulp.task('clean', function () {
   return gulp.src([
     './index.js',
+    './Carousel.js',
+    './Skin.js',
     './Animation.js',
     './Stepper.js',
     './Step.js',

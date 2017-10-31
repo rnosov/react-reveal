@@ -21,20 +21,23 @@ const
     top: bool,
     bottom: bool,
     big: bool,
+    mirror: bool,
     opposite: bool,
   },
   defaultProps = {
 
   };
 
-function Roll({ out, left, right, up, down, top, bottom, big, opposite, ...props }, context) {
+function Roll({ out, left, right, up, down, top, bottom, big, mirror, opposite, ...props }, context) {
 
   function factory(reverse) {
 
     function make() {
-      const dist = big ? '2000px' : '100%', change = opposite && reverse,
-        x = left ? (change ? '':'-') + dist : ( right ? (change ? '-':'') + dist : '0' ),
-        y = down || top ? (change ? '':'-') + dist : ( up || bottom ? (change ? '-':'') + dist : '0' ) ;
+      if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
+        [left, right, top, bottom, up, down] = [right, left, bottom, top, down, up];
+      const dist = big ? '2000px' : '100%',
+        x = left ? '-' + dist : ( right ? dist : '0' ),
+        y = down || top ? '-'+ dist : ( up || bottom ? dist : '0' );
       return animation(`
       	${!reverse?'from':'to'} {opacity: 0;transform: translate3d(${x}, ${y}, 0) rotate3d(0, 0, 1, -120deg);}
 				${reverse?'from':'to'} {opacity: 1;transform: none}

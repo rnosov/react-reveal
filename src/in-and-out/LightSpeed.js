@@ -18,19 +18,22 @@ const
     out: bool,
     left: bool,
     right: bool,
+    mirror: bool,
     opposite: bool,
   },
   defaultProps = {
 
   };
 
-function LightSpeed({ out, left, right, opposite, ...props }, context) {
+function LightSpeed({ out, left, right, mirror, opposite, ...props }, context) {
 
   function factory(reverse) {
 
     function make() {
-      const dist = '100%', change = opposite && reverse,
-        x = left ? (change ? '':'-') + dist : ( right ? (change ? '-':'') + dist : '0' );
+      if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
+          [left, right] = [right, left];
+      const dist = '100%',
+        x = left ? '-' + dist : ( right ? dist : '0' );
       const rule = !reverse
         ? `from {
             transform: translate3d(${x}, 0, 0) skewX(-30deg);

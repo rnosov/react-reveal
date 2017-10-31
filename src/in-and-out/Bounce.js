@@ -20,28 +20,31 @@ const
     right: bool,
     top: bool,
     bottom: bool,
+    mirror: bool,
     opposite: bool,
   },
   defaultProps = {
 
   };
 
-function Bounce({out, left, right, up, down, top, bottom, opposite, ...props}, context) {
+function Bounce({out, left, right, up, down, top, bottom, mirror, opposite, ...props}, context) {
 
   function factory(reverse) {
 
     function make() {
+      if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
+          [left, right, top, bottom, up, down] = [right, left, bottom, top, down, up];
       const
         transformX = left || right,
         transformY = top || bottom || up || down,
         transform = transformX || transformY;
       let rule, x0, y0, x20, y20, y40, x60, y60, x75, y75, x90, y90, x100, y100;
       if (reverse) {
-          x20  = transformX ? ( (opposite?left:right) ?'-':'') + '20px' : 0;
-          y20  = transformY ? ( (opposite?(down||top):(up||bottom))?'':'-') + '10px' : '0';
-          y40  = ( down||top ? (opposite?'-':''):(opposite?'':'-')) + '20px';
-          x100 = transformX ? ( (opposite?right:left) ? '-' :'' ) + '2000px':'0';
-          y100 = transformY ? ( (opposite?(up||bottom):(down||top))?'-':'') +'2000px':'0';
+          x20  = transformX ? ( right ?'-':'') + '20px' : 0;
+          y20  = transformY ? ( up||bottom?'':'-') + '10px' : '0';
+          y40  = ( down||top ? '':'-') + '20px';
+          x100 = transformX ? ( left ? '-' :'' ) + '2000px':'0';
+          y100 = transformY ? ( down||top?'-':'') +'2000px':'0';
       }
       else {
         x0  = transformX ? ((left?'-':'') + '3000px'):'0';
@@ -142,7 +145,6 @@ function Bounce({out, left, right, up, down, top, bottom, opposite, ...props}, c
             opacity: 1;
             transform: scale3d(1, 1, 1);
           }`;
-      if (reverse) console.log(rule);
       return animation(rule);
     }
 

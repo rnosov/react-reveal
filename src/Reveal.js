@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { string, object, number, bool, func, node, any, oneOfType, instanceOf } from 'prop-types';
+import { string, object, number, bool, func, node, any, oneOfType, instanceOf, element } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide, cascade } from './lib/globals';
 import Step from './lib/Step';
 import debounce from './lib/debounce';
@@ -21,18 +21,19 @@ const
     collapse: oneOfType([bool, string]),
     duration: number,
     delay: number,
+    wait: number,
     count: number,
     forever: bool,
     tag: string,
+    el: element,
     step: oneOfType([instanceOf(Step), string]),
     className: string,
     style: object,
-    props: object,
     force: bool,
     bypass: bool,
     fraction: number,
     onReveal: func,
-    children: node.isRequired,
+    children: node,
     in: object,
     out: oneOfType([ object, bool ]),
   },
@@ -98,12 +99,12 @@ class RevealBase extends React.Component {
       this.isShown = !!this.props.when;
       this.setState({ style: { opacity: this.props.when || !this.props.out ? 1 : 0 } });
       if (this.props.onReveal && this.props.when)
-        this.props.onReveal();
+        this.props.wait ? this.onRevealTimeout = window.setTimeout(this.props.onReveal, this.props.wait) : this.props.onReveal();
     }
   }
 
   invisible() {
-    if (this && !this.isShown)
+    if (this && this.el && !this.isShown)
       this.setState( { style: { ...this.state.style, visibility: 'hidden' } });
   }
 
@@ -118,6 +119,8 @@ class RevealBase extends React.Component {
       func.call(this);
     };
     el.addEventListener('animationend', handler);
+    this.animationEndEl = el;
+    this.animationEndHandler = handler;
   }
 
       //    //const delta = this.props.duration>>2,
@@ -147,7 +150,7 @@ class RevealBase extends React.Component {
     else {
       const inOut = props[props.when || !props.out ?'in':'out'],
             animationName = props.out||props.when ? inOut.animation || inOut.make() : void 0;
-      if ( this.isShown === !!props.when )//&&!('spy' in props))
+      if ( this.isShown === !!props.when )
         return;
       this.isShown = !!props.when;
       this.setState({ style: this.collapse({
@@ -163,7 +166,8 @@ class RevealBase extends React.Component {
         this.animationEnd( this.invisible, props.forever);
     }
     if (props.onReveal && props.when)
-      props.onReveal();
+      props.wait ? this.onRevealTimeout = window.setTimeout(props.onReveal, props.wait) : props.onReveal();
+
   }
 
   clean() {
@@ -172,6 +176,11 @@ class RevealBase extends React.Component {
       window.removeEventListener('orientationchange', this.revealHandler);
       window.document.removeEventListener('visibilitychange', this.revealHandler);
       window.removeEventListener('resize', this.resizeHandler);
+      if(this.onRevealTimeout)
+        window.clearTimeout(this.onRevealTimeout);
+      if (this.animationEndHandler)
+         this.animationEndEl.removeEventListener('animationend', this.animationEndHandler);
+
       this.isListener = false;
     }
   }
@@ -219,10 +228,12 @@ class RevealBase extends React.Component {
       return;
     if (this.props.force)
       return this.animate(this.props);
-    if (this.props.step instanceof Step)
-      this.props.step.push(this);
-    else if (this.props.step && this.context.stepper)
-      this.context.stepper.get(this.props.step).push(this);
+    if (this.props.step) {
+      if (this.props.step instanceof Step)
+        this.props.step.push(this);
+      else if (this.context.stepper)
+        this.context.stepper.get(this.props.step).push(this);
+    }
     if ( ssr && (this.props.out||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
       window.setTimeout(this.revealHandler, 1000);
@@ -258,6 +269,9 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if ( (props.when !== this.props.when) || (props.spy !== this.props.spy))
       this.reveal(props);
+    //(props.onReveal !== this.props.onReveal) &&
+    if (this.onRevealTimeout&& !props.when)
+        window.clearTimeout(this.onRevealTimeout);
   }
 
   dummy(el) {
@@ -266,7 +280,7 @@ class RevealBase extends React.Component {
     const arr = [
       el,
       <el.type
-        {...(this.props.props||void 0)}
+        {...(this.props.el ? this.props.el.props : void 0)}
         className={this.props.className}
         children={this.props.children}
         key={2}
@@ -290,7 +304,8 @@ class RevealBase extends React.Component {
   }
 
   render() {
-    const { tag, id, children, style, className } = this.props,
+    const { id, children, style, className } = this.props,
+      tag = this.props.el ? this.props.el.type : this.props.tag,
       newClass = `${ this.state.legacyMode ? this.props.effect : ( !this.props.out && !this.props.effect ? '' : namespace ) }${ className ? ' ' + className : '' }`||void 0;
     let newStyle, newChildren = false;
     if (!this.state.legacyMode) {
@@ -301,7 +316,7 @@ class RevealBase extends React.Component {
       }
     }
     const el = React.createElement(tag, {
-      ...(this.props.props||void 0),
+      ...(this.props.el ? this.props.el.props : void 0),
       id,
       className: newClass,
       style: this.state.legacyMode ? style : newStyle,

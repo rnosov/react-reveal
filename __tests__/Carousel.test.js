@@ -1,12 +1,12 @@
 /*
- * Animation Test Suite
+ * Carousel Test Suite
  *
  * Copyright © Roman Nosov 2017
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-import Animation from '../Animation';
+import Carousel from '../Carousel';
 
 import React from 'react';
 import { shallow } from 'enzyme';
@@ -15,14 +15,13 @@ import Adapter from 'enzyme-adapter-react-15';
 
 configure({ adapter: new Adapter() });
 
-
-describe('Animation', () => {
+describe('Carousel', () => {
   it('renders a initial view', () => {
     const content = shallow(
-      <Animation tag="table" props={{ id:'111qqqq'}} steps={Animation.step("1", 1000).step("2", 2000)}>
+      <Carousel>
         <div>Test test</div>
         <div>Test test</div>
-      </Animation>
+      </Carousel>
     );
     expect(content.html()).toMatchSnapshot();
   });

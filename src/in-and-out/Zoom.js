@@ -20,17 +20,20 @@ const
     right: bool,
     top: bool,
     bottom: bool,
+    mirror: bool,
     opposite: bool,
   },
   defaultProps = {
 
   };
 
-function Zoom({ out, left, right, top, bottom, up, down, opposite, ...props }, context) {
+function Zoom({ out, left, right, top, bottom, up, down, mirror, opposite, ...props }, context) {
 
   function factory(reverse) {
 
     function make() {
+      if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
+        [left, right, top, bottom, up, down] = [right, left, bottom, top, down, up];
       const
         transformX = left || right,
         transformY = top || bottom || up || down,
@@ -38,10 +41,10 @@ function Zoom({ out, left, right, top, bottom, up, down, opposite, ...props }, c
       let rule, x1, y1, x2, y2;
       if (transform) {
         if (reverse) {
-          x1 = transformX ? ( ( opposite ? right        : left         ) ? '' : '-' ) + '42px' : '0';
-          y1 = transformY ? ( ( opposite ? (up||bottom) : (down||top)  ) ? '-' : '' ) + '60px' : '0';
-          x2 = transformX ? ( ( opposite ? left         : right        ) ? '' : '-' ) + '2000px'   : '0';
-          y2 = transformY ? ( ( opposite ? (down||top)  : (up||bottom) ) ? '' : '-' ) + '2000px'   : '0';
+          x1 = transformX ? ( left       ? '' : '-' ) + '42px' : '0';
+          y1 = transformY ? ( down||top  ? '-' : '' ) + '60px' : '0';
+          x2 = transformX ? ( right      ? '' : '-' ) + '2000px'   : '0';
+          y2 = transformY ? ( up||bottom ? '' : '-' ) + '2000px'   : '0';
           rule =`40% {
               opacity: 1;
               transform: scale3d(.475, .475, .475) translate3d(${x1}, ${y1}, 0);

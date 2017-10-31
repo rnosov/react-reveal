@@ -20,30 +20,25 @@ const
     right: bool,
     top: bool,
     bottom: bool,
+    mirror: bool,
     opposite: bool,
   },
   defaultProps = {
 
   };
 
-function Rotate({ out, left, right, top, bottom, up, down, opposite, ...props }, context) {
+function Rotate({ out, left, right, top, bottom, up, down, mirror, opposite, ...props }, context) {
 
   function factory(reverse) {
 
     function make() {
+      if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
+        [left, right, top, bottom, up, down] = [right, left, bottom, top, down, up];
       let angle = '-200deg', origin = 'center';
-      if (reverse && opposite) {
-        if ( (up||bottom) && right ) angle = '-45deg';
-        if ( ((up||bottom) && left) || ((down||top) && right) ) angle = '45deg';
-        if ( (down||top) && left ) angle = '-90deg';
-        if ( left || right ) origin=( right ? 'left' : 'right' ) + ' bottom';
-      }
-      else {
-        if ( (down||top) && left ) angle = '-45deg';
-        if ( ((down||top) && right) || ((up||bottom) && left) ) angle = '45deg';
-        if ( (up||bottom) && right ) angle = '-90deg';
-        if ( left || right ) origin=( left ? 'left' : 'right' ) + ' bottom';
-      }
+      if ( (down||top) && left ) angle = '-45deg';
+      if ( ((down||top) && right) || ((up||bottom) && left) ) angle = '45deg';
+      if ( (up||bottom) && right ) angle = '-90deg';
+      if ( left || right ) origin=( left ? 'left' : 'right' ) + ' bottom';
       return animation(`
         ${!reverse?'from':'to'} { opacity: 0; transform-origin: ${origin}; transform: rotate3d(0, 0, 1, ${angle});}
         ${reverse?'from':'to'} { opacity: 1; transform-origin: ${origin}; transform: none;}
