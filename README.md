@@ -37,7 +37,7 @@ Lets try `Zoom` effect first. Place the following code somewhere in your `render
 <Zoom>
   <p>Markup that will be revealed on scroll</p>
 </Zoom>
-``````
+```
 
 You should see zooming animation that reveals text inside the tag. You can change this text to any JSX you want. If you place this code further down the page you'll notice that it'll appear as scroll the page.
 

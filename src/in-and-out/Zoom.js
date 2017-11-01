@@ -52,7 +52,7 @@ function Zoom({ out, left, right, top, bottom, up, down, mirror, opposite, ...pr
             to {
               opacity: 0;
               transform: scale(.1) translate3d(${x2}, ${y2}, 0);
-              transform-origin: ${transformY ? `center bottom` : `${(opposite?right:left)?'left':'right'} center`};
+              transform-origin: ${transformY ? `center bottom` : `${left?'left':'right'} center`};
             }`;
         }
         else {

@@ -64,8 +64,8 @@ function Skin({ api, children }) {
       }}>
         {Array(...Array(api.total)).map( (val, index) =>
           index === api.position
-          ? <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={api.handler} data-Skin-index={index}> &#9679; </span>
-          : <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={api.handler} data-Skin-index={index}> &#9675; </span>
+          ? <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={api.handleClick} data-index={index}> &#9679; </span>
+          : <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={api.handleClick} data-index={index}> &#9675; </span>
         )}
       </div>
     </div>

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { number, element, node} from 'prop-types';
-import Skin from './lib/Skin';
+import Skin from './lib/CarouselSkin';
 
 const
   propTypes = {
@@ -42,7 +42,7 @@ class Carousel extends React.Component {
   }
 
   target({target}) {
-    let newPos = +target.getAttribute('data-carousel-index');
+    let newPos = +target.getAttribute('data-index');
     this.setState({
       next: newPos,
       prev: this.state.next,
@@ -86,6 +86,8 @@ class Carousel extends React.Component {
   render() {
     const children = React.Children.toArray(this.props.children),
           count = children.length;
+    if (count<2)
+      return <div>{children}</div>;
     let { swap, prev, next, backwards } = this.state;
     next %= count; prev %= count;
     let before = children[swap ? prev : next];
@@ -93,7 +95,7 @@ class Carousel extends React.Component {
     return (
       <this.props.skin.type {...this.props.skin.props} api={{
         position: next,
-        handler: this.target,
+        handleClick: this.target,
         total: count,
         props: this.props,
         next: this.next,

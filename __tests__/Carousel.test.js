@@ -7,6 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 import Carousel from '../Carousel';
+import Fade from '../Fade';
 
 import React from 'react';
 import { shallow } from 'enzyme';
@@ -19,8 +20,8 @@ describe('Carousel', () => {
   it('renders a initial view', () => {
     const content = shallow(
       <Carousel>
-        <div>Test test</div>
-        <div>Test test</div>
+        <Fade>Test test</Fade>
+        <Fade>Test test</Fade>
       </Carousel>
     );
     expect(content.html()).toMatchSnapshot();

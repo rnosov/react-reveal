@@ -19,8 +19,7 @@ configure({ adapter: new Adapter() });
 describe('Animation', () => {
   it('renders a initial view', () => {
     const content = shallow(
-      <Animation tag="table" props={{ id:'111qqqq'}} steps={Animation.step("1", 1000).step("2", 2000)}>
-        <div>Test test</div>
+      <Animation steps={Animation.step("1", 1000).step("2", 2000)}>
         <div>Test test</div>
       </Animation>
     );

@@ -2,7 +2,9 @@ dist
 node_modules
 npm-debug.log
 /Carousel.js
-/Skin.js
+/CarouselSkin.js
+/Hamburger.js
+/HamburgerSkin.js
 /Animation.js
 /Spin.js
 /Bounce.js
