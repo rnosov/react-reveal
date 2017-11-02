@@ -1,5 +1,5 @@
 /*
- * Skin Component For react-reveal Carousel
+ * CarouselSkin Component For react-reveal Carousel
  *
  * Copyright © Roman Nosov 2017
  *
@@ -19,7 +19,7 @@ const
 
   };
 
-function Skin({ api, children }) {
+function CarouselSkin({ api, children }) {
   return (
     <div style={{
       position: 'relative',
@@ -71,6 +71,6 @@ function Skin({ api, children }) {
     </div>
   );
 }
-Skin.propTypes = propTypes;
-Skin.defaultProps = defaultProps;
-export default Skin;
+CarouselSkin.propTypes = propTypes;
+CarouselSkin.defaultProps = defaultProps;
+export default CarouselSkin;

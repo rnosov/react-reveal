@@ -9,7 +9,7 @@
 //import {version} from 'react';
 
 export const namespace = 'react-reveal', is16 = false;//parseInt(version, 10) >= 16;
-export let ssr = true, disableSsr = () => ssr = false, globalHide = false;
+export let ssr = true, disableSsr = () => ssr = false, globalHide = false, flex = 'flex';
 let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floor(Math.random() * 1000000000000000)}-`;
 
 export function insertRule(rule) {
@@ -49,6 +49,8 @@ function hideAll() {
 //navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")
 if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document && typeof navigator !== 'undefined') { // are we in browser?
   ssr = window.document.querySelectorAll('div[data-reactroot]').length>0; // are we prerendered?
+  if (navigator.appVersion.indexOf("MSIE 10") !== -1)
+    flex = '-ms-flexbox';
   //if (ssr && 'serviceWorker' in navigator && navigator.serviceWorker.controller) //cached by service worker?
   //  ssr = false;
   //console.log(Date.now() - window.performance.timing.domLoading<500);

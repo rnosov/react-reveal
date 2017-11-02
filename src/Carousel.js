@@ -42,13 +42,7 @@ class Carousel extends React.Component {
   }
 
   target({target}) {
-    let newPos = +target.getAttribute('data-index');
-    this.setState({
-      next: newPos,
-      prev: this.state.next,
-      backwards: newPos<this.state.next,
-      swap: !this.state.swap
-    });
+    this.move(+target.getAttribute('data-index'));
   }
 
   handleReveal() {
@@ -57,7 +51,14 @@ class Carousel extends React.Component {
     this.next();
   }
 
+  componentWillUnmount() {
+    this.turn = -1;
+  }
+
+
   move(newPos) {
+    if (this.turn<0)
+      return;
     let pos = newPos;
     const count = React.Children.count(this.props.children);
     if (newPos >= count) {
