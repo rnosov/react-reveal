@@ -97,7 +97,7 @@ function HamburgerSkin({ api: { toggle, child, match, handleClick, props } }) {
         {svg(toggle, props.size-10, props.color, props.bgColor)}
         </div>
       </div>
-      <div>
+      <div onClick={handleClick}>
         {child}
       </div>
     </div>

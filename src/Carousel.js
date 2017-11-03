@@ -8,18 +8,18 @@
  */
 
 import React from 'react';
-import { number, element, node} from 'prop-types';
+import { number, func, node} from 'prop-types';
 import Skin from './lib/CarouselSkin';
 
 const
   propTypes = {
-    skin: element,
+    skin: func,
     children: node.isRequired,
     wait: number,
     maxTurns: number,
   },
   defaultProps = {
-    skin: <Skin />,
+    skin: Skin,
     wait: 5000,
     maxTurns: 2,
   };
@@ -94,7 +94,7 @@ class Carousel extends React.Component {
     let before = children[swap ? prev : next];
     let after  = children[swap ? next : prev];
     return (
-      <this.props.skin.type {...this.props.skin.props} api={{
+      <this.props.skin api={{
         position: next,
         handleClick: this.target,
         total: count,
@@ -128,7 +128,7 @@ class Carousel extends React.Component {
           mirror={backwards}
           onReveal={swap ? this.handleReveal : void 0}
         />
-      </this.props.skin.type>
+      </this.props.skin>
     );
   }
 

@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { string, object, number, bool, func, node, any, oneOfType, instanceOf, element } from 'prop-types';
+import { string, object, number, bool, func, node, any, oneOfType, instanceOf, shape, element } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide, cascade } from './lib/globals';
 import Step from './lib/Step';
 import debounce from './lib/debounce';
@@ -18,7 +18,7 @@ const
     when: bool,
     spy: any,
     effect: string,
-    collapse: oneOfType([bool, object]),
+    collapse: oneOfType([bool, shape({ height: string })]),
     duration: number,
     delay: number,
     wait: number,
@@ -33,7 +33,7 @@ const
     disabled: bool,
     fraction: number,
     onReveal: func,
-    children: node,
+    children: node.isRequired,
     in: object,
     out: oneOfType([ object, bool ]),
   },
@@ -341,7 +341,7 @@ class RevealBase extends React.Component {
       ...(this.props.el ? this.props.el.props : void 0),
       id,
       className: newClass,
-      style: this.state.legacyMode ? style : newStyle,
+      style: this.state.legacyMode || this.props.disabled ? style : newStyle,
       key: this.props.collapse ? 1 : void 0,
       ref: this.saveRef
     }, newChildren||children);

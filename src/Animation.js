@@ -8,13 +8,13 @@
  */
 
 import React from 'react';
-import { string, node, object, instanceOf } from 'prop-types';
+import { string, element, object, instanceOf } from 'prop-types';
 import Stepper from './lib/Stepper';
 
 const
   propTypes = {
     steps: instanceOf(Stepper).isRequired,
-    children: node.isRequired,
+    children: element.isRequired,
     tag: string,
     props: object,
   },

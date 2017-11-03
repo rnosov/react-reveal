@@ -8,20 +8,20 @@
  */
 
 import React from 'react';
-import { string, node, number, element } from 'prop-types';
+import { string, number, element, func } from 'prop-types';
 import Skin from './lib/HamburgerSkin';
 
 const
   propTypes = {
-    skin: element,
+    skin: func,
     breakpoint: string,
-    children: node.isRequired,
+    children: element.isRequired,
     size: number,
     color: string,
     bgColor: string,
   },
   defaultProps = {
-    skin: <Skin />,
+    skin: Skin,
     breakpoint: '768px',
     size: 38,
     color: '#fff',
@@ -83,8 +83,7 @@ class Hamburger extends React.Component {
           //bypass={true}
           when={this.state.match || this.state.isClicked}
         />;
-    return <this.props.skin.type
-      {...this.props.skin.props}
+    return <this.props.skin
       api={{ child, match, toggle: this.state.isClicked, handleClick: this.handleClick, props: this.props }}
     />;
   }
