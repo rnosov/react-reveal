@@ -8,9 +8,9 @@
  */
 
 import React from 'react';
-import { bool } from 'prop-types';
-import Reveal from '../Reveal';
-import { animation } from '../lib/globals';
+import { bool, number } from 'prop-types';
+import RevealBase from '../RevealBase';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
@@ -22,12 +22,14 @@ const
     big: bool,
     mirror: bool,
     opposite: bool,
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
-function Fade({out, left, right, up, down, top, bottom, big, mirror, opposite, ...props}, context) {
+function Fade({out, left, right, up, down, top, bottom, big, mirror, opposite, forever,
+              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -46,15 +48,15 @@ function Fade({out, left, right, up, down, top, bottom, big, mirror, opposite, .
          ${ reverse?'from':'to'} {opacity: 1;transform: none;} `
       );
     }
-    return { reverse: left, make };
+
+    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 Fade.propTypes = propTypes;
-Fade.defaultProps = defaultProps;
 export default Fade;

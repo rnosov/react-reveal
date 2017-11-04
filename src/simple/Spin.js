@@ -9,16 +9,16 @@
  */
 
 import React from 'react';
-import { bool } from 'prop-types';
-import Reveal from '../Reveal';
-import { animation } from '../lib/globals';
+import { bool, number } from 'prop-types';
+import RevealBase from '../RevealBase';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
-    out: bool,
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
 const rule = `
@@ -32,7 +32,7 @@ to {
 }
 `;
 
-function Spin({ out, ...props }, context) {
+function Spin({ out, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -40,15 +40,14 @@ function Spin({ out, ...props }, context) {
       return animation(rule);
     }
 
-    return reverse ? false : { make };
+    return reverse ? false : { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 Spin.propTypes = propTypes;
-Spin.defaultProps = defaultProps;
 export default Spin;

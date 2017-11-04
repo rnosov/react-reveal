@@ -1,10 +1,12 @@
 dist
 node_modules
 npm-debug.log
+/RevealBase.js
 /Carousel.js
 /CarouselSkin.js
 /Hamburger.js
 /HamburgerSkin.js
+/HamburgerIcon.js
 /Animation.js
 /Spin.js
 /Bounce.js

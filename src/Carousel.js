@@ -36,28 +36,25 @@ class Carousel extends React.Component {
     };
     this.turn = 0;
     this.handleReveal = this.handleReveal.bind(this);
-    this.next = this.next.bind(this);
-    this.prev = this.prev.bind(this);
     this.target = this.target.bind(this);
   }
 
   target({target}) {
-    this.move(+target.getAttribute('data-index'));
+    this.move(+target.getAttribute('data-position'));
   }
 
   handleReveal() {
     if (this.turn>=this.props.maxTurns)
       return;
-    this.next();
+    this.move(this.state.next + 1);
   }
 
   componentWillUnmount() {
     this.turn = -1;
   }
 
-
   move(newPos) {
-    if (this.turn<0)
+    if (this.turn<0 || newPos === this.state.next)
       return;
     let pos = newPos;
     const count = React.Children.count(this.props.children);
@@ -74,61 +71,40 @@ class Carousel extends React.Component {
       swap: !this.state.swap
     });
   }
-//  d = Date.now();
-  next() {
-//    console.log('next', ~~((-this.d + Date.now())/1000));
-    this.move(this.state.next + 1);
-  }
-
-  prev() {
-    this.move(this.state.next - 1);
-  }
 
   render() {
-    const children = React.Children.toArray(this.props.children),
-          count = children.length;
+    const { children, ...props } = this.props,
+      arr = React.Children.toArray(children),
+      count = arr.length;
     if (count<2)
-      return <div>{children}</div>;
+      return children;
     let { swap, prev, next, backwards } = this.state;
     next %= count; prev %= count;
-    let before = children[swap ? prev : next];
-    let after  = children[swap ? next : prev];
+    let before = arr[swap ? prev : next];
+    let after  = arr[swap ? next : prev];
     return (
-      <this.props.skin api={{
-        position: next,
-        handleClick: this.target,
-        total: count,
-        props: this.props,
-        next: this.next,
-        prev: this.prev,
-      }}>
-        <before.type
-          wait={this.props.wait}
-          {...before.props}
-          style={{
-            position: 'static',
-            left: 0,
-            top: 0,
-          }}
-          opposite
-          when={!swap}
-          mirror={backwards}
-          onReveal={!swap ? this.handleReveal : void 0}
-        />
-        <after.type
-          wait={this.props.wait}
-          {...after.props}
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-          }}
-          opposite
-          when={swap}
-          mirror={backwards}
-          onReveal={swap ? this.handleReveal : void 0}
-        />
-      </this.props.skin>
+      <this.props.skin
+        {...props}
+        position={next}
+        handleClick={this.target}
+        total={count}
+        prev={<before.type
+                  wait={this.props.wait}
+                  {...before.props}
+                  opposite
+                  when={!swap}
+                  mirror={backwards}
+                  onReveal={!swap ? this.handleReveal : void 0}
+                />}
+        next={<after.type
+                  wait={this.props.wait}
+                  {...after.props}
+                  opposite
+                  when={swap}
+                  mirror={backwards}
+                  onReveal={swap ? this.handleReveal : void 0}
+                />}
+      />
     );
   }
 

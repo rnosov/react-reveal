@@ -19,7 +19,7 @@ configure({ adapter: new Adapter() });
 describe('Reveal', () => {
   it('renders a initial view', () => {
     const content = shallow(
-      <Reveal effect="123">
+      <Reveal effect="123" >
         <div>Test test</div>
       </Reveal>
     );

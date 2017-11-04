@@ -8,9 +8,9 @@
  */
 
 import React from 'react';
-import { bool } from 'prop-types';
-import Reveal from '../Reveal';
-import { animation } from '../lib/globals';
+import { bool, number } from 'prop-types';
+import RevealBase from '../RevealBase';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
@@ -22,12 +22,14 @@ const
     big: bool,
     mirror: bool,
     opposite: bool,
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
-function Slide({out, left, right, up, down, top, bottom, big, mirror, opposite, ...props}, context) {
+function Slide({out, left, right, up, down, top, bottom, big, mirror, opposite, forever,
+              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -35,7 +37,7 @@ function Slide({out, left, right, up, down, top, bottom, big, mirror, opposite, 
       const transform = left||right||up||down||top||bottom;
       let x, y;
       if (transform) {
-        if ( !mirror !== !(reverse&&opposite))
+        if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
           [left, right, top, bottom, up, down] = [right, left, bottom, top, down, up];
         const dist = big ? '2000px' : '100%';
         x = left ? '-' + dist : ( right ? dist : '0' );
@@ -46,15 +48,15 @@ function Slide({out, left, right, up, down, top, bottom, big, mirror, opposite, 
          ${ reverse?'from':'to'} {transform: none;} `
       );
     }
-    return { reverse: left, make };
+
+    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 Slide.propTypes = propTypes;
-Slide.defaultProps = defaultProps;
 export default Slide;

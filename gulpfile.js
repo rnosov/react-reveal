@@ -9,7 +9,8 @@ gulp.task('build', () =>
   gulp.src('./src/**/*.js')
     .pipe(flatten())
     .pipe(replace("from './lib/", "from './"))
-    .pipe(replace("from '../Reveal';", "from './Reveal';"))
+    .pipe(replace("from './in-and-out/", "from './"))
+    .pipe(replace("from '../RevealBase';", "from './RevealBase';"))
     .pipe(replace("from '../lib/globals';", "from './globals';"))
     .pipe(babel())
     .pipe(uglify())
@@ -19,8 +20,10 @@ gulp.task('build', () =>
 gulp.task('clean', function () {
   return gulp.src([
     './index.js',
+    './RevealBase.js',
     './Hamburger.js',
     './HamburgerSkin.js',
+    './HamburgerIcon.js',
     './Carousel.js',
     './CarouselSkin.js',
     './Animation.js',

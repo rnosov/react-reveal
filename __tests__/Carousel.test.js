@@ -20,8 +20,8 @@ describe('Carousel', () => {
   it('renders a initial view', () => {
     const content = shallow(
       <Carousel>
-        <Fade>Test test</Fade>
-        <Fade>Test test</Fade>
+        <Fade><div>Test test</div></Fade>
+        <Fade><div>Test test</div></Fade>
       </Carousel>
     );
     expect(content.html()).toMatchSnapshot();

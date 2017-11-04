@@ -9,15 +9,16 @@
  */
 
 import React from 'react';
-import Reveal from '../Reveal';
-import { animation } from '../lib/globals';
+import { bool, number } from 'prop-types';
+import RevealBase from '../RevealBase';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
-
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
 const rule = `
@@ -54,7 +55,7 @@ const rule = `
 }
 `;
 
-function Jello({ out, ...props }, context) {
+function Jello({ out, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -62,15 +63,14 @@ function Jello({ out, ...props }, context) {
       return animation(rule);
     }
 
-    return reverse ? false : { make };
+    return reverse ? false : { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 Jello.propTypes = propTypes;
-Jello.defaultProps = defaultProps;
 export default Jello;

@@ -8,22 +8,25 @@
  */
 
 import React from 'react';
-import { string, number, element, func } from 'prop-types';
+import { string, element, func } from 'prop-types';
 import Skin from './lib/HamburgerSkin';
+import Icon from './lib/HamburgerIcon';
+import { animation, ie10 } from './lib/globals';
 
 const
   propTypes = {
     skin: func,
     breakpoint: string,
     children: element.isRequired,
-    size: number,
+    size: string,
     color: string,
     bgColor: string,
   },
   defaultProps = {
     skin: Skin,
+    icon: Icon,
     breakpoint: '768px',
-    size: 38,
+    size: '28px',
     color: '#fff',
     bgColor: '#808080',
   };
@@ -35,6 +38,8 @@ class Hamburger extends React.Component {
     this.mql = false;
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.icon = this.icon.bind(this);
+    this.content = this.content.bind(this);
     this.state = {
       match : true,
       isClicked: false,
@@ -58,6 +63,10 @@ class Hamburger extends React.Component {
     }
   }
 
+  icon() {
+    return this.props.icon(this.state.isClicked, this.props.size, this.props.color, this.props.bgColor, animation)
+  }
+
   componentWillUnMount() {
     if (this.mql)
       this.mql.removeListener(this.handleChange);
@@ -71,20 +80,45 @@ class Hamburger extends React.Component {
     this.newQuery(query);
   }
 
+  content({ style, className, ...props } = {}) {
+    const
+      child = React.Children.only(this.props.children),
+      grandChild = React.Children.only(child.props.children),
+      newProps = {...grandChild.props, ...props};
+    return <child.type
+      {...child.props}
+      disabled={this.state.match}
+      collapse
+      force
+      when={this.state.match || this.state.isClicked}
+      children={
+        <grandChild.type
+          {...newProps}
+          style={{ ...newProps.style, ...style }}
+          className={ newProps.className ? newProps.className + ' ' + className : className }
+          children={grandChild.props.children}
+        />
+      }
+    />;
+  }
+
+  flex(mainAxis = 'row') {
+    return {
+      display: ie10 ? '-ms-flexbox' : 'flex',
+      flexFlow: `${mainAxis} nowrap`,
+      MsFlexFlow: `${mainAxis} nowrap`,
+    }
+  }
+
   render() {
-    let child = React.Children.only(this.props.children), { match } = this.state;
-    child = //this.state.match
-      //? <child.props.tag className={child.props.className}>{child.props.children}</child.props.tag>
-      <child.type
-          {...child.props}
-          disabled={this.state.match}
-          collapse
-          force
-          //bypass={true}
-          when={this.state.match || this.state.isClicked}
-        />;
     return <this.props.skin
-      api={{ child, match, toggle: this.state.isClicked, handleClick: this.handleClick, props: this.props }}
+      {...this.props}
+      isActive={!this.state.match}
+      content={this.content}
+      icon={this.icon}
+      handleClick={this.handleClick}
+      flex={this.flex}
+      ie10={ie10}
     />;
   }
 

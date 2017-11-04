@@ -9,9 +9,9 @@
  */
 
 import React from 'react';
-import Reveal from '../Reveal';
-import { bool } from 'prop-types';
-import { animation } from '../lib/globals';
+import RevealBase from '../RevealBase';
+import { bool, number } from 'prop-types';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
@@ -20,12 +20,14 @@ const
     right: bool,
     mirror: bool,
     opposite: bool,
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
-function LightSpeed({ out, left, right, mirror, opposite, ...props }, context) {
+function LightSpeed({ out, left, right, mirror, opposite, forever,
+                    duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -66,15 +68,14 @@ function LightSpeed({ out, left, right, mirror, opposite, ...props }, context) {
       return animation(rule);
     }
 
-    return { make };
+    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 LightSpeed.propTypes = propTypes;
-LightSpeed.defaultProps = defaultProps;
 export default LightSpeed;

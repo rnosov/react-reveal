@@ -9,9 +9,9 @@
  */
 
 import React from 'react';
-import { bool } from 'prop-types';
-import Reveal from '../Reveal';
-import { animation } from '../lib/globals';
+import { bool, number } from 'prop-types';
+import RevealBase from '../RevealBase';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
@@ -22,12 +22,14 @@ const
     bottom: bool,
     mirror: bool,
     opposite: bool,
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
-function Zoom({ out, left, right, top, bottom, up, down, mirror, opposite, ...props }, context) {
+function Zoom({ out, left, right, top, bottom, up, down, mirror, opposite, forever,
+              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -77,15 +79,14 @@ function Zoom({ out, left, right, top, bottom, up, down, mirror, opposite, ...pr
       return animation(rule);
     }
 
-    return { make };
+    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 Zoom.propTypes = propTypes;
-Zoom.defaultProps = defaultProps;
 export default Zoom;

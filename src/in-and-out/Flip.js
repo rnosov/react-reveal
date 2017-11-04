@@ -9,9 +9,9 @@
  */
 
 import React from 'react';
-import { bool } from 'prop-types';
-import Reveal from '../Reveal';
-import { animation } from '../lib/globals';
+import { bool, number } from 'prop-types';
+import RevealBase from '../RevealBase';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
@@ -22,12 +22,14 @@ const
     bottom: bool,
     mirror: bool,
     opposite: bool,
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
-function Flip({ out, left, right, top, bottom, x, y, mirror, opposite, ...props }, context) {
+function Flip({ out, left, right, top, bottom, x, y, mirror, opposite, forever,
+              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -102,15 +104,14 @@ function Flip({ out, left, right, top, bottom, x, y, mirror, opposite, ...props 
       return(animation(rule));
     }
 
-    return { style: { backfaceVisibility: 'visible' },  make };
+    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', backfaceVisibility: 'visible', } };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 Flip.propTypes = propTypes;
-Flip.defaultProps = defaultProps;
 export default Flip;

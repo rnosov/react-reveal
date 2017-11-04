@@ -9,15 +9,16 @@
  */
 
 import React from 'react';
-import Reveal from '../Reveal';
-import { animation } from '../lib/globals';
+import { bool, number } from 'prop-types';
+import RevealBase from '../RevealBase';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
-
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
 const rule = `
@@ -46,7 +47,7 @@ const rule = `
 }
 `;
 
-function HeadShake({ out, ...props }, context) {
+function HeadShake({ out, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -54,16 +55,15 @@ function HeadShake({ out, ...props }, context) {
       return animation(rule);
     }
 
-    return reverse ? false : { make };
+    return reverse ? false : { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 
 HeadShake.propTypes = propTypes;
-HeadShake.defaultProps = defaultProps;
 export default HeadShake;

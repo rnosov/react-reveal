@@ -9,9 +9,9 @@
  */
 
 import React from 'react';
-import Reveal from '../Reveal';
-import { bool } from 'prop-types';
-import { animation } from '../lib/globals';
+import RevealBase from '../RevealBase';
+import { bool, number } from 'prop-types';
+import { animation, defaults } from '../lib/globals';
 
 const
   propTypes = {
@@ -23,12 +23,14 @@ const
     big: bool,
     mirror: bool,
     opposite: bool,
-  },
-  defaultProps = {
-
+    duration: number,
+    delay: number,
+    count: number,
+    forever: bool,
   };
 
-function Roll({ out, left, right, up, down, top, bottom, big, mirror, opposite, ...props }, context) {
+function Roll({ out, left, right, up, down, top, bottom, big, mirror, opposite, forever,
+              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -44,15 +46,14 @@ function Roll({ out, left, right, up, down, top, bottom, big, mirror, opposite, 
 			`);
     }
 
-    return { make };
+    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
   }
 
   return context
-    ? <Reveal {...props} in={factory(false)} out={factory(true)} />
+    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
     : factory(out)
   ;
 }
 
 Roll.propTypes = propTypes;
-Roll.defaultProps = defaultProps;
 export default Roll;

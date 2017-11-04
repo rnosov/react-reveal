@@ -14,16 +14,18 @@ import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-15';
 
 configure({ adapter: new Adapter() });
+//      <Reveal effect="some-effect" className="someClass" style={{ border: '1px solid red'}} props={{src: '/example.com'}}>
+  //    </Reveal>
 
 describe('index', () => {
   it('renders a initial view', () => {
     const content = shallow(
-      <Reveal effect="some-effect" className="someClass" style={{ border: '1px solid red'}} props={{src: '/example.com'}}>
-        <Zoom> Zoom Test test</Zoom>
-        <Fade> Fade Test test</Fade>
-        <Flip>Flip Test test</Flip>
-        <Rotate> Rotate Test test</Rotate>
-      </Reveal>
+        <div>
+        <Zoom><div> Zoom Test test</div></Zoom>
+        <Fade><div> Fade Test test</div></Fade>
+        <Flip><div>Flip Test test</div></Flip>
+        <Rotate><div> Rotate Test test</div></Rotate>
+        </div>
     );
     expect(content.html()).toMatchSnapshot();
   });

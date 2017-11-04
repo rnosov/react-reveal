@@ -8,18 +8,8 @@
  */
 
 import React from 'react';
-import { object, node} from 'prop-types';
 
-const
-  propTypes = {
-    api: object,
-    children: node,
-  },
-  defaultProps = {
-
-  };
-
-function CarouselSkin({ api, children }) {
+function CarouselSkin({ position, handleClick, total, prev, next }) {
   return (
     <div style={{
       position: 'relative',
@@ -31,9 +21,22 @@ function CarouselSkin({ api, children }) {
         position: 'relative',
         height: '200px'
       }}>
-        {children}
+        <div style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        }}>
+          {prev}
+        </div>
+        <div style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        }}>
+          {next}
+        </div>
       </div>
-      <div onClick={api.prev} style={{
+      <div onClick={handleClick} data-position={position - 1} style={{
         lineHeight: '250px',
         textAlign: 'center',
         position: 'absolute',
@@ -49,7 +52,7 @@ function CarouselSkin({ api, children }) {
         //   -moz-user-select: none; /* Firefox */
         //    -ms-user-select: none; /* Internet Explorer/Edge */
       }}> &lt; </div>
-      <div onClick={api.next} style={{
+      <div onClick={handleClick} data-position={position + 1} style={{
         lineHeight: '250px',
         textAlign: 'center',
         position: 'absolute',
@@ -62,15 +65,14 @@ function CarouselSkin({ api, children }) {
       <div style={{
         textAlign: 'center',
       }}>
-        {Array(...Array(api.total)).map( (val, index) =>
-          index === api.position
-          ? <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={api.handleClick} data-index={index}> &#9679; </span>
-          : <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={api.handleClick} data-index={index}> &#9675; </span>
+        {Array(...Array(total)).map( (val, index) =>
+          index === position
+          ? <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={handleClick} data-position={index}> &#9679; </span>
+          : <span style={{fontSize: '1.5em',cursor: 'pointer'}} key={index} onClick={handleClick} data-position={index}> &#9675; </span>
         )}
       </div>
     </div>
   );
 }
-CarouselSkin.propTypes = propTypes;
-CarouselSkin.defaultProps = defaultProps;
+
 export default CarouselSkin;
