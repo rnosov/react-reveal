@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-function HamburgerIcon( toggle, size, color, bgColor, animation) {
+function HamburgerIcon( toggle, size, color, bgColor, animation, handleClick, props) {
   const
     common = { opacity: 1, stroke: color, transition: 'transform 0.3s'
   },
@@ -45,11 +45,13 @@ function HamburgerIcon( toggle, size, color, bgColor, animation) {
     };
     //viewBox="0 0 24 16"
   return (
-    <svg style={hamburger} width={size} height={size} id="hamburger" viewBox="-4 0 32 16">
-      <line style={a} fill="none" stroke={color} strokeWidth="2" x1="0" y1="1" x2="24" y2="1" />
-      <line style={b} fill="none" stroke={color} strokeWidth="2" x1="0" y1="8" x2="24" y2="8" />
-      <line style={c} fill="none" stroke={color} strokeWidth="2" x1="0" y1="15" x2="24" y2="15" />
-    </svg>
+    <div {...props} onClick={handleClick}>
+      <svg style={hamburger} width={size} height={size} id="hamburger" viewBox="-4 0 32 16">
+        <line style={a} fill="none" stroke={color} strokeWidth="2" x1="0" y1="1" x2="24" y2="1" />
+        <line style={b} fill="none" stroke={color} strokeWidth="2" x1="0" y1="8" x2="24" y2="8" />
+        <line style={c} fill="none" stroke={color} strokeWidth="2" x1="0" y1="15" x2="24" y2="15" />
+      </svg>
+    </div>
   );
 }
 

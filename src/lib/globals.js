@@ -10,7 +10,7 @@
 
 export const namespace = 'react-reveal', is16 = false;//parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
-export let ssr = true, disableSsr = () => ssr = false, globalHide = false, ie10 = false;
+export let ssr = true, disableSsr = () => ssr = false, globalHide = false, ie10 = false, collapseend;
 let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floor(Math.random() * 1000000000000000)}-`;
 
 export function insertRule(rule) {
@@ -44,6 +44,7 @@ function hideAll() {
   insertRule(`.${namespace} { opacity: 0; }`);
   window.removeEventListener('orientationchange', hideAll, true);
   window.document.removeEventListener('visibilitychange', hideAll);
+  window.document.removeEventListener('collapseend', hideAll);
   globalHide = true;
 }
 
@@ -61,6 +62,8 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
       && window.performance.timing.domLoading
       && Date.now() - window.performance.timing.domLoading<500)
     ssr = false;
+  collapseend = document.createEvent('Event');
+  collapseend.initEvent('collapseend', true, true);
   let element = document.createElement('style');
   document.head.appendChild(element);
   if (element.sheet && element.sheet.cssRules && element.sheet.insertRule) {
@@ -68,5 +71,6 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
     window.addEventListener('scroll', hideAll, true);
     window.addEventListener("orientationchange", hideAll, true);
     window.document.addEventListener("visibilitychange", hideAll);
+    window.document.addEventListener("collapseend", hideAll);
   }
 }

@@ -9,37 +9,17 @@
 
 import React from 'react';
 
-function HamburgerSkin({ content, icon, isActive, handleClick, size, bgColor, flex, ie10 } ) {
-  const
-    containerStyle = {
-      textAlign: 'right',
-      height: size,
-      paddingTop:'4px',
-      paddingBottom:'4px',
-      ...flex('row')
-      //border: '1px solid transparent',
-    },
-    iconStyle= {
-      cursor: 'pointer',
-      borderRadius: '5px',
-      backgroundColor: bgColor,
-      height: size,
-      width: size,
-    }
-  ;
-  return isActive
-    ? <div style={{marginLeft: 'auto', marginRight: 0,}}>
-        <div style={containerStyle} >
-          <div onClick={handleClick} style={iconStyle}>
-            {icon()}
-          </div>
-        </div>
-        <div style={{marginTop: '20px' }} onClick={handleClick}>
-          {content()}
-        </div>
+function HamburgerSkin({ content, icon, isActive, styles } ) {
+  if (isActive) {
+    //we're below breakpoint, hamburger is active
+    return(
+      <div style={styles.container} /* className="your-class" */>
+        {icon({ style: styles.icon /* className: 'your-class' */ })}
+        {content({ style: styles.activeContent /* className: 'your-class' */ })}
       </div>
-    : content({ style: flex('row') })
-  ;
+    );
+  }
+  return content({ style: styles.inactiveContent /* className: 'your-class' */ });
 }
 
 export default HamburgerSkin;

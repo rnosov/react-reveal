@@ -63,8 +63,9 @@ class Hamburger extends React.Component {
     }
   }
 
-  icon() {
-    return this.props.icon(this.state.isClicked, this.props.size, this.props.color, this.props.bgColor, animation)
+  icon(props) {
+    return this.props.icon( this.state.isClicked, this.props.size, this.props.color,
+                            this.props.bgColor, animation, this.handleClick, props, );
   }
 
   componentWillUnMount() {
@@ -95,8 +96,10 @@ class Hamburger extends React.Component {
         <grandChild.type
           {...newProps}
           style={{ ...newProps.style, ...style }}
-          className={ newProps.className ? newProps.className + ' ' + className : className }
+          //className={ newProps.className ? newProps.className + ' ' + className : className }
+          className={ (newProps.className||'') + (newProps.className&&className?' ':'') + (className||'')}
           children={grandChild.props.children}
+          onClick={this.handleClick}
         />
       }
     />;
@@ -110,6 +113,32 @@ class Hamburger extends React.Component {
     }
   }
 
+  getStyles() {
+    return {
+      container: {
+        marginLeft: 'auto',
+        paddingTop: '0.375rem' ,
+        border: '1px solid transparent',
+        marginTop: '-2.5rem' ,
+        width: '100%  ',
+        marginRight: 0,
+        ...this.flex('column')
+      },
+      icon: {
+        cursor: 'pointer',
+        borderRadius: '5px',
+        backgroundColor: this.props.bgColor,
+        height: this.props.size,
+        width: this.props.size,
+        alignSelf: 'flex-end',
+      },
+      activeContent: {
+        marginTop: '0.375rem'
+      },
+      inactiveContent: this.flex('row'),
+    };
+  }
+
   render() {
     return <this.props.skin
       {...this.props}
@@ -117,6 +146,7 @@ class Hamburger extends React.Component {
       content={this.content}
       icon={this.icon}
       handleClick={this.handleClick}
+      styles={this.getStyles()}
       flex={this.flex}
       ie10={ie10}
     />;

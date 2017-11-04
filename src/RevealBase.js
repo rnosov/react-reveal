@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { string, object, number, bool, func, any, oneOfType, oneOf, instanceOf, shape, element } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, cascade, collapseend } from './lib/globals';
 import Step from './lib/Step';
 import debounce from './lib/debounce';
 
@@ -58,9 +58,7 @@ class RevealBase extends React.Component {
           ? {
             visibility: props.when || !props.out ? 'visible' : 'hidden',
             height: 0,
-            margin: 0,
-            //padding: 0,
-            //border: '1px solid transparent',
+            //margin: 0, padding: 0, border: '1px solid transparent',
             boxSizing: 'border-box',
           }: void 0),
         opacity: !props.when && props.out ? 0 : void 0,
@@ -119,8 +117,11 @@ class RevealBase extends React.Component {
   }
 
   invisible() {
-    if (this && this.el && !this.isShown)
+    if (this && this.el && !this.isShown) {
       this.setState( { style: { ...this.state.style, visibility: 'hidden' }/*, collapsing: false */});
+      if (this.props.collapse)
+        window.document.dispatchEvent(collapseend)
+    }
   }
 
   animationEnd(func, cascade, { forever, count, delay, duration }) {
@@ -205,6 +206,7 @@ class RevealBase extends React.Component {
       window.removeEventListener('scroll', this.revealHandler);
       window.removeEventListener('orientationchange', this.revealHandler);
       window.document.removeEventListener('visibilitychange', this.revealHandler);
+      window.document.removeEventListener('collapseend', this.revealHandler);
       window.removeEventListener('resize', this.resizeHandler);
       if(this.onRevealTimeout)
         this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
@@ -228,6 +230,7 @@ class RevealBase extends React.Component {
       window.addEventListener('scroll', this.revealHandler);
       window.addEventListener('orientationchange', this.revealHandler);
       window.document.addEventListener("visibilitychange", this.revealHandler);
+      window.document.addEventListener("collapseend", this.revealHandler);
       window.addEventListener('resize', this.resizeHandler);
     }
   }
