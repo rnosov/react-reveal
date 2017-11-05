@@ -22,7 +22,7 @@ gulp.task('clean', function () {
     './index.js',
     './RevealBase.js',
     './Hamburger.js',
-    './HamburgerSkin.js',
+    './Responsive.js',
     './HamburgerIcon.js',
     './Carousel.js',
     './CarouselSkin.js',

@@ -312,7 +312,7 @@ class RevealBase extends React.Component {
         this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
   }
 
-  dummy(el) {
+  dummy(el, child) {
     if (this.props.collapse !== true && 'height' in this.props.collapse)
       return el;
     return (<span>{[
@@ -320,6 +320,7 @@ class RevealBase extends React.Component {
       <el.type
         {...el.props}
         {...{
+          children: child.props.children,
           key: 2,
           //ref={ el => this.dummyEl = el }
           [this.props.refProp]: el => this.dummyEl = el,
@@ -358,7 +359,7 @@ class RevealBase extends React.Component {
     if (this.props.collapse)
       props.key = 1;
     const el = React.cloneElement(child, props, newChildren||children);
-    return this.props.collapse ? this.dummy(el) : el;
+    return this.props.collapse ? this.dummy(el, child) : el;
   }
 
 }

@@ -8,24 +8,20 @@
  */
 
 import React from 'react';
-import { string, element, func } from 'prop-types';
-import Skin from './lib/HamburgerSkin';
+import { string, func } from 'prop-types';
+import Responsive from './Responsive';
 import Icon from './lib/HamburgerIcon';
 import { animation, ie10 } from './lib/globals';
 
 const
   propTypes = {
-    skin: func,
-    breakpoint: string,
-    children: element.isRequired,
+    icon: func,
     size: string,
     color: string,
     bgColor: string,
   },
   defaultProps = {
-    skin: Skin,
     icon: Icon,
-    breakpoint: '768px',
     size: '28px',
     color: '#fff',
     bgColor: '#808080',
@@ -35,74 +31,28 @@ class Hamburger extends React.Component {
 
   constructor(props) {
     super(props);
-    this.mql = false;
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.icon = this.icon.bind(this);
-    this.content = this.content.bind(this);
-    this.state = {
-      match : true,
-      isClicked: false,
-    };
-  }
-
-  handleChange(e) {
-    this.setState({ match: e.matches, collapse: !e.matches });
-  }
-
-  handleClick() {
-    this.setState({ isClicked: !this.state.isClicked });
-  }
-
-  newQuery(query) {
-    this.componentWillUnMount();
-    if ('matchMedia' in window) {
-      this.mql = window.matchMedia(`(min-width: ${this.props.breakpoint})`);
-      this.handleChange(this.mql);
-      this.mql.addListener(this.handleChange);
-    }
+    this.effect = this.effect.bind(this);
+    this.getStyles = this.getStyles.bind(this);
   }
 
   icon(props) {
-    return this.props.icon( this.state.isClicked, this.props.size, this.props.color,
-                            this.props.bgColor, animation, this.handleClick, props, );
+    return this.props.icon( this.responsive.state.isClicked, this.props.size, this.props.color,
+                            this.props.bgColor, animation, this.responsive.handleClick, props, );
   }
 
-  componentWillUnMount() {
-    if (this.mql)
-      this.mql.removeListener(this.handleChange);
+  above({ content, flex }) {
+    return content({ style: flex('row') });
   }
 
-  componentDidMount() {
-    this.newQuery(this.props.query);
-  }
-
-  componentWillReceiveProps({ query }) {
-    this.newQuery(query);
-  }
-
-  content({ style, className, ...props } = {}) {
-    const
-      child = React.Children.only(this.props.children),
-      grandChild = React.Children.only(child.props.children),
-      newProps = {...grandChild.props, ...props};
-    return <child.type
-      {...child.props}
-      disabled={this.state.match}
-      collapse
-      force
-      when={this.state.match || this.state.isClicked}
-      children={
-        <grandChild.type
-          {...newProps}
-          style={{ ...newProps.style, ...style }}
-          //className={ newProps.className ? newProps.className + ' ' + className : className }
-          className={ (newProps.className||'') + (newProps.className&&className?' ':'') + (className||'')}
-          children={grandChild.props.children}
-          onClick={this.handleClick}
-        />
-      }
-    />;
+  below({ content, defaultStyles, icon }) {
+    const styles = defaultStyles();
+    return (
+      <div style={styles.container} /* className="your-class" */>
+        {icon({ style: styles.icon /* className: 'your-class' */ })}
+        {content({ style: styles.content /* className: 'your-class' */ })}
+      </div>
+    );
   }
 
   flex(mainAxis = 'row') {
@@ -132,26 +82,35 @@ class Hamburger extends React.Component {
         width: this.props.size,
         alignSelf: 'flex-end',
       },
-      activeContent: {
+      content: {
         marginTop: '0.375rem'
       },
-      inactiveContent: this.flex('row'),
+    };
+  }
+
+  effect(state) {
+    //console.log(this.state);
+    return {
+      force: true,
+      disabled: state.match,
     };
   }
 
   render() {
-    return <this.props.skin
-      {...this.props}
-      isActive={!this.state.match}
-      content={this.content}
-      icon={this.icon}
-      handleClick={this.handleClick}
-      styles={this.getStyles()}
-      flex={this.flex}
-      ie10={ie10}
-    />;
+    return (
+      <Responsive
+        above={this.above}
+        below={this.below}
+        {...this.props}
+        icon={this.icon}
+        effect={this.effect}
+        defaultStyles={this.getStyles}
+        flex={this.flex}
+        ie10={ie10}
+        ref={ el => this.responsive = el}
+      />
+    );
   }
-
 }
 
 Hamburger.propTypes = propTypes;
