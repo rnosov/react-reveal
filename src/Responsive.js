@@ -45,7 +45,7 @@ class Responsive extends React.Component {
   }
 
   handleChange(e) {
-    this.setState({ match: e.matches });
+    this.setState({ match: e.matches, isClicked: false });
   }
 
   //scrollRef(node) {
