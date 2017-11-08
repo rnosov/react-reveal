@@ -85,29 +85,29 @@ class Responsive extends React.Component {
 
   content({ effect, style, className, props } = {}) {
     const
-      child = React.Children.only(this.props.children),
-      grandChild = React.Children.only(child.props.children);
-      //newProps = {...grandChild.props, ...props};
-      //if (!this.state.match && !this.state.isClicked && this.scrollNode)
-      //  this.scrollNode.scrollIntoView({ behavior: 'smooth' });
+      child = React.Children.only(this.props.children);
+      //grandChild = React.Children.only(child.props.children);
     return <child.type
       {...child.props}
       {...effect}
       {...this.props.effect?this.props.effect(this.state):void 0}
       collapse
       when={this.state.match || this.state.isClicked}
-      children={
-        <grandChild.type
-          {...grandChild.props}
-          style={{ ...grandChild.props.style, ...style }}
-          className={ ((grandChild.props.className||'') + (grandChild.props.className&&className?' ':'') + (className||''))|| void 0}
-          //style={{ ...newProps.style, ...style }}
-          //className={ (newProps.className||'') + (newProps.className&&className?' ':'') + (className||'')}
-          onClick={this.handleClick}
-          {...props}
-          children={grandChild.props.children}
-        />
-      }
+      className={className}
+      style={style}
+      props={props}
+      //children={
+      //  <grandChild.type
+      //    {...grandChild.props}
+      //    style={{ ...grandChild.props.style, ...style }}
+      //    className={ ((grandChild.props.className||'') + (grandChild.props.className&&className?' ':'') + (className||''))|| void 0}
+      //    //style={{ ...newProps.style, ...style }}
+      //    //className={ (newProps.className||'') + (newProps.className&&className?' ':'') + (className||'')}
+      //    onClick={this.handleClick}
+      //    {...props}
+      //    children={grandChild.props.children}
+      //  />
+      //}
     />;
   }
 

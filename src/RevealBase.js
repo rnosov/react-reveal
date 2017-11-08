@@ -38,6 +38,10 @@ const
     innerRef: func,
     in: inOut.isRequired,
     out: oneOfType([ inOut, oneOf([ false ]) ]).isRequired,
+    tag: string,
+    style: object,
+    className: string,
+    props: object,
   },
   defaultProps = {
     fraction: 0.2,
@@ -340,24 +344,34 @@ class RevealBase extends React.Component {
   }
 
   render() {
-    const child = React.Children.only(this.props.children);
-    if (this.props.disabled)
-      return child;
+    let child;
+    if (React.Children.count(this.props.children) === 1 || this.props.tag)
+      child = React.Children.only(this.props.children);
+    else {
+      console.warn('react-reveal expects a single child');
+      child = React.createElement(this.props.tag || 'div');
+    }
+    //if (this.props.disabled)
+    //  return child;
     if (typeof child.ref === 'function')
       this.childRef = child.ref;
-    const
-     { style, className, children } = child.props,
-      newClass = `${ this.props.out ? namespace : '' }${ this.state.className ? ' ' + this.state.className : '' }${ className ? ' ' + className : '' }`||void 0;
-    let newChildren = false, newStyle = {...style, ...this.state.style };
-    if (this.props.cascade && children && this.state.style.animationName) {
+    let
+      newChildren = false,
+      { style, className, children } = child.props;
+      style = { ...style, ...this.props.style };
+      className = this.props.className ? (className||'') + ' ' + this.props.className : className;
+    let
+      newClass = this.props.disabled ? className : `${ this.props.out ? namespace : '' }${ this.state.className ? ' ' + this.state.className : '' }${ className ? ' ' + className : '' }`||void 0,
+      newStyle = this.props.disabled ? style : { ...style, ...this.state.style };
+    if (this.props.cascade && !this.props.disabled && children && this.state.style.animationName) {
       newChildren = this.cascade(children);
       newStyle.animationName = void 0;
     }
-    const props = { className: newClass,  style: newStyle, [this.props.refProp]: this.saveRef };
-    if (this.props.collapse)
+    const props = { ...this.props.props, className: newClass,  style: newStyle, [this.props.refProp]: this.saveRef };
+    if (this.props.collapse && !this.props.disabled)
       props.key = 1;
     const el = React.cloneElement(child, props, newChildren||children);
-    return this.props.collapse ? this.dummy(el, child) : el;
+    return this.props.collapse && !this.props.disabled ? this.dummy(el, child) : el;
   }
 
 }
