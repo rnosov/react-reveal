@@ -1,0 +1,48 @@
+import transform from './transform'
+import errorBoundary from './errorBoundary'
+import evalCode from './evalCode'
+
+export const generateElement = (
+  { code = '', scope = {} },
+  errorCallback
+) => {
+  // NOTE: Workaround for classes, since buble doesn't allow `return` without a function
+  const transformed = transform(code)
+    .trim()
+    .replace(/^var \w+ =/, '')
+    .replace(/;$/, '')
+
+  return errorBoundary(
+    evalCode(
+      `return (${transformed})`,
+      scope
+    ),
+    errorCallback
+  )
+}
+
+export const renderElementAsync = (
+  { code = '', scope = {} },
+  resultCallback,
+  errorCallback
+) => {
+  const render = element => {
+    resultCallback(
+      errorBoundary(
+        element,
+        errorCallback
+      )
+    )
+  }
+
+  if (!/render\s*\(/.test(code)) {
+    return errorCallback(
+      new SyntaxError('No-Inline evaluations must call `render`.')
+    )
+  }
+
+  evalCode(
+    transform(code),
+    { ...scope, render }
+  )
+}

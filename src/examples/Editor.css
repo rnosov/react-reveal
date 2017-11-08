@@ -1,0 +1,64 @@
+.prism-code {
+  display: block;
+  white-space: pre;
+  padding: 0.5rem;
+  margin: 0;
+  box-sizing: border-box;
+  vertical-align: baseline;
+  outline: none;
+  text-shadow: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+  word-wrap: normal;
+  word-break: normal;
+  text-align: left;
+  word-spacing: normal;
+  -moz-tab-size: 2;
+  -o-tab-size: 2;
+  tab-size: 2;
+}
+
+.live-editor {
+	overflow-y: scroll;
+	overflow-x: auto;
+	max-height: 35rem;
+	background-color: #f6f8fa;
+	border-radius: 3px;
+}
+
+.live-editor > pre.prism-code {
+	overflow: visible;	
+}
+
+.live-preview {
+  flex-grow: 3;
+
+}
+
+.live-preview-container {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.live-preview > * {
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
+	padding: 3rem;
+	align-items: center;
+	min-height: 25rem;
+}
+
+.live-preview p {
+  font-size: 1.1rem;  
+}
+
+div.alert > pre {
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}

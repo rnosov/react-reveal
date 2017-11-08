@@ -1,0 +1,28 @@
+{
+  "name": "react-reveal-site",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://rnosov.github.io/",
+  "dependencies": {
+    "bootstrap": "^4.0.0-beta.2",
+    "gh-pages": "^1.0.0",
+    "github-markdown-css": "^2.9.0",
+    "markdown-with-front-matter-loader": "^0.1.0",
+    "prismjs": "^1.8.3",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-helmet": "^5.2.0",
+    "react-live": "^1.8.0-0",
+    "react-reveal": "file:../src/package",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.14"
+  },
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

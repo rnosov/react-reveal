@@ -1,0 +1,30 @@
+#bg {
+    position: relative;
+    background: #fff;
+    overflow: hidden;
+}
+#bg>div.container {
+    z-index: 2;
+    position: relative;
+} 
+#bg img {  
+    width: 100%;
+    height: 100%;   
+    background: #ccc;
+    opacity: 0.3;
+}
+img {
+    opacity: 0.7;
+}
+#bg>#img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;   
+}
+
+#bg a{
+  color: #336;  
+}
