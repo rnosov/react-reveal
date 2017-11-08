@@ -239,22 +239,20 @@ class RevealBase extends React.Component {
     if (!this||!this.el) return;
     if (!props)
       props = this.props;
-    if ( this.inViewport() ) {
+    if ( props.when && this.isShown && 'spy' in props ){
+        this.isShown = false;
+        this.setState({ style: {} });
+        //window.setTimeout( () => this.animate.call(this, props), 200 );
+        window.setTimeout( () => this.reveal(props), 200 );
+    } else if ( this.inViewport() ) {
       if (this.start) {
         this.hide();
         this.listen();
         this.start(this.step);
         return;
       }
-      if ( props.when && this.isShown && 'spy' in props ){
-        this.isShown = false;
-        this.setState({ style: {} });
-        window.setTimeout( () => this.animate.call(this, props), 200 );
-      }
-      else
-        this.animate(props);
-    }
-    else
+      this.animate(props);
+    } else
       this.listen();
   }
 
