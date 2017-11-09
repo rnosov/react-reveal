@@ -58,13 +58,7 @@ class RevealBase extends React.Component {
     super(props);
     this.state = {
       style: {
-        ...(props.collapse
-          ? {
-            visibility: props.when || !props.out ? 'visible' : 'hidden',
-            height: 0,
-            //margin: 0, padding: 0, border: '1px solid transparent',
-            boxSizing: 'border-box',
-          }: void 0),
+        ...(props.collapse ? RevealBase.getInitialCollapseStyle(props): void 0),
         opacity: !props.when && props.out ? 0 : void 0,
       },
     };
@@ -194,6 +188,7 @@ class RevealBase extends React.Component {
         animationDelay: `${inOut.delay}ms`,
         animationIterationCount: inOut.forever ? 'infinite' : inOut.count,
         opacity: 1,
+        //visibility: 'visible',
         animationName,
       }, props, inOut),
       className: inOut.className,
@@ -313,9 +308,23 @@ class RevealBase extends React.Component {
     return newChildren;
   }
 
+  static getInitialCollapseStyle(props) {
+    return {
+          visibility: props.when || !props.out ? 'visible' : 'hidden',
+          height: 0,
+          boxSizing: 'border-box',
+    };
+  }
+
   componentWillReceiveProps (props) {
     if (props.disabled)
       return;
+    //if (props.responsive && !props.when && this.props.when && props.collapse && !this.props.collapse) {
+    if (props.collapse && !this.props.collapse) {
+      this.setState({ style: RevealBase.getInitialCollapseStyle(props)});
+      this.isShown = false;
+      return;
+    }
     if ( props.when && props.collapse === true && this.dummyEl && this.dummyEl.offsetHeight && this.state.style.height !== this.dummyEl.offsetHeight )
       this.setState({ style: { ...this.state.style, height: this.dummyEl.offsetHeight } });
     if ( (props.when !== this.props.when) || (props.spy !== this.props.spy))
@@ -355,7 +364,7 @@ class RevealBase extends React.Component {
   }
 
   getChild() {
-    if (this.savedChild)
+    if (this.savedChild && !this.props.disabled)
       return this.savedChild;
     else if (React.Children.count(this.props.children) === 1 || this.props.tag)
       return React.Children.only(this.props.children);
