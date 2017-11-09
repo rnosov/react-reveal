@@ -24,7 +24,7 @@ const
     reverse: bool,
   }),
   propTypes = {
-    when: bool,
+    when: any,
     spy: any,
     collapse: oneOfType([bool, shape({ height: string })]),
     wait: number,
@@ -68,6 +68,7 @@ class RevealBase extends React.Component {
         opacity: !props.when && props.out ? 0 : void 0,
       },
     };
+    this.savedChild = false;
     this.isListener = false;
     //this.isShown = !!this.props.bypass;
     this.isShown = false;
@@ -121,7 +122,10 @@ class RevealBase extends React.Component {
   }
 
   invisible() {
-    if (this && this.el && !this.isShown) {
+    if (!this || !this.el)
+      return;
+    this.savedChild = false;
+    if (!this.isShown) {
       this.setState( { style: { ...this.state.style, visibility: 'hidden' }/*, collapsing: false */});
       if (this.props.collapse)
         window.document.dispatchEvent(collapseend)
@@ -177,7 +181,9 @@ class RevealBase extends React.Component {
     if (this.isShown === !!props.when)
       return;
     this.isShown = !!props.when;
-    const inOut = props[props.when || !props.out ?'in':'out'];
+    const leaving = !props.when && props.out,
+          inOut = props[leaving ? 'out' : 'in'];
+    //const inOut = props[props.when || !props.out ?'in':'out'];
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
     if ((props.out||props.when) && inOut.make)
         animationName = inOut.make();
@@ -191,17 +197,15 @@ class RevealBase extends React.Component {
         animationName,
       }, props, inOut),
       className: inOut.className,
-  });
-    if(!props.when && props.out)
+    });
+    if (leaving) {
+      this.savedChild = React.cloneElement(this.getChild());
       this.animationEnd( this.invisible, props.cascade, inOut);
+    }
+    else
+      this.savedChild = false;
     this.onReveal(props);
   }
-
-  //shouldComponentUpdate(props, state) {
-  //  if (!this.props.when && !props.when && state.style.visibility !== 'hidden')
-  //    return false;
-  //  return true;
-  //}
 
   onReveal(props) {
     if (props.onReveal && props.when) {
@@ -218,15 +222,14 @@ class RevealBase extends React.Component {
       window.document.removeEventListener('visibilitychange', this.revealHandler);
       window.document.removeEventListener('collapseend', this.revealHandler);
       window.removeEventListener('resize', this.resizeHandler);
-      if(this.onRevealTimeout)
-        this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
-      if (this.animationEndTimeout)
-        this.animationEndTimeout = window.clearTimeout(this.animationEndTimeout);
-      //if (this.animationEndHandler)
-      //   this.animationEndEl.removeEventListener('animationend', this.animationEndHandler);
-
       this.isListener = false;
     }
+    if(this.onRevealTimeout)
+      this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
+    if (this.animationEndTimeout)
+      this.animationEndTimeout = window.clearTimeout(this.animationEndTimeout);
+    //if (this.animationEndHandler)
+    //   this.animationEndEl.removeEventListener('animationend', this.animationEndHandler);
   }
 
   componentWillUnmount() {
@@ -313,7 +316,7 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if (props.disabled)
       return;
-    if ( props.when && props.collapse === true && this.dummyEl && this.dummyEl.offsetHeight && this.state.style.height != this.dummyEl.offsetHeight )
+    if ( props.when && props.collapse === true && this.dummyEl && this.dummyEl.offsetHeight && this.state.style.height !== this.dummyEl.offsetHeight )
       this.setState({ style: { ...this.state.style, height: this.dummyEl.offsetHeight } });
     if ( (props.when !== this.props.when) || (props.spy !== this.props.spy))
       this.reveal(props);
@@ -351,14 +354,20 @@ class RevealBase extends React.Component {
     ]}</span>);
   }
 
-  render() {
-    let child;
-    if (React.Children.count(this.props.children) === 1 || this.props.tag)
-      child = React.Children.only(this.props.children);
+  getChild() {
+    if (this.savedChild)
+      return this.savedChild;
+    else if (React.Children.count(this.props.children) === 1 || this.props.tag)
+      return React.Children.only(this.props.children);
     else {
       console.warn('react-reveal expects a single child');
-      child = React.createElement(this.props.tag || 'div');
+      return React.createElement(this.props.tag || 'div');
     }
+  }
+
+  render() {
+    let child = this.getChild();
+
     //if (this.props.disabled)
     //  return child;
     if (typeof child.ref === 'function')
