@@ -197,6 +197,12 @@ class RevealBase extends React.Component {
     this.onReveal(props);
   }
 
+  //shouldComponentUpdate(props, state) {
+  //  if (!this.props.when && !props.when && state.style.visibility !== 'hidden')
+  //    return false;
+  //  return true;
+  //}
+
   onReveal(props) {
     if (props.onReveal && props.when) {
       if (this.onRevealTimeout)
@@ -307,6 +313,8 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if (props.disabled)
       return;
+    if ( props.when && props.collapse === true && this.dummyEl && this.dummyEl.offsetHeight && this.state.style.height != this.dummyEl.offsetHeight )
+      this.setState({ style: { ...this.state.style, height: this.dummyEl.offsetHeight } });
     if ( (props.when !== this.props.when) || (props.spy !== this.props.spy))
       this.reveal(props);
     //(props.onReveal !== this.props.onReveal) &&
