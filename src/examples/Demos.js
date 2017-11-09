@@ -23,9 +23,9 @@ const
   nav = navMap({ prefix, linkClass, itemClass }, [
 		{title: 'Common'},
 		{title: 'Specials'},
-		{title: 'Advanced'},
-		{title: 'Responsive'},
-		{title: 'Carousel'},
+		//{title: 'Advanced'},
+		//{title: 'Responsive'},
+		//{title: 'Carousel'},
 ]);
 
 class Demos extends React.Component {

@@ -290,7 +290,12 @@ ${this.state.change?'':' '}
       <Page scroll title={name}>
         <div style={{ minHeight: '100vh' }}>
           <Editor importName={name} menu={this.menu()}>{this.code(name)}</Editor>
-          <p className="lead mt-5">The following is the stress test for the chosen effect. A 100 paragraphs of lorem ipsum text will be revealed as you scroll down. To reset the test select an option from the button toolbar above. The following whitespace is intentionally left blank. Scroll down to begin stress test. </p>
+          <p className="lead mt-5">
+            The following is the stress test for the chosen effect.
+            A 100 paragraphs of lorem ipsum text will be revealed as you scroll down.
+            To reset the test select an option from the button toolbar above.
+            The following whitespace is intentionally left blank. Scroll down to begin stress test.
+          </p>
         </div>
         <StressTest name={name} effect={effect} dir={this.state.dir} change={this.state.change} opposite={this.state.opposite} out={this.state.out} />
       </Page>

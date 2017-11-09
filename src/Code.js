@@ -9,16 +9,36 @@
 
 import React from 'react';
 import Prism from 'prismjs';
+import { withRouter } from 'react-router-dom';
+
 import 'prismjs/components/prism-jsx.min';
 import 'prismjs/themes/prism.css';
 import 'github-markdown-css';
 
 class Code extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.handleLink = this.handleLink.bind(this);
+  }
+
+  handleLink(e) {
+    const href = e.target.getAttribute('href');
+    if (href[0]==='/') {
+      this.props.history.push(e.target.getAttribute('href'));
+      e.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
 	componentDidMount() {
     window.document.querySelectorAll('code').forEach((block) => {
 			Prism.highlightElement(block);
 		});
+    window.document.querySelectorAll('.markdown-body a').forEach((block) => {
+      block.onclick = this.handleLink;
+    });
 	}
 
 	render() {
@@ -29,4 +49,4 @@ class Code extends React.Component {
 
 }
 
-export default Code;
+export default withRouter(Code);

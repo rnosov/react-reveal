@@ -40,7 +40,7 @@ function Header() {
 		  			    <a className="nav-link" href="https://github.com/rnosov/react-reveal">Github</a>
 		  			  </li>
 		  			  <li className="nav-item">
-		  			    <a className="nav-link" href="https://github.com/rnosov/react-reveal-demo">Site Source</a>
+		  			    <a className="nav-link" href="https://github.com/rnosov/react-reveal/tree/site">Site Source</a>
 		  			  </li>
 		  			</ul>
 		  		</div>
@@ -50,8 +50,5 @@ function Header() {
 		</div>
 	);
 }
-				  //<li className="nav-item">
-				  //  <NavLink exact className="nav-link" to="/demos/" activeClassName="active">Home</NavLink>
-				  //</li>
 
 export default Header;

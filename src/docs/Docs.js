@@ -23,14 +23,14 @@ const
   nav = navMap({ prefix, linkClass }, [
     { title: 'Introduction'         , to: indexPath },
     { title: 'Upgrading'            , to: 'upgrading' },
-    { title: 'Standard Effects'     , to: 'standard' },
-    { title: 'Special Effects'      , to: 'special' },
+    { title: 'Common Effects'       , to: 'common' },
+    { title: 'Special Effects'      , to: 'specials' },
     { title: 'Custom Effects'       , to: 'custom' },
     { title: 'Base Props'           , to: 'base' },
-    { title: 'Stepped Animations'   , to: 'stepper' },
-    { title: 'Collapse Effect'      , to: 'collapse' },
     { title: 'Cascade Effect'       , to: 'cascade' },
-    { title: 'Responsive Hamburger' , to: 'responsive' },
+    //{ title: 'Collapse Effect'      , to: 'collapse' },
+    //{ title: 'Stepped Animations'   , to: 'stepper' },
+    //{ title: 'Responsive Hamburger' , to: 'responsive' },
   ]);
 
 
@@ -109,8 +109,3 @@ class Docs extends React.Component {
 }
 
 export default Docs;
-
-//const blogIndex = (blogs) => () => <ul>{[...blogs.keys()].map(path => <li key={path}><Link to={'/'+path}>{blogs.get(path).title || path}</Link></li>)}</ul>;
-//const blogWrapper = ({ content }) => () => <div><Link to='/'>« Back to blog</Link><hr /><div className='markdown-body' dangerouslySetInnerHTML={{html: __content}}></div></div>;
-
-//let index = require('!markdown-with-front-matter!./index.md');
