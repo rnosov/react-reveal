@@ -21,8 +21,9 @@ gulp.task('clean', function () {
   return gulp.src([
     './index.js',
     './RevealBase.js',
-    './Hamburger.js',
-    './Responsive.js',
+    './hamburger.js',
+    './withReveal.js',
+    './responsive.js',
     './HamburgerIcon.js',
     './Carousel.js',
     './CarouselSkin.js',

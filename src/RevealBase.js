@@ -38,10 +38,10 @@ const
     innerRef: func,
     in: inOut.isRequired,
     out: oneOfType([ inOut, oneOf([ false ]) ]).isRequired,
-    tag: string,
-    style: object,
-    className: string,
-    props: object,
+    //tag: string,
+    //style: object,
+    //className: string,
+    //props: object,
   },
   defaultProps = {
     fraction: 0.2,
@@ -366,17 +366,17 @@ class RevealBase extends React.Component {
   getChild() {
     if (this.savedChild && !this.props.disabled)
       return this.savedChild;
-    else if (React.Children.count(this.props.children) === 1 || this.props.tag)
+    else if (React.Children.count(this.props.children) === 1 /*|| this.props.tag*/)
       return React.Children.only(this.props.children);
     else {
       console.warn('react-reveal expects a single child');
-      return React.createElement(this.props.tag || 'div');
+      //return React.createElement(this.props.tag || 'div');
+      return React.createElement('div');
     }
   }
 
   render() {
     let child = this.getChild();
-
     //if (this.props.disabled)
     //  return child;
     if (typeof child.ref === 'function')
@@ -384,8 +384,8 @@ class RevealBase extends React.Component {
     let
       newChildren = false,
       { style, className, children } = child.props;
-      style = { ...style, ...this.props.style };
-      className = this.props.className ? (className||'') + ' ' + this.props.className : className;
+      //style = { ...style, ...this.props.style };
+      //className = this.props.className ? (className||'') + ' ' + this.props.className : className;
     let
       newClass = this.props.disabled ? className : `${ this.props.out ? namespace : '' }${ this.state.className ? ' ' + this.state.className : '' }${ className ? ' ' + className : '' }`||void 0,
       newStyle = this.props.disabled ? style : { ...style, ...this.state.style };

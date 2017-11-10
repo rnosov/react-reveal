@@ -12,8 +12,8 @@ import React from 'react';
 function withReveal(WrappedComponent, Effect, config) {
   return function(props) {
 
-    function reveal(node) {
-      return <Effect {...config} {...props}>{node}</Effect>;
+    function reveal(node, params) {
+      return <Effect {...props} {...config} {...params}>{node}</Effect>;
     }
 
     return (

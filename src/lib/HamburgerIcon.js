@@ -10,10 +10,10 @@
 
 import React from 'react';
 
-function HamburgerIcon( toggle, size, color, bgColor, animation, handleClick, props) {
+function HamburgerIcon( toggle, animation, handleClick,
+  { color = '#fff', size = 28, style,  ...props} = { color: '#fff', size: 28, style: { backgroundColor: '#808080' }} ) {
   const
-    common = { opacity: 1, stroke: color, transition: 'transform 0.3s'
-  },
+    common = { opacity: 1, stroke: color, transition: 'transform 0.3s' },
     flip = `
       15% {
         opacity: 0.8;
@@ -28,24 +28,17 @@ function HamburgerIcon( toggle, size, color, bgColor, animation, handleClick, pr
       }
     `,
     hamburger = {
-      color: '#fff',
       cursor: 'pointer',
-      animationName: !toggle?void 0:animation(flip),
-      animationDuration: !toggle?void 0:'900ms',
-      animationFillMode: !toggle?void 0:'forwards',
+      animationName: !toggle ? void 0 : animation(flip),
+      animationDuration: !toggle ? void 0 : '900ms',
+      animationFillMode: !toggle ? void 0 : 'forwards',
     },
-    a = {...common,
-      transform: !toggle?void 0:'translate(0, 7px)',
-    },
-    b = {...common,
-      transform: !toggle?'rotate(0deg)':'translate(20px, -4px) rotate(90deg)',
-    },
-    c = {...common,
-      transform: !toggle?void 0:'translate(0, -7px)',
-    };
+    a = { ...common, transform: !toggle?void 0:'translate(0, 7px)' },
+    b = { ...common, transform: !toggle?'rotate(0deg)':'translate(20px, -4px) rotate(90deg)' },
+    c = { ...common, transform: !toggle?void 0:'translate(0, -7px)' };
     //viewBox="0 0 24 16"
   return (
-    <div {...props} onClick={handleClick}>
+    <div style={{ ...style, width: size, height: size }} {...props} onClick={handleClick}>
       <svg style={hamburger} width={size} height={size} id="hamburger" viewBox="-4 0 32 16">
         <line style={a} fill="none" stroke={color} strokeWidth="2" x1="0" y1="1" x2="24" y2="1" />
         <line style={b} fill="none" stroke={color} strokeWidth="2" x1="0" y1="8" x2="24" y2="8" />
