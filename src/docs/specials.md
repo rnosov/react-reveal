@@ -3,10 +3,11 @@ title: Specials
 ---
 
 Simple effects designed to attract attention. For many effects to work properly they need 
-to be near the centre of their bounding box. In order to see how are they supposed to look like
-[check the demo](/examples/specials/)
+to be near the centre of their bounding box. 
 
 ### Flash
+
+[Live demo](/examples/specials/flash/)
 
 ```jsx
 import Flash from 'react-reveal/Flash';
@@ -20,6 +21,8 @@ import Flash from 'react-reveal/Flash';
 
 ### HeadShake
 
+[Live demo](/examples/specials/headshake/)
+
 ```jsx
 import HeadShake from 'react-reveal/HeadShake';
 
@@ -31,6 +34,8 @@ import HeadShake from 'react-reveal/HeadShake';
 ```
 
 ### Jello
+
+[Live demo](/examples/specials/jello/)
 
 ```jsx
 import Jello from 'react-reveal/Jello';
@@ -44,6 +49,8 @@ import Jello from 'react-reveal/Jello';
 
 ### Jump
 
+[Live demo](/examples/specials/jump/)
+
 ```jsx
 import Jump from 'react-reveal/Jump';
 
@@ -55,6 +62,8 @@ import Jump from 'react-reveal/Jump';
 ```
 
 ### Pulse
+
+[Live demo](/examples/specials/pulse/)
 
 ```jsx
 import Pulse from 'react-reveal/Pulse';
@@ -68,6 +77,8 @@ import Pulse from 'react-reveal/Pulse';
 
 ### RubberBand
 
+[Live demo](/examples/specials/rubberband/)
+
 ```jsx
 import RubberBand from 'react-reveal/RubberBand';
 
@@ -79,6 +90,8 @@ import RubberBand from 'react-reveal/RubberBand';
 ```
 
 ### Shake
+
+[Live demo](/examples/specials/shake/)
 
 ```jsx
 import Shake from 'react-reveal/Shake';
@@ -92,6 +105,8 @@ import Shake from 'react-reveal/Shake';
 
 ### Spin
 
+[Live demo](/examples/specials/spin/)
+
 ```jsx
 import Spin from 'react-reveal/Spin';
 
@@ -103,6 +118,8 @@ import Spin from 'react-reveal/Spin';
 ```
 
 ### Swing
+
+[Live demo](/examples/specials/swing/)
 
 ```jsx
 import Swing from 'react-reveal/Swing';
@@ -116,6 +133,8 @@ import Swing from 'react-reveal/Swing';
 
 ### Tada
 
+[Live demo](/examples/specials/tada/)
+
 ```jsx
 import Tada from 'react-reveal/Tada';
 
@@ -127,6 +146,8 @@ import Tada from 'react-reveal/Tada';
 ```
 
 ### Wobble
+
+[Live demo](/examples/specials/wobble/)
 
 ```jsx
 import Wobble from 'react-reveal/Wobble';

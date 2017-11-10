@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import Editor from './Editor';
 import Page from '../Page';
 import navMap from '../navigation/navMap';
@@ -148,6 +148,7 @@ ${this.state.change?'':' '}
     const { name } = this.props;
     return (
       <Page scroll title={name}>
+        <Link to="/docs/specials/">Documentation</Link>
         <Editor importName={name} menu={this.menu()}>{this.code(name)}</Editor>
       </Page>
     );

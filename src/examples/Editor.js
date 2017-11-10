@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { LiveProvider, LiveEditor, LivePreview} from '../react-live/';
+import { LiveProvider, LiveEditor, LivePreview} from '../vendor/react-live/';
 import './Editor.css'
 
 import Fade from 'react-reveal/Fade';
@@ -69,17 +69,15 @@ class Example extends React.Component {
 		return (
 			<LiveProvider transformCode={ (code) => this.truncate(code) } scope={scope} code={code} mountStylesheet={false}>
 			  <div className="row no-gutters" >
-			  	<div className="col-6 live-editor" ref={ (node) => this.node = node } >
-			  		<LiveEditor style={{ paddingTop: '0px'}} />
+			  	<div className="col-12 col-md-6 order-md-2">
+			  	  <div className="live-preview-container" >
+			  	    <div>{this.props.menu}</div>
+			  	  	<LivePreview className="live-preview" />
+			  	  </div>
 			  	</div>
-			  	<div className="col-6">
-			  	<div className="live-preview-container" >
-			  	<div>
-			  		{this.props.menu}
-			  	</div>
-			  		<LivePreview className="live-preview" />
-			  	</div>
-			  	</div>
+          <div className="col-12 col-md-6 order-md-1 live-editor" ref={ (node) => this.node = node } >
+            <LiveEditor style={{ paddingTop: '0px'}} />
+          </div>
 			 	</div>
 			</LiveProvider>
 		);

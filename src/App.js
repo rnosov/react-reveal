@@ -14,7 +14,7 @@ import Header from './navigation/Header';
 import Footer from './navigation/Footer';
 import NoMatch from './navigation/NoMatch';
 import Home from './home/Home';
-import Docs from './docs/Docs';
+import Docs from './docs/components/Docs';
 import Demos from './examples/Demos';
 import './App.css';
 
