@@ -1,5 +1,5 @@
 /*
- * Hamburger Component For react-reveal
+ * Hamburger Higher Order Component For react-reveal
  *
  * Copyright © Roman Nosov 2017
  *
