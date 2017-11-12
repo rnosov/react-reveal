@@ -1,0 +1,58 @@
+.carousel {
+	position: relative;
+  overflow: hidden;
+  //height: 500px;
+}
+
+.carousel img {
+  width:100%; /* you can use % */
+  height: 400px;
+}
+
+
+.carousel-children {
+  width: 100%;
+	position: relative;
+	height: 400px;
+}
+
+.carousel-dots {
+	text-align: center;
+  //position: absolute;
+  //top: 400px;
+  width: 100%;
+  z-index: 100;
+}
+
+.carousel-dot {
+	font-size: 1.5em;
+	cursor: pointer;
+	text-shadow: 1px 1px 1px #fff;
+}
+
+.carousel-arrow {
+  text-shadow: 1px 1px 1px #fff;
+  z-index: 100;
+	line-height: 400px;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  width: 10%;
+  font-size: 4em;
+  cursor: pointer;
+  //z-index: 100;
+  user-select: none;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.carousel-next {
+  left: 90%;
+}
+
+.carousel-prev {
+  left: 0%;
+}

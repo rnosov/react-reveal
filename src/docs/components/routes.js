@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Article from './Article';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import 'markdown-with-front-matter-loader';
 
 function makeRoutes(prefix, indexPath)  {
@@ -23,7 +23,7 @@ function makeRoutes(prefix, indexPath)  {
       render={ () => <Article title={docs.get(path).title} content={docs.get(path).__content} /> }
     />));
   routes.push(<Route key="NoMatch" render={ () => <Article title="Not Found" content="Article not found" />} />);
-  return routes;
+  return <Switch>{routes}</Switch>;
 }
 
 export default makeRoutes;

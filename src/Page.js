@@ -35,13 +35,20 @@ class Page extends React.Component {
     	window.dataLayer.push(arguments);
 	}
 
-	static scroll(){
-	    var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
-	    if (currentScroll > 0) {
-	      window.requestAnimationFrame(Page.scroll);
-	      window.scrollTo (0,currentScroll - (currentScroll/5));
-	    }
-	}
+  static smoothScroll() {
+      var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      if (currentScroll > 0) {
+        window.requestAnimationFrame(Page.smoothScroll);
+        window.scrollTo (0,currentScroll - (currentScroll/5));
+      }
+  }
+
+  static scroll() {
+    if ('requestAnimationFrame' in window)
+      Page.smoothScroll();
+    else
+      window.scrollTo (0, 0);
+  }
 
 	render() {
 		const { className, title, children } = this.props;

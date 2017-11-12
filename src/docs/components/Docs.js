@@ -10,7 +10,6 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import makeRoutes from './routes';
-import { Switch } from 'react-router-dom';
 import navMap from '../../navigation/navMap';
 
 const
@@ -39,9 +38,7 @@ function Docs () {
           <Sidebar items={nav} />
         </div>
         <div className="col-12 col-md-8 order-md-1 mt-md-4">
-          <Switch>
-            {routes}
-          </Switch>
+          {routes}
         </div>
       </div>
     </div>

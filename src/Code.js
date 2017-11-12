@@ -33,12 +33,18 @@ class Code extends React.Component {
   }
 
 	componentDidMount() {
-    window.document.querySelectorAll('code').forEach((block) => {
-			Prism.highlightElement(block);
-		});
-    window.document.querySelectorAll('.markdown-body a').forEach((block) => {
-      block.onclick = this.handleLink;
-    });
+    const codes = window.document.querySelectorAll('code');
+    for (let i = 0, len = codes.length; i < len; i++)
+      Prism.highlightElement(codes[i]);
+    const linkes = window.document.querySelectorAll('.markdown-body a');
+    for (let i = 0, len = linkes.length; i < len; i++)
+      linkes[i].onclick = this.handleLink;
+    //window.document.querySelectorAll('code').forEach((block) => {
+		//	Prism.highlightElement(block);
+		//});
+    //window.document.querySelectorAll('.markdown-body a').forEach((block) => {
+    //  block.onclick = this.handleLink;
+    //});
 	}
 
 	render() {
