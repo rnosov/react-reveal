@@ -3,7 +3,8 @@ node_modules
 npm-debug.log
 /RevealBase.js
 /Carousel.js
-/CarouselSkin.js
+/makeCarousel.js
+/swipedetect.js
 /hamburger.js
 /responsive.js
 /withReveal.js

@@ -17,18 +17,22 @@ function makeCarousel(WrappedComponent, config = {}) {
 
   return class extends React.Component {
 
-    static  propTypes = {
-      children: node.isRequired,
-      defaultWait: number,
-      maxTurns: number,
-      swipe: bool,
-    };
+    static get propTypes() {
+      return {
+        children: node.isRequired,
+        defaultWait: number,
+        maxTurns: number,
+        swipe: bool,
+      };
+    }
 
-    static defaultProps = {
-      defaultWait: 5000,
-      maxTurns: 2,
-      swipe: true,
-    };
+    static get defaultProps() {
+      return {
+        defaultWait: 5000,
+        maxTurns: 2,
+        swipe: true,
+      };
+    }
 
     constructor(props) {
       super(props);
