@@ -27,6 +27,7 @@ const
     when: any,
     spy: any,
     collapse: oneOfType([bool, shape({ height: string })]),
+    cascade: bool,
     wait: number,
     step: oneOfType([instanceOf(Step), string]),
     force: bool,
@@ -148,17 +149,26 @@ class RevealBase extends React.Component {
       //    //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
   collapse(style, props, inOut) {
     if (props.collapse&&props.out) {
-      const total = inOut.duration + (props.cascade ? ( props.cascade === true ? 1000 : props.cascade) : 0),
-            delta = total>>2,
-            duration = props.when ? delta : total - delta,
-            delay = inOut.delay + (props.when ? 0 : delta),
+      const total = inOut.duration + (props.cascade ? inOut.duration : 0),
+      //      delta = total>>2,
+      //      duration = props.when ? delta : total - delta,
+      //      delay = inOut.delay + (props.when ? 0 : delta),
+            delta1 = total>>2,
+            delta2 = delta1>>1,
+            duration = delta1, // + (props.when ? 0 : delta2),
+            delay = inOut.delay + (props.when ? 0 : total - delta1 - delta2),
+            animationDuration = `${total - delta1 + (props.when ? delta2 : -delta2)}ms`,
+            animationDelay = `${inOut.delay + (props.when ? delta1 - delta2 : 0)}ms`,
             height = props.when ? ( props.collapse !== true && 'height' in props.collapse ? props.collapse.height : ((this.dummyEl&&this.dummyEl.offsetHeight) || false)) : 0;
             //console.log(this.dummyEl.marginTop);
             //margin = props.when ? : 0;
+      //console.log(duration, delay, animationDuration, animationDelay);
       if (height !== false)
         return {
             ...style,
             height,
+            animationDuration,
+            animationDelay,
             //margin: 0, padding: 0, border: '1px solid transparent',
             boxSizing: 'border-box',
             transition: `height ${duration}ms ease ${delay}ms`,
@@ -291,9 +301,14 @@ class RevealBase extends React.Component {
         }
         else
           newChildren = React.Children.toArray(children);
-    const duration = this.props[this.props.when || !this.props.out ?'in':'out'].duration,
+    let duration = this.props[this.props.when || !this.props.out ?'in':'out'].duration,
           count = newChildren.length - 1,
-          total =  duration + ( this.props.cascade === true ? 1000 : this.props.cascade);
+          total = duration*2;
+    if (this.props.collapse) {
+      total = parseInt(this.state.style.animationDuration, 10);
+      duration = total/2;
+    }
+    //total =  duration + ( this.props.cascade === true ? 1000 : this.props.cascade);
     //let i = reverse ? count : 0;
     let i = 0;
     newChildren = newChildren.map( child =>
