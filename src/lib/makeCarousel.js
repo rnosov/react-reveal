@@ -28,9 +28,9 @@ function makeCarousel(WrappedComponent, config = {}) {
 
     static get defaultProps() {
       return {
-        defaultWait: 5000,
-        maxTurns: 2,
-        swipe: true,
+        defaultWait: config.defaultWait || 5000,
+        maxTurns: config.maxTurns || 2,
+        swipe: config.swipe || true,
       };
     }
 
@@ -54,7 +54,7 @@ function makeCarousel(WrappedComponent, config = {}) {
     }
 
     handleReveal() {
-      if (this.turn >= (config.maxTurns || this.props.maxTurns))
+      if (this.turn >= this.props.maxTurns)
         return;
       this.move(this.state.current + 1);
     }
@@ -92,7 +92,9 @@ function makeCarousel(WrappedComponent, config = {}) {
     }
 
     componentDidMount() {
-      swipedetect(this.node, this.handleSwipe );
+      //swipedetect(this.node, this.handleSwipe );
+      swipedetect(this.beforeNode, this.handleSwipe );
+      swipedetect(this.afterNode, this.handleSwipe );
     }
 
     render() {
@@ -112,21 +114,20 @@ function makeCarousel(WrappedComponent, config = {}) {
           position={current}
           handleClick={this.target}
           total={count}
-          children={
-          <div ref={ node => this.node = node }>
-            <div key={1} style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 1 : 2 }}>
+          children={[
+            <div ref={ node => this.beforeNode = node } key={1} style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 1 : 2 }}>
               <before.type
-                    wait={config.defaultWait || this.props.defaultWait}
+                    wait={this.props.defaultWait}
                     {...before.props}
                     opposite
                     when={!swap}
                     mirror={backwards}
                     onReveal={!swap ? this.handleReveal : void 0}
                   />
-            </div>
-            <div key={2} style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 2 : 1 }}>
+            </div>,
+            <div key={2} ref={ node => this.afterNode = node } style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 2 : 1 }}>
               <after.type
-                    wait={config.defaultWait || this.props.defaultWait}
+                    wait={this.props.defaultWait}
                     {...after.props}
                     opposite
                     when={swap}
@@ -134,7 +135,7 @@ function makeCarousel(WrappedComponent, config = {}) {
                     onReveal={swap ? this.handleReveal : void 0}
                   />
             </div>
-          </div>}
+          ]}
         />
       );
     }
