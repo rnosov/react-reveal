@@ -32,6 +32,7 @@ gulp.task('clean', function () {
     './Step.js',
     './globals.js',
     './debounce.js',
+    './throttle.js',
     './Bounce.js',
     './Fade.js',
     './Flash.js',

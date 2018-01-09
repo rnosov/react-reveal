@@ -11,7 +11,8 @@ import React from 'react';
 import { string, object, number, bool, func, any, oneOfType, oneOf, instanceOf, shape, element } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide, cascade, collapseend } from './lib/globals';
 import Step from './lib/Step';
-import debounce from './lib/debounce';
+import throttle from './lib/throttle';
+//import debounce from './lib/debounce';
 
 const
   inOut = shape({
@@ -67,8 +68,8 @@ class RevealBase extends React.Component {
     this.isListener = false;
     //this.isShown = !!this.props.bypass;
     this.isShown = false;
-    this.revealHandler = debounce(this.reveal.bind(this, false), 66);
-    this.resizeHandler = debounce(this.resize.bind(this), 500);
+    this.revealHandler = throttle(this.reveal.bind(this, false), 66);
+    this.resizeHandler = throttle(this.resize.bind(this), 500);
     //this.invisible = debounce(this.invisible, 500);
     this.saveRef = this.saveRef.bind(this);
   }
