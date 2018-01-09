@@ -1,1 +1,3 @@
-exports[`Flip renders a initial view 1`] = `"<div class=\"react-reveal\">Test test</div>"`;
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Flip renders a initial view 1`] = `"<div class=\\"react-reveal\\">Test test</div>"`;

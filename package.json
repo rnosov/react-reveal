@@ -1,6 +1,6 @@
 {
   "name": "react-reveal",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "author": "Roman Nosov <rnosov@gmail.com>",
   "description": "Really simple way to add reveal on scroll animation to your React app.",
   "license": "MIT",
@@ -51,7 +51,7 @@
     "gulp-flatten": "^0.3.1",
     "gulp-replace": "^0.6.1",
     "gulp-uglify": "^2.0.0",
-    "jest-cli": "^15.1.0",
+    "jest-cli": "^22.0.4",
     "react": "^15.3.1",
     "react-addons-test-utils": "^15.3.2",
     "react-dom": "^15.3.2",

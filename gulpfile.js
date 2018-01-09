@@ -25,7 +25,6 @@ gulp.task('clean', function () {
     './withReveal.js',
     './responsive.js',
     './HamburgerIcon.js',
-    './Carousel.js',
     './makeCarousel.js',
     './swipedetect.js',
     './Animation.js',

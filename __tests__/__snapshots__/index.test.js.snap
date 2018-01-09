@@ -1,1 +1,3 @@
-exports[`index renders a initial view 1`] = `"<div><div class=\"react-reveal\"> Zoom Test test</div><div class=\"react-reveal\"> Fade Test test</div><div class=\"react-reveal\">Flip Test test</div><div class=\"react-reveal\"> Rotate Test test</div></div>"`;
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`index renders a initial view 1`] = `"<div><div class=\\"react-reveal\\"> Zoom Test test</div><div class=\\"react-reveal\\"> Fade Test test</div><div class=\\"react-reveal\\">Flip Test test</div><div class=\\"react-reveal\\"> Rotate Test test</div></div>"`;

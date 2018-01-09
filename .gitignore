@@ -2,7 +2,6 @@ dist
 node_modules
 npm-debug.log
 /RevealBase.js
-/Carousel.js
 /makeCarousel.js
 /swipedetect.js
 /hamburger.js

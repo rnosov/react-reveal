@@ -1,1 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`RubberBand renders a initial view 1`] = `"<div>Test test</div>"`;
