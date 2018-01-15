@@ -19,6 +19,7 @@ const
     spy: any,
     effect: string,
     collapse: oneOfType([bool, string]),
+    preventDebounce: bool,
     duration: number,
     delay: number,
     count: number,
@@ -62,7 +63,7 @@ class RevealBase extends React.Component {
     };
     this.isListener = false;
     this.isShown = !!this.props.bypass;
-    this.revealHandler = debounce(this.reveal.bind(this, false), 66);
+    this.revealHandler = props.preventDebounce ? this.reveal.bind(this, false) : debounce(this.reveal.bind(this, false), 66);
     this.resizeHandler = debounce(this.resize.bind(this), 500);
     this.invisible = debounce(this.invisible, 500);
     this.saveRef = el => this.el = el;
