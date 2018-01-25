@@ -51,6 +51,7 @@
     "gulp-flatten": "^0.3.1",
     "gulp-replace": "^0.6.1",
     "gulp-uglify": "^2.0.0",
+    "jest": "^22.1.4",
     "jest-cli": "^22.0.4",
     "react": "^15.3.1",
     "react-addons-test-utils": "^15.3.2",

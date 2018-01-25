@@ -248,8 +248,8 @@ class RevealBase extends React.Component {
       this.isListener = true;
       window.addEventListener('scroll', this.revealHandler);
       window.addEventListener('orientationchange', this.revealHandler);
-      window.document.addEventListener("visibilitychange", this.revealHandler);
-      window.document.addEventListener("collapseend", this.revealHandler);
+      window.document.addEventListener('visibilitychange', this.revealHandler);
+      window.document.addEventListener('collapseend', this.revealHandler);
       window.addEventListener('resize', this.resizeHandler);
     }
   }
