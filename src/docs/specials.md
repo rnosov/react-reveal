@@ -13,7 +13,7 @@ to be near the centre of their bounding box.
 import Flash from 'react-reveal/Flash';
 
 <Flash>
-  <h1 style={{ color: 'red'}}>
+  <h1>
     Your content goes here
   </h1>
 </Flash>

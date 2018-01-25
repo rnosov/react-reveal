@@ -120,7 +120,7 @@ class Example extends React.Component {
     this.state = {
       ...this.reset,
       dir: 'left',
-      out: true,
+      out: false,
       opposite: false,
       change: false,
     }

@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import Marketing from'./Marketing';
 import Carousel from'./Carousel';
 import Brand from'./slides/Brand';
-import Responsive from'./slides/Responsive';
+import Seo from'./slides/Seo';
 import Open from'./slides/Open';
 import './Home.css';
 
@@ -12,14 +12,15 @@ function Home() {
       <main>
         <Carousel maxTurns={0}>
           <Brand />
-          <Responsive />          
-          <Open />
+          <Seo />
           <Open />
         </Carousel>
-        <Marketing />      
+        <Marketing />
         <Helmet title='Home' />
-      </main>    
+      </main>
   );
 }
+          //<Open />
+          //<Open />
 
 export default Home;

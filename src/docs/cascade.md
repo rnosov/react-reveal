@@ -11,14 +11,16 @@ One cool feature of `react-reveal` is the ability to easily create cascading rev
 </ul>
 ```
 
-You can liven it up a bit by using `cascade` prop ( even without breaking you markup ):
+You can liven it up a bit by using `cascade` prop:
 
 ```jsx
 import Fade from 'react-reveal/Fade'; 
 
-<Fade bottom cascade tag="ul" className="some-class">
-  <li>First Item</li>
-  <li>Another Item</li>
-  <li>Last Item</li>
+<Fade bottom cascade>
+  <ul className="some-class">
+    <li>First Item</li>
+    <li>Another Item</li>
+    <li>Last Item</li>
+  </ul>
 </Fade>
 ```

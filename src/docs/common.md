@@ -2,54 +2,119 @@
 title: Common Effects
 ---
 
-Here is the handy list of different effects for you to try. 
-Some effects have attributes to them (like left or right versions). They can can be combined with other props (see docs further down).
+Here is the list of different effects reveal effects. Every component can have a number of different attributes (like left or right versions). See examples for details. They can can be combined with other [props](/docs/props/).
 
-**Fade**
+### Fade
+
+[Live demo](/examples/common/Fade)
+
 ```jsx
-// Don't forget to import the effect first! 
-// It's more efficient to import it from a dedicated file
-import Fade from 'react-reveal/Fade'; 
+import Fade from 'react-reveal/Fade';
 
-<Fade>Your content goes here</Fade>
-<Fade bottom>Your content goes here</Fade>
-<Fade bottom big>Your content goes here</Fade>
-<Fade left>Your content goes here</Fade>
-<Fade left big>Your content goes here</Fade>
-<Fade right>Your content goes here</Fade>
-<Fade right big>Your content goes here</Fade>
-<Fade top>Your content goes here</Fade>
-<Fade top big>Your content goes here</Fade>
+<Fade>
+  <h1>
+    Your content goes here
+  </h1>
+</Fade>
 ```
 
-**Flip**
-```jsx
-import Flip from 'react-reveal/Flip'; 
+### Flip
 
-<Flip>Your content goes here</Flip>
-<Flip x>Your content goes here</Flip>
-<Flip y>Your content goes here</Flip>
+[Live demo](/examples/common/Flip)
+
+```jsx
+import Flip from 'react-reveal/Flip';
+
+<Flip>
+  <h1>
+    Your content goes here
+  </h1>
+</Flip>
 ```
 
-**Rotate**
-```jsx
-import Rotate from 'react-reveal/Rotate'; 
+### Rotate
 
-<Rotate>Your content goes here</Rotate>
-<Rotate bottom left>Your content goes here</Rotate>
-<Rotate bottom right>Your content goes here</Rotate>
-<Rotate top left>Your content goes here</Rotate>
-<Rotate top right>Your content goes here</Rotate>
+[Live demo](/examples/common/Rotate)
+
+```jsx
+import Rotate from 'react-reveal/Rotate';
+
+<Rotate>
+  <h1>
+    Your content goes here
+  </h1>
+</Rotate>
 ```
 
-**Zoom**
-```jsx
-import Zoom from 'react-reveal/Zoom'; 
+### Zoom
 
-<Zoom>Your content goes here</Zoom>
+[Live demo](/examples/common/Zoom)
+
+```jsx
+import Zoom from 'react-reveal/Zoom';
+
+<Zoom>
+  <h1>
+    Your content goes here
+  </h1>
+</Zoom>
 ```
 
-If you need any more bespoke animations in your React app then this the author of this package is available for hire. The email to contact is rnosov@gmail.com
+### Bounce
+
+[Live demo](/examples/common/Bounce)
+
+```jsx
+import Bounce from 'react-reveal/Bounce';
+
+<Bounce>
+  <h1>
+    Your content goes here
+  </h1>
+</Bounce>
+```
+
+### Slide
+
+[Live demo](/examples/common/Slide)
+
+```jsx
+import Slide from 'react-reveal/Slide';
+
+<Slide>
+  <h1>
+    Your content goes here
+  </h1>
+</Slide>
+```
+
+### Roll
+
+[Live demo](/examples/common/Roll)
+
+```jsx
+import Roll from 'react-reveal/Roll';
+
+<Roll>
+  <h1>
+    Your content goes here
+  </h1>
+</Roll>
+```
+
+### LightSpeed
+
+[Live demo](/examples/common/LightSpeed)
+
+```jsx
+import LightSpeed from 'react-reveal/LightSpeed';
+
+<LightSpeed>
+  <h1>
+    Your content goes here
+  </h1>
+</LightSpeed>
+```
 
 ## Unwanted Scrollbars
 

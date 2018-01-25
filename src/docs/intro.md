@@ -2,9 +2,7 @@
 title: Introduction
 ---
 
-[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. It's less than 2kb gzipped and written for React from scratch in ES6. If you like this package don't forget to star the [Github repository](https://github.com/rnosov/react-reveal)!
-
-`react-reveal` will try to autodetect server side rendering (SSR) and apply gentle fade out effect on the initial render. 
+[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. If you're using `0.x` version check out the [migrating docs](/docs/migrating/).
 
 ## Installation
 
@@ -22,18 +20,26 @@ yarn add react-reveal
 
 ## Quick Start
 
-Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) to your project. 
+Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) to your project. Lets try `Zoom` effect first.
 
 ```javascript
-import { Fade, Flip, Rotate, Zoom } from 'react-reveal';
+import Zoom from 'react-reveal/Zoom';
 ```
 
-Lets try `Zoom` effect first. Place the following code somewhere in your `render` method: 
+Place the following code somewhere in your `render` method: 
 
 ```jsx
 <Zoom>
   <p>Markup that will be revealed on scroll</p>
 </Zoom>
-``````
+```
 
 You should see zooming animation that reveals text inside the tag. You can change this text to any JSX you want. If you place this code further down the page you'll notice that it'll appear as scroll the page.
+
+## Examples
+
+Have a look at [demos](/examples/) to see what kind of effects are possible.
+
+## Server Side Rendering
+
+`react-reveal` will try to autodetect server side rendering (SSR) and apply gentle fade out effect on the initial render. 

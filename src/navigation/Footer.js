@@ -14,7 +14,7 @@ function Footer() {
 	return (
 		<footer className="footer">
       <div className="container">
-        <span className="text-muted">Copyright © Roman Nosov 2017.</span>
+        <span className="text-muted">Copyright © Roman Nosov 2018.</span>
       </div>
 		</footer>
 	);
