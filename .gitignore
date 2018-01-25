@@ -34,3 +34,4 @@ npm-debug.log
 /index.js
 /globals.js
 /debounce.js
+/throttle.js

@@ -139,7 +139,7 @@ class RevealBase extends React.Component {
       //el.removeEventListener('animationend', handler);
       func.call(this);
     };
-    this.animationEndTimeout = window.setTimeout(handler, delay+(duration+(cascade?(cascade === true?1000:cascade):0)*count));
+    this.animationEndTimeout = window.setTimeout(handler, delay+(duration+(cascade?duration:0)*count));
     //el.addEventListener('animationend', handler);
     //this.animationEndEl = el;
     //this.animationEndHandler = handler;
@@ -302,8 +302,10 @@ class RevealBase extends React.Component {
         }
         else
           newChildren = React.Children.toArray(children);
+    //if (newChildren.length === 1)
+    //  return newChildren;
     let duration = this.props[this.props.when || !this.props.out ?'in':'out'].duration,
-          count = newChildren.length - 1,
+          count = newChildren.length,
           total = duration*2;
     if (this.props.collapse) {
       total = parseInt(this.state.style.animationDuration, 10);

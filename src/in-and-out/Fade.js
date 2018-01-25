@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { bool, number } from 'prop-types';
+import { bool, number, string } from 'prop-types';
 import RevealBase from '../RevealBase';
 import { animation, defaults } from '../lib/globals';
 
@@ -23,12 +23,13 @@ const
     mirror: bool,
     opposite: bool,
     duration: number,
+    distance: string,
     delay: number,
     count: number,
     forever: bool,
   };
 
-function Fade({out, left, right, up, down, top, bottom, big, mirror, opposite, forever,
+function Fade({out, distance, left, right, up, down, top, bottom, big, mirror, opposite, forever,
               duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
@@ -39,7 +40,7 @@ function Fade({out, left, right, up, down, top, bottom, big, mirror, opposite, f
       if (transform) {
         if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
           [left, right, top, bottom, up, down] = [right, left, bottom, top, down, up];
-        const dist = big ? '2000px' : '100%';
+        const dist = distance || (big ? '2000px' : '100%');
         x = left ? '-' + dist : ( right ? dist : '0' );
         y = down || top ? '-'+ dist : ( up || bottom ? dist : '0' );
       }
