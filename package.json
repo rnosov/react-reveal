@@ -1,6 +1,6 @@
 {
   "name": "react-reveal",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "author": "Roman Nosov <rnosov@gmail.com>",
   "description": "Really simple way to add reveal on scroll animation to your React app.",
   "license": "MIT",
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/rnosov/react-reveal/issues"
   },
-  "homepage": "https://github.com/rnosov/react-reveal",
+  "homepage": "http://www.react-reveal.com",
   "main": "./index.js",
   "dependencies": {
     "babel-runtime": "^6.26.0",

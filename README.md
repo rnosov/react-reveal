@@ -1,7 +1,8 @@
 # React Reveal
 
 ## Introduction
-[React Reveal](http://www.react-reveal.com) is a dead simple way to add some cool reveal on scroll animations to your React app. It's less than 2kb gzipped and written for React from scratch in ES6. If you like this package don't forget to star the [Github repository](https://github.com/rnosov/react-reveal)!
+
+[React Reveal](http://www.react-reveal.com) is a dead simple way to add some cool reveal on scroll animations to your React app. If you're using `0.x` version check out the [migrating docs](/docs/migrating/). Don't forget to star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package!
 
 ## Demo 
 
