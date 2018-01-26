@@ -10,7 +10,7 @@ import './Home.css';
 function Home() {
 	return (
       <main>
-        <Carousel maxTurns={0}>
+        <Carousel maxTurns={10}>
           <Brand />
           <Seo />
           <Open />

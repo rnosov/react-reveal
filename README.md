@@ -1,6 +1,4 @@
-# React Reveal Demo
+# React Reveal Site
 
-This a demo of [React Reveal](https://github.com/rnosov/react-reveal) package. This demo is based on [Create React App](https://github.com/facebookincubator/create-react-app) scaffolding. 
-
-[Live demo](https://rnosov.github.io/react-reveal-demo/)
+This a source code of the [React Reveal Site](http://www.react-reveal.com/)
 

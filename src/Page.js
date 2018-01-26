@@ -28,6 +28,7 @@ class Page extends React.Component {
 	componentDidMount() {
     if (this.props.scroll) //&& window.pageYOffset > 100)
     	Page.scroll();
+    Page.gtag('event', this.props.title);
 	}
 
 	static gtag() {
@@ -67,14 +68,13 @@ class Page extends React.Component {
 if (process.env.NODE_ENV === 'production') {
   let script = document.createElement('script');
   script.async = true;
-  script.src = "https://www.googletagmanager.com/gtag/js?id=UA-107416457-1";
+  script.src = "https://www.googletagmanager.com/gtag/js?id=UA-113142916-1";//UA-107416457-1";
   document.head.appendChild(script);
   window.dataLayer = window.dataLayer || [];
   Page.gtag('js', new Date());
-  Page.gtag('config', 'UA-107416457-1');
-  Page.gtag('event', 'App Load (0.7.0)');
+  Page.gtag('config', 'UA-113142916-1');
+  Page.gtag('event', 'App Load (1.0)');
 }
-
 
 Page.propTypes = propTypes;
 Page.defaultProps = defaultProps;
