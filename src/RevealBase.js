@@ -124,7 +124,7 @@ class RevealBase extends React.Component {
     if (!this.isShown) {
       this.setState( { style: { ...this.state.style, visibility: 'hidden' }/*, collapsing: false */});
       if (this.props.collapse)
-        window.document.dispatchEvent(collapseend)
+        window.document.dispatchEvent(collapseend);
     }
   }
 
@@ -367,7 +367,7 @@ class RevealBase extends React.Component {
           style: {
             ...el.props.style,
             position:'absolute',
-            left:'-9999em',
+            //left:'-9999em',
             top:'-9999em',
             height: 'auto',
             //display: 'block',
