@@ -8,7 +8,7 @@
 <p>You can liven it up a bit by using <code>cascade</code> prop:</p>
 <pre class="  language-jsx"><code class="  language-jsx"><span class="token keyword">import</span> Fade <span class="token keyword">from</span> <span class="token string">'react-reveal/Fade'</span><span class="token punctuation">;</span> 
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Fade</span> <span class="token attr-name">bottom</span> <span class="token attr-name">cascade</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Fade</span> <span class="token attr-name">top</span> <span class="token attr-name">cascade</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>some-class<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">&gt;</span></span>First Item<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">&gt;</span></span>Another Item<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
@@ -16,4 +16,13 @@
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Fade</span><span class="token punctuation">&gt;</span></span>
 </code></pre>
-</div></div></div></div></div><footer class="footer"><div class="container"><span class="text-muted">Copyright © Roman Nosov 2018.</span></div></footer></div></div><script type="text/javascript" src="/static/js/main.2147267c.js"></script></body></html>
+<p>You can also cascade reveal strings of text ( such as headings and so on ):</p>
+<pre class="  language-jsx"><code class="  language-jsx"><span class="token keyword">import</span> Fade <span class="token keyword">from</span> <span class="token string">'react-reveal/Fade'</span><span class="token punctuation">;</span> 
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Fade</span> <span class="token attr-name">top</span> <span class="token attr-name">cascade</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">&gt;</span></span>Text to reveal<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Fade</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p>Every letter will be revealed separately in a cascade.</p>
+<p>Note that the <code>duration</code> prop will be doubled for the cascade effects. So the by default the overall duration will be 2000 milliseconds. If you set <code>duration</code> prop to 3000 milliseconds and enable cascade then the actual duration will be 6000 milliseconds.</p>
+</div></div></div></div></div><footer class="footer"><div class="container"><span class="text-muted">Copyright © Roman Nosov 2018.</span></div></footer></div></div><script type="text/javascript" src="/static/js/main.bb059132.js"></script></body></html>
