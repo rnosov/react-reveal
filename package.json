@@ -5,17 +5,18 @@
   "homepage": "http://www.react-reveal.com/",
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",
-    "gh-pages": "^1.0.0",
-    "github-markdown-css": "^2.9.0",
-    "markdown-with-front-matter-loader": "^0.1.0",
-    "prismjs": "^1.8.3",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "gh-pages": "^1.1.0",
+    "github-markdown-css": "^2.10.0",
+    "prismjs": "^1.10.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
-    "react-live": "^1.8.0-0",
-    "react-reveal": "^1.0.0-beta.1",
+    "react-live": "1.8.0-0",
+    "react-reveal": "^1.0.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.14",
+    "react-scripts": "1.1.0"
+  },
+  "devDependencies": {
     "react-snapshot": "^1.3.0"
   },
   "scripts": {

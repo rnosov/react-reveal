@@ -1,10 +1,14 @@
 import React from 'react';
 import Fade from 'react-reveal/Fade';
 import Rotate from 'react-reveal/Rotate';
-import cross from "./assets/food.jpg";
-import resp from "./assets/keyboard.jpg";
-import screen from "./assets/screen.jpg";
+//import cross from "./assets/food.jpg";
+//import resp from "./assets/keyboard.jpg";
+//import screen from "./assets/screen.jpg";
 import './Marketing.css';
+
+const cross = "./assets/food.jpg",
+      resp = "./assets/keyboard.jpg",
+      screen = "./assets/screen.jpg";
 
 export default function Marketing() {
   return (

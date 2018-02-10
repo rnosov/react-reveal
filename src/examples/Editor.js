@@ -8,9 +8,11 @@
  */
 
 import React from 'react';
+import Page from '../Page';
 import { LiveProvider, LiveEditor, LivePreview} from '../vendor/react-live/';
 import './Editor.css'
 
+import throttle from 'react-reveal/throttle';
 import Fade from 'react-reveal/Fade';
 import Flip from 'react-reveal/Flip';
 import Rotate from 'react-reveal/Rotate';
@@ -40,10 +42,15 @@ class Example extends React.Component {
  constructor(props) {
     super(props);
     this.state = { hasError: false };
+    this.handleChange = throttle(this.handleChange.bind(this), 2000);
   }
 
   componentDidCatch() {
   	this.setState({ hasError: true });
+  }
+
+  handleChange() {
+    Page.gtag('event','edit', {'event_category' : 'examples',});
   }
 
   truncate(code) {
@@ -76,7 +83,7 @@ class Example extends React.Component {
 			  	  </div>
 			  	</div>
           <div className="col-12 col-md-6 order-md-1 live-editor" ref={ (node) => this.node = node } >
-            <LiveEditor style={{ paddingTop: '0px'}} />
+            <LiveEditor onChange={this.handleChange} style={{ paddingTop: '0px'}} />
           </div>
 			 	</div>
 			</LiveProvider>

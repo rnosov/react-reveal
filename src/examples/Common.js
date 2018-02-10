@@ -77,10 +77,15 @@ class StressTest extends React.Component {
     for (let i=0; i<100; i++)
       this.reset[i] = false;
     this.state ={ ...this.reset };
+    this.handleReveal = this.handleReveal.bind(this);
   }
 
   componentWillReceiveProps() {
       this.setState({ ...this.reset });
+  }
+
+  handleReveal() {
+    Page.gtag('event','scroll', {'event_category' : 'examples',});
   }
 
   render() {
@@ -98,7 +103,7 @@ class StressTest extends React.Component {
             when={!this.state[index]}
             wait={1000}
             opposite={this.props.opposite}
-            onReveal={ this.props.out?()=> this.setState({ [index]: true }):void 0}
+            onReveal={this.props.out?()=> this.setState({ [index]: true }):(index%10?void 0:this.handleReveal)}
           >
             {example}
           </this.props.effect>
@@ -136,26 +141,31 @@ class Example extends React.Component {
 
   left() {
     this.setState({ dir: 'left', change: !this.state.change});
+    Page.gtag('event','left', {'event_category' : 'examples',});
   }
 
   right() {
     this.setState({ dir: 'right', change: !this.state.change});
+    Page.gtag('event','right', {'event_category' : 'examples',});
   }
 
   top() {
     this.setState({ dir: 'top', change: !this.state.change});
+    Page.gtag('event','top', {'event_category' : 'examples',});
   }
 
   bottom() {
     this.setState({ dir: 'bottom', change: !this.state.change});
+    Page.gtag('event','bottom', {'event_category' : 'examples',});
   }
 
   clear() {
     this.setState({ dir: '', change: !this.state.change});
+    Page.gtag('event','clear', {'event_category' : 'examples',});
   }
 
   componentWillReceiveProps() {
-      this.setState({ change: !this.state.change});
+    this.setState({ change: !this.state.change});
   }
 
   handleOut(event) {
@@ -166,6 +176,7 @@ class Example extends React.Component {
       opposite: value && this.state.opposite,
       change: !this.state.change
     });
+    Page.gtag('event','out', {'event_category' : 'examples',});
   }
 
   handleOpposite(event) {
@@ -176,6 +187,7 @@ class Example extends React.Component {
       opposite: value,
       change: !this.state.change
     });
+    Page.gtag('event','opposite', {'event_category' : 'examples',});
   }
 
   menu() {
@@ -252,7 +264,7 @@ class ${effect}Example extends React.Component {
   `:''}render() {
     return (
       <div>
-        <${effect}${this.transformRotate(this.state.dir).toLowerCase()}${this.state.out?'':' duration={1000}'}${this.state.opposite?' opposite':''}${this.state.out?' when={this.state.isOn}':''}>
+        <${effect}${this.transformRotate(this.state.dir).toLowerCase()}${''/*this.state.out?'':' duration={1000}'*/}${this.state.opposite?' opposite':''}${this.state.out?' when={this.state.isOn}':''}>
           <h1>React Reveal</h1>
         </${effect}>
         <p>
@@ -260,10 +272,9 @@ class ${effect}Example extends React.Component {
           sеt “isOn” state variable to truе
           and then sеt a timeout that will
           sеt “isOn” to falsе
-        `:`Try changing the “duration” attribute
-          оf the ${effect} component
-          or replace “left” attribute
+        `:`Try replacing “left” attribute
           wіth “right”, “top” or “bottom”
+          оf the ${effect} component
         `}</p>
       </div>
     );

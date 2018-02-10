@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Page from '../../Page';
-import Code from '../../Code';
+import Code from './Code';
 
 function Article({ title, content }) {
   return (

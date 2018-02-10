@@ -12,7 +12,7 @@ you should import each effect directly
 ```jsx
 import Fade from 'react-reveal/Fade';
 ```
-- `react-reveal`  used to wrap it's children in a `div` tag. This behaviour is deprecated in `1.0`. You should manually wrap children in a tag of your choosing (such as `div`). `react-reveal` expects only a single child! For compatibility reasons, if you pass more than one child to `react-reveal`  it will still wrap it in a `div` tag but you'll get a warning in the console. You should inspect the console and make sure that you're only passing a single child to `react-reveal` like so:
+- `react-reveal`  used to wrap it's children in a `div` tag. This behaviour is deprecated in `1.0`. You should manually wrap children in a tag of your choosing (such as `div`). `react-reveal` expects only a single child! For compatibility reasons, if you pass more than one child to `react-reveal`  it will still wrap it in a `div` tag but you'll get a warning in the console. You should regularly inspect the console and make sure that you're only passing a single child to `react-reveal` like so:
 
 ```jsx
 <Fade>

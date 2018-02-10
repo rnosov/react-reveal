@@ -16,7 +16,8 @@ import NoMatch from './navigation/NoMatch';
 import Home from './home/Home';
 import Docs from './docs/components/Docs';
 import Demos from './examples/Demos';
-import './App.css';
+
+//import './App.css';
 
 function App() {
   return (
@@ -33,6 +34,5 @@ function App() {
     </div>
   );
 }
-        //<Route path='/demos/kitchen-sink' component={KitchenSink} />
 
 export default App;

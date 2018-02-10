@@ -10,7 +10,7 @@
 import React from 'react';
 import Article from './Article';
 import { Route, Switch } from 'react-router-dom';
-import 'markdown-with-front-matter-loader';
+//import 'markdown-with-front-matter-loader';
 
 function makeRoutes(prefix, indexPath)  {
   const webpackRequireContext = require.context('!markdown-with-front-matter-loader!../', false, /.md$/);

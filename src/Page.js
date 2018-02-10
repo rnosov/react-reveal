@@ -12,6 +12,8 @@ import { string, bool } from 'prop-types';
 import Fade from 'react-reveal/Fade';
 import Helmet from 'react-helmet';
 
+const trackingId = 'UA-113142916-1',
+      currentVer = '1.2';
 const
   propTypes = {
     title: string.isRequired,
@@ -23,15 +25,43 @@ const
     //	title: 'Untitled',
   };
 
+let refresh = false;
+window.setInterval( () => refresh = true, 1800000);
+
 class Page extends React.Component {
+
+  static async fetchVer()
+  {
+    if (refresh){
+      refresh = false;
+      try {
+        const response = await fetch('/manifest.json');
+        const json = await response.json();
+        Page.gtag('event','version check', { 'event_category' : 'page', 'event_label' : currentVer });
+        if (parseFloat(json.version) > parseFloat(currentVer))
+          window.location.reload(true);
+      }
+      catch(e) {
+        console.log('Version error:', e.toString());
+        Page.gtag('event','version error', { 'event_category' : 'errors', 'event_label' : e.toString() });
+      }
+    }
+  }
 
 	componentDidMount() {
     if (this.props.scroll) //&& window.pageYOffset > 100)
     	Page.scroll();
-    Page.gtag('event', this.props.title);
+    Page.gtag('config', trackingId, {
+      send_page_view: true,
+      page_path: document.location.pathname,
+      page_title: this.props.title,
+      page_referrer: document.referrer,
+    });
+    Page.fetchVer();
 	}
 
 	static gtag() {
+    //console.log(arguments);
   	if (window.dataLayer)
     	window.dataLayer.push(arguments);
 	}
@@ -68,12 +98,12 @@ class Page extends React.Component {
 if (process.env.NODE_ENV === 'production') {
   let script = document.createElement('script');
   script.async = true;
-  script.src = "https://www.googletagmanager.com/gtag/js?id=UA-113142916-1";//UA-107416457-1";
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=' + trackingId;//UA-107416457-1";
   document.head.appendChild(script);
   window.dataLayer = window.dataLayer || [];
   Page.gtag('js', new Date());
-  Page.gtag('config', 'UA-113142916-1');
-  Page.gtag('event', 'App Load (1.0)');
+  Page.gtag('config', trackingId, { 'send_page_view': false, 'app_name': 'react-reveal' });
+  Page.gtag('event', `App Load (${currentVer})`, {'non_interaction': true } );
 }
 
 Page.propTypes = propTypes;

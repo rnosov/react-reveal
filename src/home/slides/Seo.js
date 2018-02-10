@@ -1,8 +1,9 @@
 import React from 'react';
 import withReveal from 'react-reveal/withReveal';
 import Fade from 'react-reveal/Fade';
-import bg from '../assets/notebook.jpg';
+//import bg from '../assets/notebook.jpg';
 
+const bg = '/assets/notebook.jpg';
 function Responsive({ reveal }) {
   return reveal(
         <div id="bg">

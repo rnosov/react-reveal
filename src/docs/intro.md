@@ -2,7 +2,7 @@
 title: Introduction
 ---
 
-[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. If you're using `0.x` version check out the [migrating docs](/docs/migrating/).
+[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. Don't forget to star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package!
 
 ## Installation
 
@@ -34,7 +34,36 @@ Place the following code somewhere in your `render` method:
 </Zoom>
 ```
 
-You should see zooming animation that reveals text inside the tag. You can change this text to any JSX you want. If you place this code further down the page you'll notice that it'll appear as scroll the page.
+You should see zooming animation that reveals text inside the tag. You can change this text to any JSX you want. If you place this code further down the page you'll see that it'd appear as you scroll down.
+
+## Revealing React Components
+
+If you want to reveal custom React component then the easiest way would be to wrap it in a `div` tag:
+
+```jsx
+<Zoom>
+  <div>
+    <CustomComponent /> 
+  </div>
+</Zoom>
+```
+
+
+## Revealing Images
+
+If you want to reveal an image you can wrap `img` tag with with the desired `react-reveal` effect:
+
+```jsx
+<Zoom>
+  <img height="300" width="400" src="https://source.unsplash.com/random/300x400" />
+</Zoom>
+```
+
+It would be a very good idea to specify width and height of any image you wish to reveal.
+
+## Children
+
+Please be aware that `react-reveal` components ( such as `Fade`, `Zoom`, etc ) can only have a single child. If you want to reveal several elements at once you'd need to wrap them in a container tag such as `div`.
 
 ## Examples
 

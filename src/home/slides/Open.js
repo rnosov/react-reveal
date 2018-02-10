@@ -1,8 +1,9 @@
 import React from 'react';
 import withReveal from 'react-reveal/withReveal';
 import Fade from 'react-reveal/Fade';
-import bg from '../assets/keyboard1.jpg';
+//import bg from '../assets/keyboard1.jpg';
 
+const bg = '/assets/keyboard1.jpg';
 function Open({ reveal }) {
  return reveal(
         <div id="bg">

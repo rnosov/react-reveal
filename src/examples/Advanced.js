@@ -9,6 +9,7 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import Cascade from './Cascade';
 import Page from '../Page';
 import navMap from '../navigation/navMap';
 
@@ -18,7 +19,7 @@ const
   itemClass = 'nav-item',
   nav = navMap({ prefix, linkClass, itemClass }, [
     {title: 'Collapsing Animations', to: 'collapse'},
-    {title: 'Cascading Effect', to: 'cascade'},
+    {title: 'Cascading', to: 'cascade'},
     {title: 'Custom Animations', to: 'custom'},
     {title: 'Stepped Animations', to: 'stepper'},
     {title: 'Form Errors', to: 'forms'},
@@ -32,12 +33,12 @@ function Advanced() {
       </ul>
       <div className="text-center">
         <Switch>
-          <Route render={ ComingSoon }    path={prefix}   exact       />
-          <Route render={ ComingSoon }    path={prefix + 'collapse'}  />
-          <Route render={ ComingSoon }    path={prefix + 'cascade'}   />
-          <Route render={ ComingSoon }    path={prefix + 'custom'}   />
-          <Route render={ ComingSoon }    path={prefix + 'stepper'}   />
-          <Route render={ ComingSoon }    path={prefix + 'forms'}   />
+          <Route render={ ComingSoon }        path={prefix}   exact       />
+          <Route render={ ComingSoon }        path={prefix + 'collapse'}  />
+          <Route render={ () => <Cascade /> } path={prefix + 'cascade'}   />
+          <Route render={ ComingSoon }        path={prefix + 'custom'}   />
+          <Route render={ ComingSoon }        path={prefix + 'stepper'}   />
+          <Route render={ ComingSoon }        path={prefix + 'forms'}   />
           <Route render={ NotFound }                               		/>
         </Switch>
       </div>
@@ -56,5 +57,6 @@ function ComingSoon() {
     </Page>
   );
 }
+
 
 export default Advanced;

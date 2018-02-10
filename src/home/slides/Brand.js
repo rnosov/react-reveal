@@ -5,8 +5,9 @@ import { Link } from 'react-router-dom';
 import Fade from 'react-reveal/Fade';
 import Zoom from 'react-reveal/Zoom';
 //import Bounce from 'react-reveal/Bounce';
-import bg from '../assets/comp.jpg';
+//import bg from '../assets/comp.jpg';
 
+const bg = '/assets/comp.jpg';
 function heading(first, second) {
   return (
     <h1 className="text-center">

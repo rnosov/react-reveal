@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import Page from '../Page';
 import Marketing from'./Marketing';
 import Carousel from'./Carousel';
 import Brand from'./slides/Brand';
@@ -9,6 +9,7 @@ import './Home.css';
 
 function Home() {
 	return (
+    <Page title='Home'>
       <main>
         <Carousel maxTurns={10}>
           <Brand />
@@ -16,11 +17,10 @@ function Home() {
           <Open />
         </Carousel>
         <Marketing />
-        <Helmet title='Home' />
       </main>
+    </Page>
   );
 }
-          //<Open />
-          //<Open />
+
 
 export default Home;
