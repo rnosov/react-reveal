@@ -24,14 +24,14 @@
   "bugs": {
     "url": "https://github.com/rnosov/react-reveal/issues"
   },
-  "homepage": "http://www.react-reveal.com",
+  "homepage": "https://www.react-reveal.com",
   "main": "./index.js",
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
   },
   "peerDependencies": {
-    "react": ">=15.3.x <=16.x.x"
+    "react": "^15.3.0 || ^16.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.14.0",
@@ -44,7 +44,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "enzyme": "^3.1.0",
-    "enzyme-adapter-react-15": "^1.0.2",
+    "enzyme-adapter-react-16": "^1.1.1",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-clean": "^0.3.2",
@@ -53,10 +53,9 @@
     "gulp-uglify": "^2.0.0",
     "jest": "^22.1.4",
     "jest-cli": "^22.0.4",
-    "react": "^15.3.1",
-    "react-addons-test-utils": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "react-test-renderer": "^15.6.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-test-renderer": "^16.2.0",
     "uglify-js": "^2.7.3"
   },
   "scripts": {

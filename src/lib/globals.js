@@ -6,9 +6,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-//import {version} from 'react';
 
-export const namespace = 'react-reveal', is16 = false;//parseInt(version, 10) >= 16;
+import {version} from 'react';
+
+export const namespace = 'react-reveal', is16 = parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
 export let ssr = true, disableSsr = () => ssr = false, globalHide = false, ie10 = false, collapseend;
 let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floor(Math.random() * 1000000000000000)}-`;

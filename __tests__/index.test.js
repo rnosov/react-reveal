@@ -11,7 +11,7 @@ import Reveal, { Zoom, Fade, Flip, Rotate } from '../';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-15';
+import Adapter from 'enzyme-adapter-react-16';
 
 configure({ adapter: new Adapter() });
 //      <Reveal effect="some-effect" className="someClass" style={{ border: '1px solid red'}} props={{src: '/example.com'}}>

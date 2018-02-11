@@ -9,10 +9,9 @@
 
 import React from 'react';
 import { string, object, number, bool, func, any, oneOfType, oneOf, instanceOf, shape, element } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade, collapseend } from './lib/globals';
-import Step from './lib/Step';
+import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, is16 } from './lib/globals';
+//import Step from './lib/Step';
 import throttle from './lib/throttle';
-//import debounce from './lib/debounce';
 
 const
   inOut = shape({
@@ -30,7 +29,7 @@ const
     collapse: oneOfType([bool, shape({ height: string })]),
     cascade: bool,
     wait: number,
-    step: oneOfType([instanceOf(Step), string]),
+//    step: oneOfType([instanceOf(Step), string]),
     force: bool,
     disabled: bool,
     fraction: number,
@@ -49,10 +48,11 @@ const
     fraction: 0.2,
     when: true,
     refProp: 'ref',
-  },
-  contextTypes = {
-    stepper: object,
   };
+  //,
+  //contextTypes = {
+  //  stepper: object,
+  //};
 
 class RevealBase extends React.Component {
 
@@ -264,12 +264,12 @@ class RevealBase extends React.Component {
         //window.setTimeout( () => this.animate.call(this, props), 200 );
         window.setTimeout( () => this.reveal(props), 200 );
     } else if ( this.inViewport() ) {
-      if (this.start) {
-        this.hide();
-        this.listen();
-        this.start(this.step);
-        return;
-      }
+      //if (this.start) {
+      //  this.hide();
+      //  this.listen();
+      //  this.start(this.step);
+      //  return;
+      //}
       this.animate(props);
     } else
       this.listen();
@@ -280,12 +280,12 @@ class RevealBase extends React.Component {
       return;
     if (this.props.force)
       return this.animate(this.props);
-    if (this.props.step) {
-      if (this.props.step instanceof Step)
-        this.props.step.push(this);
-      else if (this.context.stepper)
-        this.context.stepper.get(this.props.step).push(this);
-    }
+    //if (this.props.step) {
+    //  if (this.props.step instanceof Step)
+    //    this.props.step.push(this);
+    //  else if (this.context.stepper)
+    //    this.context.stepper.get(this.props.step).push(this);
+    //}
     if ( ssr && (this.props.out||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
       window.setTimeout(this.revealHandler, 1000);
@@ -355,7 +355,7 @@ class RevealBase extends React.Component {
   dummy(el, child) {
     if (this.props.collapse !== true && 'height' in this.props.collapse)
       return el;
-    return (<span>{[
+    const arr = [
       el,
       <el.type
         {...el.props}
@@ -378,7 +378,8 @@ class RevealBase extends React.Component {
           }
         }}
       />
-    ]}</span>);
+    ];
+    return is16 ? arr : <span>{arr}</span> ;
   }
 
   getChild() {
@@ -422,5 +423,5 @@ class RevealBase extends React.Component {
 
 RevealBase.propTypes = propTypes;
 RevealBase.defaultProps = defaultProps;
-RevealBase.contextTypes = contextTypes;
+//RevealBase.contextTypes = contextTypes;
 export default RevealBase;
