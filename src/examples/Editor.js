@@ -77,9 +77,9 @@ class Example extends React.Component {
 			<LiveProvider transformCode={ (code) => this.truncate(code) } scope={scope} code={code} mountStylesheet={false}>
 			  <div className="row no-gutters" >
 			  	<div className="col-12 col-md-6 order-md-2">
-			  	  <div className="live-preview-container" >
+			  	  <div className="ml-2 live-preview-container" >
 			  	    <div>{this.props.menu}</div>
-			  	  	<LivePreview className="live-preview" />
+			  	  	<LivePreview className={this.props.previewClass} />
 			  	  </div>
 			  	</div>
           <div className="col-12 col-md-6 order-md-1 live-editor" ref={ (node) => this.node = node } >

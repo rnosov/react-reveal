@@ -24,5 +24,7 @@ You may also specify leaving animation class using `effectOut` prop.
 </Reveal>
 ```
 
+`react-reveal` overrides a duration and delay of a custom effect (sets it to 1000 milliseconds by default) so you would need set the `duration` and `delay` prop if you want to customize it.
+
 You can also use the rest of the [props](/docs/props). In addition there are out versions of some props: `durationOut`, `delayOut`, `countOut`, `foreverOut`
 

@@ -49,7 +49,7 @@ function Specials() {
       <ul className="nav nav-pills nav-fill mb-3">
         {nav}
       </ul>
-      <div className="text-center">
+      <div>
         <Switch>
           <Route render={ () => <Example name="Jump"       effect={Jump}       />}    path={prefix}   exact        />
 			    <Route render={ () => <Example name="Jump"       effect={Jump}       />}    path={prefix + 'jump'} />
@@ -81,11 +81,24 @@ class Example extends React.Component {
     super(props);
     this.state = {
       change: false,
+      spy: false,
     };
+    this.when = this.when.bind(this);
+    this.spy = this.spy.bind(this);
   }
 
   componentWillReceiveProps() {
       this.setState({ change: !this.state.change});
+  }
+
+  when() {
+    this.setState({ spy: false, change: !this.state.change});
+    Page.gtag('event','when', {'event_category' : 'examples',});
+  }
+
+  spy() {
+    this.setState({ spy: true, change: !this.state.change});
+    Page.gtag('event','spy', {'event_category' : 'examples',});
   }
 
   menu() {
@@ -93,7 +106,8 @@ class Example extends React.Component {
       <div>
         <div className="btn-toolbar justify-content-center mb-2" role="toolbar">
           <div className="btn-group" role="group">
-            <button onClick={ () =>  this.setState({ change: !this.state.change}) } type="button" className="btn btn-secondary">{this.props.name}</button>
+            <button onClick={ this.when } type="button" className={`btn ${this.state.spy === false ? 'btn-primary' : 'btn-secondary'}`}>When</button>
+            <button onClick={ this.spy } type="button" className={`btn ${this.state.spy === true ? 'btn-primary' : 'btn-secondary'}`}>Spy</button>
           </div>
         </div>
       </div>
@@ -110,14 +124,14 @@ class ${effect}Example extends React.Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.state = { num: 1 };
-  }
+  }${this.state.spy?'':`
   isOdd() {
     return !!(this.state.num % 2);
-  }
+  }`}
   render() {
     return (
       <div>
-        <${effect} when={this.isOdd()}>
+        <${effect} ${this.state.spy?'spy={this.state.num}':'when={this.isOdd()}'}>
           <h1>React Reveal</h1>
         </${effect}>
         <div>
@@ -128,7 +142,7 @@ class ${effect}Example extends React.Component {
             onChange={this.handleChange}
           />
           <p>
-            Do a ${effect} effect, when the number is odd
+            Do a ${effect} effect, ${!this.state.spy?'when the number is odd':'when the number is changed'}
           </p>
         </div>
       </div>
@@ -148,8 +162,10 @@ ${this.state.change?'':' '}
     const { name } = this.props;
     return (
       <Page scroll title={name}>
-        <Link to="/docs/specials/">Documentation</Link>
-        <Editor importName={name} menu={this.menu()}>{this.code(name)}</Editor>
+        <div className="text-center">
+          <Link to="/docs/specials/">Documentation</Link>
+        </div>
+        <Editor previewClass="live-preview" importName={name} menu={this.menu()}>{this.code(name)}</Editor>
       </Page>
     );
   }

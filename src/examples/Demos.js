@@ -23,7 +23,7 @@ const
   nav = navMap({ prefix, linkClass, itemClass }, [
 		{title: 'Common'},
 		{title: 'Specials'},
-//		{title: 'Advanced'},
+		{title: 'Advanced'},
 		//{title: 'Responsive'},
 		//{title: 'Carousel'},
 ]);

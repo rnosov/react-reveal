@@ -48,6 +48,13 @@ If you want to reveal custom React component then the easiest way would be to wr
 </Zoom>
 ```
 
+If the React component is [exposing DOM ref to parent components](https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components) then you can use `refProp` to grab the DOM ref. For example, React Router components expose their refs via `innerRef` prop. In such cases you could use the following code:
+
+```jsx
+<Fade refProp="innerRef">
+  <Link to="/">Some Content</Link>
+</Fade>
+```
 
 ## Revealing Images
 

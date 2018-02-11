@@ -127,6 +127,7 @@ class Example extends React.Component {
       dir: 'left',
       out: false,
       opposite: false,
+      cascade: false,
       change: false,
     }
     this.left = this.left.bind(this);
@@ -136,6 +137,7 @@ class Example extends React.Component {
     this.clear = this.clear.bind(this);
     this.handleOut = this.handleOut.bind(this);
     this.handleOpposite = this.handleOpposite.bind(this);
+    this.handleCascade = this.handleCascade.bind(this);
     //this.left = this.left.bind(this);
   }
 
@@ -190,6 +192,16 @@ class Example extends React.Component {
     Page.gtag('event','opposite', {'event_category' : 'examples',});
   }
 
+  handleCascade(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({
+      cascade: value,
+      change: !this.state.change
+    });
+    Page.gtag('event','cascade', {'event_category' : 'examples',});
+  }
+
   menu() {
     return (
       <div>
@@ -211,28 +223,20 @@ class Example extends React.Component {
           <div className="input-group">
           </div>
         </div>
-        <div className="mt-1 text-center">
-          <label className="custom-control custom-checkbox">
-            <input
-              name="out"
-              type="checkbox"
-              className="custom-control-input"
-              checked={this.state.out}
-              onChange={this.handleOut}
-            />
-            <span className="custom-control-indicator"></span>
-            <span className="custom-control-description">Fade Out</span>
-          </label>
-          <label className="custom-control custom-checkbox">
-            <input
-              name="opposite"
-              type="checkbox"
-              className="custom-control-input"
-              checked={this.state.opposite}
-              onChange={this.handleOpposite}
-            />            <span className="custom-control-indicator"></span>
-            <span className="custom-control-description">Opposite</span>
-          </label>
+        <div className="form-row justify-content-center mt-1">
+          <div className="custom-control custom-checkbox mr-2">
+            <input id="customFadeOut" checked={this.state.out} onChange={this.handleOut} type="checkbox" className="custom-control-input" />
+            <label className="custom-control-label" htmlFor="customFadeOut">Fade Out</label>
+          </div>
+          <div className="custom-control custom-checkbox mr-2">
+            <input id="customOpposite" checked={this.state.opposite} onChange={this.handleOpposite} type="checkbox" className="custom-control-input" />
+            <label className="custom-control-label" htmlFor="customOpposite">Opposite</label>
+          </div>
+          <div className="custom-control custom-checkbox">
+            <input id="customCascade" checked={this.state.cascade} onChange={this.handleCascade} type="checkbox" className="custom-control-input" />
+            <label className="custom-control-label" htmlFor="customCascade">Cascade</label>
+          </div>
+
         </div>
       </div>
     );
@@ -264,8 +268,12 @@ class ${effect}Example extends React.Component {
   `:''}render() {
     return (
       <div>
-        <${effect}${this.transformRotate(this.state.dir).toLowerCase()}${''/*this.state.out?'':' duration={1000}'*/}${this.state.opposite?' opposite':''}${this.state.out?' when={this.state.isOn}':''}>
-          <h1>React Reveal</h1>
+        <${effect}${this.transformRotate(this.state.dir).toLowerCase()}${''/*this.state.out?'':' duration={1000}'*/}${this.state.opposite?' opposite':''}${this.state.out?' when={this.state.isOn}':''}${this.state.cascade?' cascade':''}>
+          ${this.state.cascade?`<div>
+            <h2>React Reveal</h2>
+            <h2>React Reveal</h2>
+            <h2>React Reveal</h2>
+          </div>`:'<h1>React Reveal</h1>'}
         </${effect}>
         <p>
           ${this.state.out?`The idea behind it is that we initially
@@ -281,7 +289,7 @@ class ${effect}Example extends React.Component {
   }${ this.state.out? `
   componentDidMount() {
     this.timeout = window.setTimeout(
-      () => this.setState({ isOn: false }), 1000
+      () => this.setState({ isOn: false }), ${this.state.cascade?'2000':'1000'}
     );
   }
   componentWillUnmount() {
@@ -300,7 +308,7 @@ ${this.state.change?'':' '}
     return (
       <Page scroll title={name}>
         <div style={{ minHeight: '100vh' }}>
-          <Editor importName={name} menu={this.menu()}>{this.code(name)}</Editor>
+          <Editor previewClass="live-preview" importName={name} menu={this.menu()}>{this.code(name)}</Editor>
           <p className="lead mt-5">
             The following is the stress test for the chosen effect.
             A 100 paragraphs of lorem ipsum text will be revealed as you scroll down.

@@ -42,16 +42,20 @@ class LivePreview extends React.Component {
 
   render() {
     const { className, ...rest } = this.props, { live: { element }} = this.context;
-    const checkbox = <label key="0" className="align-self-center custom-control custom-checkbox mr-0">
-            <input
-              name="live"
-              type="checkbox"
-              className="custom-control-input"
-              checked={this.state.isOn}
-              onChange={this.handleLive}
-            />            <span className="custom-control-indicator"></span>
-            <span className="custom-control-description">Live Preview</span>
-          </label>;
+    //const checkbox = <label key="0" className="align-self-center custom-control custom-checkbox mr-0">
+    //        <input
+    //          name="live"
+    //          type="checkbox"
+    //          className="custom-control-input"
+    //          checked={this.state.isOn}
+    //          onChange={this.handleLive}
+    //        />            <span className="custom-control-indicator"></span>
+    //        <span className="custom-control-description">Live Preview</span>
+    //      </label>;
+    const checkbox =  <div key="0" className="custom-control custom-checkbox mr-0 mb-2 align-self-center">
+            <input id="customPreview" checked={this.state.isOn} onChange={this.handleLive} type="checkbox" className="custom-control-input" />
+            <label className="custom-control-label" htmlFor="customPreview">Live Preview</label>
+          </div>;
     if (!this.state.isOn)
       return [checkbox];
     return [

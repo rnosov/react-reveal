@@ -24,11 +24,15 @@ const
     { title: 'Special Effects'      , to: 'specials' },
     { title: 'Custom Effects'       , to: 'custom' },
     { title: 'Component Props'      , to: 'props' },
+    { title: 'when Prop'            , to: 'when' },
     { title: 'Cascade Effect'       , to: 'cascade' },
+    //{ title: 'Higher Order Components' , to: 'with-reveal' },
+    //{ title: 'Responsive Elements' , to: 'responsive' },
+    //{ title: 'Hamburger Menu' , to: 'hamburger' },
     //{ title: 'Carousel'             ,to:  'carousel' },
+
     //{ title: 'Collapse Effect'      , to: 'collapse' },
     //{ title: 'Stepped Animations'   , to: 'stepper' },
-    //{ title: 'Responsive Hamburger' , to: 'responsive' },
   ]);
 
 function Docs () {

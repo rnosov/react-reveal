@@ -17,8 +17,6 @@ import Home from './home/Home';
 import Docs from './docs/components/Docs';
 import Demos from './examples/Demos';
 
-//import './App.css';
-
 function App() {
   return (
     <div className="App" style={{ overflow: 'hidden' }}>

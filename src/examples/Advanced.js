@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Cascade from './Cascade';
+import Form from './Form';
 import Page from '../Page';
 import navMap from '../navigation/navMap';
 
@@ -18,24 +18,23 @@ const
   linkClass = 'nav-link',
   itemClass = 'nav-item',
   nav = navMap({ prefix, linkClass, itemClass }, [
-    {title: 'Collapsing Animations', to: 'collapse'},
-    {title: 'Cascading', to: 'cascade'},
-    {title: 'Custom Animations', to: 'custom'},
-    {title: 'Stepped Animations', to: 'stepper'},
-    {title: 'Form Errors', to: 'forms'},
+    {title: 'Form errors', to: 'form'},
+    //{title: 'Collapsing Animations', to: 'collapse'},
+    //{title: 'Custom Animations', to: 'custom'},
+    //{title: 'Stepped Animations', to: 'stepper'},
+
   ]);
 
 function Advanced() {
   return (
     <div>
-      <ul className="nav nav-pills nav-fill mb-3">
+      <ul className="nav nav-pills mb-3">
         {nav}
       </ul>
-      <div className="text-center">
+      <div>
         <Switch>
-          <Route render={ ComingSoon }        path={prefix}   exact       />
-          <Route render={ ComingSoon }        path={prefix + 'collapse'}  />
-          <Route render={ () => <Cascade /> } path={prefix + 'cascade'}   />
+          <Route render={ () => <Form /> }    path={prefix} exact   />
+          <Route render={ () => <Form /> }    path={prefix + 'form'}   />
           <Route render={ ComingSoon }        path={prefix + 'custom'}   />
           <Route render={ ComingSoon }        path={prefix + 'stepper'}   />
           <Route render={ ComingSoon }        path={prefix + 'forms'}   />

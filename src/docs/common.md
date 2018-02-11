@@ -2,7 +2,7 @@
 title: Common Effects
 ---
 
-Here is the list of different effects reveal effects. Every component can have a number of different attributes (like left or right versions). See examples for details. They can can be combined with other [props](/docs/props/).
+Here is the list of different effects reveal effects. Every component can have a number of different attributes (like left or right versions). See [examples](/examples/common/) for details. You can also use the rest of component [props](/docs/props/).
 
 ### Fade
 
