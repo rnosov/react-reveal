@@ -1,7 +1,7 @@
 {
   "short_name": "React Reveal",
   "name": "React Reveal Site",
-  "version":"1.2",
+  "version":"1.21",
   "icons": [
     {
       "src": "favicon.ico",
