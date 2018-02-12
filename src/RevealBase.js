@@ -160,7 +160,9 @@ class RevealBase extends React.Component {
             delay = inOut.delay + (props.when ? 0 : total - delta1 - delta2),
             animationDuration = `${total - delta1 + (props.when ? delta2 : -delta2)}ms`,
             animationDelay = `${inOut.delay + (props.when ? delta1 - delta2 : 0)}ms`,
-            height = props.when ? ( props.collapse !== true && 'height' in props.collapse ? props.collapse.height : ((this.dummyEl&&this.dummyEl.offsetHeight) || false)) : 0;
+            height = props.when ? ( props.collapse !== true && 'height' in props.collapse ? props.collapse.height : ((this.dummyEl&&this.dummyEl.offsetHeight) || false)) : 0,
+            padding = props.when ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('padding')) || false) : 0,
+            border = props.when ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('border')) || false) : 0;
             //console.log(this.dummyEl.marginTop);
             //margin = props.when ? : 0;
       //console.log(duration, delay, animationDuration, animationDelay);
@@ -172,7 +174,10 @@ class RevealBase extends React.Component {
             animationDelay,
             //margin: 0, padding: 0, border: '1px solid transparent',
             boxSizing: 'border-box',
-            transition: `height ${duration}ms ease ${delay}ms`,
+            //transition: `height ${duration}ms ease ${delay}ms`,
+            padding: padding,
+            border: border,
+            transition: `height ${duration}ms ease ${delay}ms, padding ${duration}ms ease ${delay}ms, border ${duration}ms ease ${delay}ms`,
           //collapsing: true,
         };
     }
@@ -318,7 +323,7 @@ class RevealBase extends React.Component {
       React.cloneElement(child,{
         style: {
           ...child.props.style,
-          ...this.state.style,
+          ...(this.props.collapse?{...this.state.style, boxSizing: void 0, height: void 0, border: void 0, padding: void 0, transition: void 0}:this.state.style),
           animationDuration: Math.round(cascade( /*reverse ? i-- : i++ */i++,0 , count, duration, total)) + 'ms',
         },
         //ref: i === count? (el => this.finalEl = el) : void 0,
@@ -330,6 +335,8 @@ class RevealBase extends React.Component {
     return {
           visibility: props.when || !props.out ? 'visible' : 'hidden',
           height: 0,
+          padding: 0,
+          border: 0,
           boxSizing: 'border-box',
     };
   }
@@ -369,7 +376,9 @@ class RevealBase extends React.Component {
             position:'absolute',
             //left:'-9999em',
             top:'-9999em',
-            height: 'auto',
+            height: this.el  ? this.el.height  : void 0,
+            border: this.el  ? this.el.border  : void 0,
+            padding: this.el ? this.el.padding : void 0,
             //display: 'block',
             animationName: 'none',
             animationDuration: '0s',
