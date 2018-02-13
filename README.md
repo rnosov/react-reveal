@@ -83,8 +83,8 @@ or if you want to customize `div` props:
 If you don't want any tag at all then another option is to [expose DOM ref](https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components) to `react-reveal`. You do that by using `refProp` prop. Consider following custom React Component:
 
 ```jsx
-function CustomComponent({ innerRef }) {
-  return <div ref={innerRef}>Some content</div>;
+function CustomComponent({ innerRef, className, style }) {
+  return <div ref={innerRef} className={className} style={style}>Some content</div>;
 }
 ```
 
