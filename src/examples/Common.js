@@ -255,6 +255,15 @@ class Example extends React.Component {
     }
   }
 
+  //function X() {
+  //    return <div>XXXXX</div>;
+  //  }
+  //  class Y extends React.Component {
+  //    render() {
+  //      return <div>YYYYYYYY</div>;
+  //    }
+  //  }
+
   code( effect ) {
     return `// You can edit this code below the import statements
 import React from 'react';
@@ -316,13 +325,13 @@ ${this.state.change?'':' '}
             The following whitespace is intentionally left blank. Scroll down to begin stress test.
           </p>
         </div>
-        <StressTest name={name} effect={effect} dir={this.state.dir} change={this.state.change} opposite={this.state.opposite} out={this.state.out} />
       </Page>
     );
   }
 
 }
 
+        //<StressTest name={name} effect={effect} dir={this.state.dir} change={this.state.change} opposite={this.state.opposite} out={this.state.out} />
 
 export default Common;
 

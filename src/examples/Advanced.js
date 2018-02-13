@@ -10,6 +10,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Form from './Form';
+import Todo from './Todo';
 import Page from '../Page';
 import navMap from '../navigation/navMap';
 
@@ -19,6 +20,7 @@ const
   itemClass = 'nav-item',
   nav = navMap({ prefix, linkClass, itemClass }, [
     {title: 'Form errors', to: 'form'},
+    //{title: 'Todo', to: 'todo'},
     //{title: 'Collapsing Animations', to: 'collapse'},
     //{title: 'Custom Animations', to: 'custom'},
     //{title: 'Stepped Animations', to: 'stepper'},
@@ -35,9 +37,8 @@ function Advanced() {
         <Switch>
           <Route render={ () => <Form /> }    path={prefix} exact   />
           <Route render={ () => <Form /> }    path={prefix + 'form'}   />
+          <Route render={ () => <Todo /> }        path={prefix + 'todo'}   />
           <Route render={ ComingSoon }        path={prefix + 'custom'}   />
-          <Route render={ ComingSoon }        path={prefix + 'stepper'}   />
-          <Route render={ ComingSoon }        path={prefix + 'forms'}   />
           <Route render={ NotFound }                               		/>
         </Switch>
       </div>

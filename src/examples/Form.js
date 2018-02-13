@@ -11,7 +11,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Editor from './Editor';
 import Page from '../Page';
-//import Fade from 'react-reveal/Fade';
 
 class Example extends React.Component {
 
@@ -23,7 +22,6 @@ class Example extends React.Component {
     };
     this.collapse = this.collapse.bind(this);
     this.without = this.without.bind(this);
-
   }
 
   componentWillReceiveProps() {
@@ -133,10 +131,9 @@ ${this.state.change?'':' '}
   }
 
   render() {
-    const name = "Form error example";
     return (
-      <Page scroll title={name}>
-        <Editor importName={name} menu={this.menu()}>{this.code()}</Editor>
+      <Page scroll title="Form error example">
+        <Editor menu={this.menu()}>{this.code()}</Editor>
       </Page>
     );
   }
