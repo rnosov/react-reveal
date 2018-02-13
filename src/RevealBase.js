@@ -47,7 +47,7 @@ const
   },
   defaultProps = {
     fraction: 0.2,
-    when: true,
+    //when: true,
     refProp: 'ref',
   };
   //,
@@ -59,10 +59,11 @@ class RevealBase extends React.Component {
 
   constructor(props) {
     super(props);
+    this.isOn = 'when' in props ? !!props.when : true;
     this.state = {
       style: {
         ...(props.collapse ? RevealBase.getInitialCollapseStyle(props): void 0),
-        opacity: !props.when && props.out ? 0 : void 0,
+        opacity: !this.isOn && props.out ? 0 : void 0,
       },
     };
     this.savedChild = false;
@@ -106,14 +107,14 @@ class RevealBase extends React.Component {
   }
 
   resize() {
-    if (!this||!this.el||!this.props.when)
+    if (!this||!this.el||!this.isOn)
       return;
     if ( this.inViewport() ) {
       this.unlisten();
-      this.isShown = !!this.props.when;
-      this.setState({ style: { opacity: this.props.when || !this.props.out ? 1 : 0 } });
+      this.isShown = this.isOn;
+      this.setState({ style: { opacity: this.isOn || !this.props.out ? 1 : 0 } });
       this.onReveal(this.props);
-      //if (this.props.onReveal && this.props.when)
+      //if (this.props.onReveal && this.isOn)
       //  this.props.wait ? this.onRevealTimeout = window.setTimeout(this.props.onReveal, this.props.wait) : this.props.onReveal();
     }
   }
@@ -148,7 +149,7 @@ class RevealBase extends React.Component {
 
       //    //const delta = this.props.duration>>2,
       //    //      duration = delta,
-      //    //      delay = this.props.delay + (this.props.when ? 0 : this.props.duration - delta)
+      //    //      delay = this.props.delay + (this.isOn ? 0 : this.props.duration - delta)
   collapse(style, props, inOut) {
     if (props.collapse&&props.out) {
       const total = inOut.duration + (props.cascade ? inOut.duration : 0),
@@ -158,12 +159,12 @@ class RevealBase extends React.Component {
             delta1 = total>>2,
             delta2 = delta1>>1,
             duration = delta1, // + (props.when ? 0 : delta2),
-            delay = inOut.delay + (props.when ? 0 : total - delta1 - delta2),
-            animationDuration = `${total - delta1 + (props.when ? delta2 : -delta2)}ms`,
-            animationDelay = `${inOut.delay + (props.when ? delta1 - delta2 : 0)}ms`,
-            height = props.when ? ( props.collapse !== true && 'height' in props.collapse ? props.collapse.height : ((this.dummyEl&&this.dummyEl.offsetHeight) || false)) : 0,
-            padding = props.when ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('padding')) || false) : 0,
-            border = props.when ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('border')) || false) : 0;
+            delay = inOut.delay + (this.isOn ? 0 : total - delta1 - delta2),
+            animationDuration = `${total - delta1 + (this.isOn ? delta2 : -delta2)}ms`,
+            animationDelay = `${inOut.delay + (this.isOn ? delta1 - delta2 : 0)}ms`,
+            height = this.isOn ? ( props.collapse !== true && 'height' in props.collapse ? props.collapse.height : ((this.dummyEl&&this.dummyEl.offsetHeight) || false)) : 0,
+            padding = this.isOn ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('padding')) || false) : 0,
+            border = this.isOn ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('border')) || false) : 0;
       if (height !== false)
         return {
             ...style,
@@ -184,14 +185,14 @@ class RevealBase extends React.Component {
     if (!this || !this.el)
       return;
     this.unlisten();
-    if (this.isShown === !!props.when)
+    if (this.isShown === this.isOn)
       return;
-    this.isShown = !!props.when;
-    const leaving = !props.when && props.out,
+    this.isShown = this.isOn;
+    const leaving = !this.isOn && props.out,
           inOut = props[leaving ? 'out' : 'in'];
-    //const inOut = props[props.when || !props.out ?'in':'out'];
+    //const inOut = props[this.isOn || !props.out ?'in':'out'];
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
-    if ((props.out||props.when) && inOut.make)
+    if ((props.out||this.isOn) && inOut.make)
         animationName = inOut.make();
     this.setState({
       style: this.collapse({
@@ -215,7 +216,7 @@ class RevealBase extends React.Component {
   }
 
   onReveal(props) {
-    if (props.onReveal && props.when) {
+    if (props.onReveal && this.isOn) {
       if (this.onRevealTimeout)
         this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
       props.wait ? this.onRevealTimeout = window.setTimeout(props.onReveal, props.wait) : props.onReveal();
@@ -259,7 +260,7 @@ class RevealBase extends React.Component {
     if (!this||!this.el) return;
     if (!props)
       props = this.props;
-    if ( props.when && this.isShown && 'spy' in props ){
+    if ( this.isOn && this.isShown && 'spy' in props ){
         this.isShown = false;
         this.setState({ style: {} });
         //window.setTimeout( () => this.animate.call(this, props), 200 );
@@ -279,7 +280,8 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el || this.props.disabled)
       return;
-    if (this.props.skipInitial) {
+    //console.log('spy' in this.props);
+    if (this.isOn && ('when' in this.props || 'spy' in this.props) && !this.props.appear) {
       this.isShown = true;
       this.setState({ style: { opacity: 1 } });
       return;
@@ -296,7 +298,7 @@ class RevealBase extends React.Component {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
       window.setTimeout(this.revealHandler, 1000);
     }
-    else if(this.props.when)
+    else if(this.isOn)
       this.reveal(this.props);
   }
 
@@ -310,7 +312,7 @@ class RevealBase extends React.Component {
           newChildren = React.Children.toArray(children);
     //if (newChildren.length === 1)
     //  return newChildren;
-    let duration = this.props[this.props.when || !this.props.out ?'in':'out'].duration,
+    let duration = this.props[this.isOn || !this.props.out ?'in':'out'].duration,
           count = newChildren.length,
           total = duration*2;
     if (this.props.collapse) {
@@ -343,20 +345,23 @@ class RevealBase extends React.Component {
   }
 
   componentWillReceiveProps (props) {
+    if ('when' in props)
+      this.isOn = !!props.when;
     if (props.disabled)
       return;
-    //if (props.responsive && !props.when && this.props.when && props.collapse && !this.props.collapse) {
+    //if (props.responsive && !props.when && this.isOn && props.collapse && !this.props.collapse) {
     if (props.collapse && !this.props.collapse) {
       this.setState({ style: RevealBase.getInitialCollapseStyle(props)});
       this.isShown = false;
       return;
     }
-    if ( props.when && props.collapse === true && this.dummyEl && this.dummyEl.offsetHeight && this.state.style.height !== this.dummyEl.offsetHeight )
+    if ( this.isOn && props.collapse === true && this.dummyEl && this.dummyEl.offsetHeight && this.state.style.height !== this.dummyEl.offsetHeight )
       this.setState({ style: { ...this.state.style, height: this.dummyEl.offsetHeight } });
+    //if ( (props.isOn != this.props.when) || (props.spy !== this.props.spy))
     if ( (props.when !== this.props.when) || (props.spy !== this.props.spy))
       this.reveal(props);
     //(props.onReveal !== this.props.onReveal) &&
-    if (this.onRevealTimeout&& !props.when)
+    if (this.onRevealTimeout&& !this.isOn)
         this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
   }
 
