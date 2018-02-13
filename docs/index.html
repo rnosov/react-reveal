@@ -17,17 +17,39 @@
 </code></pre>
 <p>You should see zooming animation that reveals text inside the tag. You can change this text to any JSX you want. If you place this code further down the page you'll see that it'd appear as you scroll down.</p>
 <h2 id="revealing-react-components">Revealing React Components</h2>
-<p>If you want to reveal custom React component then the easiest way would be to wrap it in a <code>div</code> tag:</p>
+<p>You may just wrap your custom React component with the effect of your choosing like so:</p>
+<pre class="  language-jsx"><code class="  language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Zoom</span><span class="token punctuation">&gt;</span></span>  
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>CustomComponent</span> <span class="token punctuation">/&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Zoom</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p>In such case, in the resulting <code>&lt;CustomComponent /&gt;</code> HTML markup will be wrapped in a <code>div</code> tag. If you would rather have a different HTML tag then wrap <code>&lt;CustomComponent /&gt;</code> in a tag of your choosing:</p>
 <pre class="  language-jsx"><code class="  language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Zoom</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>CustomComponent</span> <span class="token punctuation">/&gt;</span></span> 
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>CustomComponent</span> <span class="token punctuation">/&gt;</span></span>   
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Zoom</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p>or if you want to customize <code>div</code> props:</p>
+<pre class="  language-jsx"><code class="  language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Zoom</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>some-class<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>CustomComponent</span> <span class="token punctuation">/&gt;</span></span>   
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Zoom</span><span class="token punctuation">&gt;</span></span>
 </code></pre>
-<p>If the React component is <a href="https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components">exposing DOM ref to parent components</a> then you can use <code>refProp</code> to grab the DOM ref. For example, React Router components expose their refs via <code>innerRef</code> prop. In such cases you could use the following code:</p>
-<pre class="  language-jsx"><code class="  language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Fade</span> <span class="token attr-name">refProp</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>innerRef<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Link</span> <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Some Content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Link</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Fade</span><span class="token punctuation">&gt;</span></span>
+<p>If you don't want any tag at all then another option is to <a href="https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components">expose DOM ref</a> to <code>react-reveal</code>. You do that by using <code>refProp</code> prop. Consider following custom React Component:</p>
+<pre class="  language-jsx"><code class="  language-jsx"><span class="token keyword">function</span> <span class="token function">CustomComponent</span><span class="token punctuation">(</span><span class="token punctuation">{</span> innerRef <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">ref</span><span class="token script language-javascript"><span class="token punctuation">=</span><span class="token punctuation">{</span>innerRef<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span>Some content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>And then you can reveal using following code:</p>
+<pre class="  language-jsx"><code class="  language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Zoom</span> <span class="token attr-name">refProp</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>innerRef<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>CustomComponent</span> <span class="token punctuation">/&gt;</span></span>   
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Zoom</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+<p>In this case, <code>react-reveal</code> will not insert any tags and will use the exposed HTML element. Some React components such as React Router links already expose their refs via <code>innerRef</code> prop:</p>
+<pre class="  language-jsx"><code class="  language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Zoom</span> <span class="token attr-name">refProp</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>innerRef<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Link</span> <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Your Content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Link</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Zoom</span><span class="token punctuation">&gt;</span></span>
 </code></pre>
 <h2 id="revealing-images">Revealing Images</h2>
 <p>If you want to reveal an image you can wrap <code>img</code> tag with with the desired <code>react-reveal</code> effect:</p>
@@ -42,4 +64,4 @@
 <p>Have a look at <a href="/examples/">demos</a> to see what kind of effects are possible.</p>
 <h2 id="server-side-rendering">Server Side Rendering</h2>
 <p><code>react-reveal</code> will try to autodetect server side rendering (SSR) and apply gentle fade out effect on the initial render. </p>
-</div></div></div></div></div><footer class="footer"><div class="container"><span class="text-muted">Copyright © Roman Nosov 2018.</span></div></footer></div></div><script type="text/javascript" src="/static/js/main.e3495071.js"></script></body></html>
+</div></div></div></div></div><footer class="footer"><div class="container"><span class="text-muted">Copyright © Roman Nosov 2018.</span></div></footer></div></div><script type="text/javascript" src="/static/js/main.88186a4d.js"></script></body></html>
