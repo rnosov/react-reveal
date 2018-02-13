@@ -167,15 +167,13 @@ class RevealBase extends React.Component {
       if (height !== false)
         return {
             ...style,
-            height,
+            height, padding, border,
+            transition: `height ${duration}ms ease ${delay}ms, padding ${duration}ms ease ${delay}ms, border ${duration}ms ease ${delay}ms`,
             animationDuration,
             animationDelay,
             //margin: 0, padding: 0, border: '1px solid transparent',
             boxSizing: 'border-box',
             //transition: `height ${duration}ms ease ${delay}ms`,
-            padding: padding,
-            border: border,
-            transition: `height ${duration}ms ease ${delay}ms, padding ${duration}ms ease ${delay}ms, border ${duration}ms ease ${delay}ms`,
           //collapsing: true,
         };
     }
@@ -379,7 +377,8 @@ class RevealBase extends React.Component {
             position:'absolute',
             //left:'-9999em',
             top:'-9999em',
-            height: this.el  ? this.el.height  : void 0,
+            //height: this.el  ? this.el.height  : void 0,
+            height: 'auto',
             border: this.el  ? this.el.border  : void 0,
             padding: this.el ? this.el.padding : void 0,
             //display: 'block',
