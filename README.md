@@ -52,17 +52,51 @@ You should see zooming animation that reveals text inside the tag. You can chang
 
 ## Revealing React Components
 
-If you want to reveal custom React component then the easiest way would be to wrap it in a `div` tag:
+You may just wrap your custom React component with the effect of your choosing like so:
+
+```jsx
+<Zoom>  
+  <CustomComponent />
+</Zoom>
+```
+
+In such case, in the resulting `<CustomComponent />` HTML markup will be wrapped in a `div` tag. If you would rather have a different HTML tag then wrap `<CustomComponent />` in a tag of your choosing:
 
 ```jsx
 <Zoom>
-  <div>
-    <CustomComponent /> 
+  <section>
+    <CustomComponent />   
+  </section>
+</Zoom>
+```
+
+or if you want to customize `div` props:
+
+```jsx
+<Zoom>
+  <div className="some-class">
+    <CustomComponent />   
   </div>
 </Zoom>
 ```
 
-If the React component is [exposing DOM ref to parent components](https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components) then you can use `refProp` to grab the DOM ref. For example, React Router components expose their refs via `innerRef` prop. In such cases you could use the following code:
+If you don't want any tag at all then another option is to [expose DOM ref](https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components) to `react-reveal`. You do that by using `refProp` prop. Consider following custom React Component:
+
+```jsx
+function CustomComponent({ innerRef }) {
+  return <div ref={innerRef}>Some content</div>;
+}
+```
+
+And then you can reveal using following code:
+
+```jsx
+<Zoom refProp="innerRef">
+  <CustomComponent />   
+</Zoom>
+```
+
+In this case, `react-reveal` will not insert any tags and will use the exposed HTML element. Some React components such as React Router links already expose their refs via `innerRef` prop:
 
 ```jsx
 <Zoom refProp="innerRef">

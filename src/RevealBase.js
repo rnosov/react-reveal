@@ -32,6 +32,7 @@ const
 //    step: oneOfType([instanceOf(Step), string]),
     force: bool,
     disabled: bool,
+    skipInitial: bool,
     fraction: number,
     onReveal: func,
     children: element.isRequired,
@@ -163,9 +164,6 @@ class RevealBase extends React.Component {
             height = props.when ? ( props.collapse !== true && 'height' in props.collapse ? props.collapse.height : ((this.dummyEl&&this.dummyEl.offsetHeight) || false)) : 0,
             padding = props.when ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('padding')) || false) : 0,
             border = props.when ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('border')) || false) : 0;
-            //console.log(this.dummyEl.marginTop);
-            //margin = props.when ? : 0;
-      //console.log(duration, delay, animationDuration, animationDelay);
       if (height !== false)
         return {
             ...style,
@@ -283,6 +281,11 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el || this.props.disabled)
       return;
+    if (this.props.skipInitial) {
+      this.isShown = true;
+      this.setState({ style: { opacity: 1 } });
+      return;
+    }
     if (this.props.force)
       return this.animate(this.props);
     //if (this.props.step) {
@@ -394,12 +397,19 @@ class RevealBase extends React.Component {
   getChild() {
     if (this.savedChild && !this.props.disabled)
       return this.savedChild;
-    else if (React.Children.count(this.props.children) === 1 /*|| this.props.tag*/)
-      return React.Children.only(this.props.children);
+    else if (React.Children.count(this.props.children) === 1) {
+      if (typeof this.props.children === 'object') {
+        const child = React.Children.only(this.props.children);
+        return  (('type' in child) && typeof child.type === 'string') || this.props.refProp !== 'ref'
+                ? child
+                : <div>{child}</div>;
+      }
+      else
+        return <div>{this.props.children}</div>;
+    }
     else {
       console.warn('react-reveal expects a single child');
-      //return React.createElement(this.props.tag || 'div');
-      return React.createElement('div');
+      return React.createElement('div', { children: this.props.children });
     }
   }
 
