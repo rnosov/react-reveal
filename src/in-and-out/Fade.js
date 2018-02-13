@@ -9,8 +9,8 @@
 
 import React from 'react';
 import { bool, number, string } from 'prop-types';
-import RevealBase from '../RevealBase';
 import { animation, defaults } from '../lib/globals';
+import wrap from '../lib/wrap';
 
 const
   propTypes = {
@@ -29,7 +29,7 @@ const
     forever: bool,
   };
 
-function Fade({out, distance, left, right, up, down, top, bottom, big, mirror, opposite, forever,
+function Fade({ children, out, distance, left, right, up, down, top, bottom, big, mirror, opposite, forever,
               duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
@@ -54,7 +54,7 @@ function Fade({out, distance, left, right, up, down, top, bottom, big, mirror, o
   }
 
   return context
-    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
+    ? wrap(props, factory, children)
     : factory(out)
   ;
 }

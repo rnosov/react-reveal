@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { bool, number } from 'prop-types';
-import RevealBase from '../RevealBase';
+import wrap from '../lib/wrap';
 import { animation, defaults } from '../lib/globals';
 
 const
@@ -35,7 +35,7 @@ const rule = `
 }
 `;
 
-function Pulse({ out, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
+function Pulse({ children, out, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -47,7 +47,7 @@ function Pulse({ out, duration = defaults.duration, delay = defaults.delay, coun
   }
 
   return context
-    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
+    ? wrap(props, factory, children)
     : factory(out)
   ;
 }

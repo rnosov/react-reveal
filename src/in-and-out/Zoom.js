@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { bool, number } from 'prop-types';
-import RevealBase from '../RevealBase';
+import wrap from '../lib/wrap';
 import { animation, defaults } from '../lib/globals';
 
 const
@@ -28,7 +28,7 @@ const
     forever: bool,
   };
 
-function Zoom({ out, left, right, top, bottom, up, down, mirror, opposite, forever,
+function Zoom({ children, out, left, right, top, bottom, up, down, mirror, opposite, forever,
               duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
@@ -83,7 +83,7 @@ function Zoom({ out, left, right, top, bottom, up, down, mirror, opposite, forev
   }
 
   return context
-    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
+    ? wrap(props, factory, children)
     : factory(out)
   ;
 }

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { bool, number } from 'prop-types';
-import RevealBase from '../RevealBase';
+import wrap from '../lib/wrap';
 import { animation, defaults } from '../lib/globals';
 
 const
@@ -28,7 +28,7 @@ const
     forever: bool,
   };
 
-function Slide({out, left, right, up, down, top, bottom, big, mirror, opposite, forever,
+function Slide({ children, out, left, right, up, down, top, bottom, big, mirror, opposite, forever,
               duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
@@ -53,7 +53,7 @@ function Slide({out, left, right, up, down, top, bottom, big, mirror, opposite, 
   }
 
   return context
-    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
+    ? wrap(props, factory, children)
     : factory(out)
   ;
 }

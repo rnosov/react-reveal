@@ -35,7 +35,7 @@ const
     skipInitial: bool,
     fraction: number,
     onReveal: func,
-    children: element.isRequired,
+    //children: element.isRequired,
     refProp: string,
     innerRef: func,
     in: inOut.isRequired,
@@ -396,20 +396,14 @@ class RevealBase extends React.Component {
   getChild() {
     if (this.savedChild && !this.props.disabled)
       return this.savedChild;
-    else if (React.Children.count(this.props.children) === 1) {
-      if (typeof this.props.children === 'object') {
-        const child = React.Children.only(this.props.children);
-        return  (('type' in child) && typeof child.type === 'string') || this.props.refProp !== 'ref'
-                ? child
-                : <div>{child}</div>;
-      }
-      else
-        return <div>{this.props.children}</div>;
+    if (typeof this.props.children === 'object') {
+       const child = React.Children.only(this.props.children);
+       return  (('type' in child) && typeof child.type === 'string') || this.props.refProp !== 'ref'
+               ? child
+               : <div>{child}</div>;
     }
-    else {
-      console.warn('react-reveal expects a single child');
-      return React.createElement('div', { children: this.props.children });
-    }
+    else
+      return <div>{this.props.children}</div>;
   }
 
   render() {

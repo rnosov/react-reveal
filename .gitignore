@@ -35,3 +35,4 @@ npm-debug.log
 /globals.js
 /debounce.js
 /throttle.js
+/wrap.js

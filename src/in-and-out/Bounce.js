@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { bool, number } from 'prop-types';
-import RevealBase from '../RevealBase';
+import wrap from '../lib/wrap';
 import { animation, defaults } from '../lib/globals';
 
 const
@@ -28,7 +28,7 @@ const
     forever: bool,
   };
 
-function Bounce({out, left, right, up, down, top, bottom, mirror, opposite, forever,
+function Bounce({ children, out, left, right, up, down, top, bottom, mirror, opposite, forever,
                 duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
@@ -154,7 +154,7 @@ function Bounce({out, left, right, up, down, top, bottom, mirror, opposite, fore
   }
 
   return context
-    ? <RevealBase {...props} in={factory(false)} out={factory(true)} />
+    ? wrap(props, factory, children)
     : factory(out)
   ;
 }
