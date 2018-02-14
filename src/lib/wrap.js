@@ -11,10 +11,12 @@ import React from 'react';
 import RevealBase from '../RevealBase';
 
 export default function wrap(props, factory, children) {
+  if ('in' in props)
+    props.when = props.in;
   if (React.Children.count(children) === 1)
-    return  <RevealBase {...props} in={factory(false)} out={factory(true)} children={children} />
+    return  <RevealBase {...props} inEffect={factory(false)} outEffect={factory(true)} children={children} />
   children = React.Children.map(children, child =>
-    <RevealBase {...props} in={factory(false)} out={factory(true)} children={child} />
+    <RevealBase {...props} inEffect={factory(false)} outEffect={factory(true)} children={child} />
   );
   return 'Fragment' in React ? <React.Fragment>{children}</React.Fragment> : <span>{children}</span>;
 }
