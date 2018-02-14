@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { string, object, number, bool, func, any, oneOfType, oneOf, instanceOf, shape, element } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, is16 } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, is16, fadeOutEnabled } from './lib/globals';
 //import Step from './lib/Step';
 import throttle from './lib/throttle';
 
@@ -32,12 +32,15 @@ const
 //    step: oneOfType([instanceOf(Step), string]),
     force: bool,
     disabled: bool,
-    skipInitial: bool,
+    appear: bool,
+    enter: bool,
+    exit: bool,
     fraction: number,
     onReveal: func,
     //children: element.isRequired,
     refProp: string,
     innerRef: func,
+    onExited: func,
     inEffect: inOut.isRequired,
     outEffect: oneOfType([ inOut, oneOf([ false ]) ]).isRequired,
   },
@@ -53,17 +56,17 @@ const
 
   contextTypes = {
     transitionGroup: object,
-  },
-
-  childContextTypes = {
-    transitionGroup: ()=>{},
   };
+
+  //childContextTypes = {
+  //  transitionGroup: ()=>{},
+  //};
 
 class RevealBase extends React.Component {
 
-  getChildContext() {
-    return { transitionGroup: null }; // allows for nested Transitions
-  }
+  //getChildContext() {
+  //  return { transitionGroup: null }; // allows for nested Transitions
+  //}
 
   constructor(props, context) {
     super(props, context);
@@ -129,7 +132,6 @@ class RevealBase extends React.Component {
     if (!this || !this.el)
       return;
     this.savedChild = false;
-      //console.log(this.props.onExited);
     if (!this.isShown) {
       this.setState( { style: { ...this.state.style, visibility: 'hidden' }/*, collapsing: false */});
       if (this.props.collapse)
@@ -272,7 +274,6 @@ class RevealBase extends React.Component {
     if ( this.isOn && this.isShown && 'spy' in props ){
         this.isShown = false;
         this.setState({ style: {} });
-        //window.setTimeout( () => this.animate.call(this, props), 200 );
         window.setTimeout( () => this.reveal(props), 200 );
     } else if ( this.inViewport() ) {
       //if (this.start) {
@@ -289,27 +290,24 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el || this.props.disabled)
       return;
-    //console.log('spy' in this.props);
     const parentGroup = this.context.transitionGroup;
-    const appear = parentGroup && !parentGroup.isMounting ? true : this.props.appear;
-    if (this.isOn && ('when' in this.props || 'spy' in this.props) && !appear) {
+    const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
+    if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
+    || (ssr && !fadeOutEnabled && this.props.outEffect && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
+      ) {
       this.isShown = true;
       this.setState({ style: { opacity: 1, height: this.props.collapse ? this.dummyEl.offsetHeight: void 0 } });
+      this.onReveal(this.props);
+      return;
+    }
+    if ( ssr && fadeOutEnabled && this.props.outEffect && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)) {
+      this.setState({ style: { opacity: 0, transition: 'opacity 1000ms 1000ms' } });
+      window.setTimeout(this.revealHandler, 2000);
       return;
     }
     if (this.props.force)
       return this.animate(this.props);
-    //if (this.props.step) {
-    //  if (this.props.step instanceof Step)
-    //    this.props.step.push(this);
-    //  else if (this.context.stepper)
-    //    this.context.stepper.get(this.props.step).push(this);
-    //}
-    if ( ssr && (this.props.outEffect||this.props.effect) && RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight ) {
-      this.setState({ style: { opacity: 0, transition: 'opacity 1000ms' } });
-      window.setTimeout(this.revealHandler, 1000);
-    }
-    else if(this.isOn)
+    if(this.isOn)
       this.reveal(this.props);
   }
 
@@ -358,6 +356,10 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if ('when' in props)
       this.isOn = !!props.when;
+    if (!this.isOn && props.onExited && ('exit' in props) && props.exit === false ) {
+      props.onExited();
+      return;
+    }
     if (props.disabled)
       return;
     //if (props.responsive && !props.when && this.isOn && props.collapse && !this.props.collapse) {
@@ -452,5 +454,5 @@ class RevealBase extends React.Component {
 RevealBase.propTypes = propTypes;
 RevealBase.defaultProps = defaultProps;
 RevealBase.contextTypes = contextTypes;
-RevealBase.childContextTypes = childContextTypes;
+//RevealBase.childContextTypes = childContextTypes;
 export default RevealBase;

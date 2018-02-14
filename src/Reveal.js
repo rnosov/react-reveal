@@ -10,7 +10,7 @@
 import React from 'react';
 import { bool, string, number, object, oneOf, oneOfType } from 'prop-types';
 import { defaults } from './lib/globals';
-import RevealBase from './RevealBase';
+import wrap from '../lib/wrap';
 import Fade from './in-and-out/Fade';
 
 const
@@ -34,20 +34,21 @@ const
     delayOut: defaults.delay,
     countOut: defaults.count,
     foreverOut: defaults.forever,
-    in: Fade(defaults),
-    out: Fade({ out: true, ...defaults }),
+    inEffect: Fade(defaults),
+    outEffect: Fade({ out: true, ...defaults }),
   };
 
 
 
-function Reveal({ duration, delay, count, forever, durationOut, delayOut, countOut, foreverOut, effect, effectOut, in: inProp, out,  ...props}) {
-  return (
-    <RevealBase
-      {...props}
-      in={effect ? {duration, delay, count, forever, className: effect, style: {} } : inProp }
-      out={effectOut ? {duration: durationOut, delay: delayOut, count: countOut, forever: foreverOut, className: effectOut, style: {} } : out }
-    />
-  );
+function Reveal({ children, duration, delay, count, forever, durationOut, delayOut, countOut, foreverOut, effect, effectOut, inEffect, outEffect,  ...props}) {
+
+  function factory(reverse) {
+    return reverse
+    ? effectOut ? { duration: durationOut, delay: delayOut, count: countOut, forever: foreverOut, className: effectOut, style: {} } : outEffect
+    : effect ? { duration, delay, count, forever, className: effect, style: {} } : inEffect;
+  }
+
+  return wrap(props, factory, children);
 }
 
 Reveal.propTypes = propTypes;
