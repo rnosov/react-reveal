@@ -13,14 +13,14 @@ Last but not least, do star the [Github repository](https://github.com/rnosov/re
 ## Examples
 
 A number of simple effect examples:
-- [Fade](https://www.react-reveal.com/examples/fade/)
-- [Flip](https://www.react-reveal.com/examples/flip/)
-- [Rotate](https://www.react-reveal.com/examples/rotate/)
-- [Zoom](https://www.react-reveal.com/examples/zoom/)
-- [Bounce](https://www.react-reveal.com/examples/bounce/)
-- [Slide](https://www.react-reveal.com/examples/slide/)
-- [Roll](https://www.react-reveal.com/examples/roll/)
-- [LightSpeed](https://www.react-reveal.com/examples/lightspeed/)
+- [Fade](https://www.react-reveal.com/examples/common/fade/)
+- [Flip](https://www.react-reveal.com/examples/common/flip/)
+- [Rotate](https://www.react-reveal.com/examples/common/rotate/)
+- [Zoom](https://www.react-reveal.com/examples/common/zoom/)
+- [Bounce](https://www.react-reveal.com/examples/common/bounce/)
+- [Slide](https://www.react-reveal.com/examples/common/slide/)
+- [Roll](https://www.react-reveal.com/examples/common/roll/)
+- [LightSpeed](https://www.react-reveal.com/examples/common/lightspeed/)
 
 
 Also, there are more complicated examples of [animated form errors](https://www.react-reveal.com/examples/advanced/form/) and a [todo app](https://www.react-reveal.com/examples/advanced/todo/).
