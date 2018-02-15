@@ -2,7 +2,15 @@
 
 ## Introduction
 
-[React Reveal](https://www.react-reveal.com) is a dead simple way to add some cool reveal on scroll animations to your React app. Don't forget to star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package!
+[React Reveal](https://www.npmjs.com/package/react-reveal) is an attention management framework for your React app. The traditional way of calling attention to a certain element has been in-your-face method of placing it in a popup or putting it in a sticky navigation element like sticky headers, footers or sidebars. As the number of these elements proliferate, the app is at danger of starting to resemble a cockpit control panel of a jumbo jet. There should be a better way of managing a user attention and `react-reveal`  can do just that. 
+
+Instead of trying to squeeze everything that requires attention into one screen, you can draw user attention to important bits as they scroll past. `react-reveal` provides a dead simple way to add cool reveal-on-scroll animations to your React app. In addition, it has a first class support for collapsing elements thereby abolishing the need for the universally hated popups.
+
+The other problem many single page applications are facing is actually their speed. As you add and remove elements from the page transitions are often rough and jerky. `react-reveal` rich suite of effects could really smoothen these transitions to make for a modern and polished user experience.
+
+`react-reveal` supports server side rendering, is compatible with [react transition group]((https://www.react-reveal.com/docs/transition-group/) and has a tiny footprint.
+
+Last but not least, do star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package!
 
 ## Examples
 
@@ -16,7 +24,7 @@ A number of simple effect examples:
 - [Roll](https://www.react-reveal.com/examples/Roll/)
 - [LightSpeed](https://www.react-reveal.com/examples/LightSpeed/)
 
-A more complicated example of [animated form errors](https://www.react-reveal.com/examples/advanced/form/).
+Also, there are more complicated examples of [animated form errors](https://www.react-reveal.com/examples/advanced/form/) and a [todo app](https://www.react-reveal.com/examples/advanced/todo/).
 
 ## Installation
 
@@ -118,7 +126,34 @@ It would be a very good idea to specify width and height of any image you wish t
 
 ## Children
 
-Please be aware that `react-reveal` components ( such as `Fade`, `Zoom`, etc ) can only have a single child. If you want to reveal several elements at once you'd need to wrap them in a container tag such as `div`.
+## Children
+
+`react-reveal` will attach a reveal effect to each child. In other words
+
+```jsx
+<Zoom>
+  <div>First Child</div>
+  <div>Second Child</div>
+</Zoom>
+```
+
+will be equivalent to 
+
+```jsx
+<Zoom><div>First Child</div></Zoom>
+<Zoom><div>Second Child</div></Zoom>  
+```
+if you don't want this to happen you should pass only a single child to `react-reveal` elements:
+
+```jsx
+<Zoom>
+  <div>
+    <div>First Child</div>
+    <div>Second Child</div>
+  </div>
+</Zoom>
+```
+
 
 ## Server Side Rendering
 

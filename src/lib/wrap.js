@@ -13,6 +13,8 @@ import RevealBase from '../RevealBase';
 export default function wrap(props, factory, children) {
   if ('in' in props)
     props.when = props.in;
+  if ('timeout' in props)
+    props.duration = props.timeout;
   if (React.Children.count(children) === 1)
     return  <RevealBase {...props} inEffect={factory(false)} outEffect={factory(true)} children={children} />
   children = React.Children.map(children, child =>
