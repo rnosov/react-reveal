@@ -6,7 +6,7 @@ Instead of trying to squeeze everything that requires attention into one screen,
 
 The other problem many single page applications are facing is actually their speed. As you add and remove elements from the page transitions are often rough and jerky. `react-reveal` rich suite of effects could really smoothen these transitions to make for a modern and polished user experience.
 
-`react-reveal` is MIT licensed, supports server side rendering, won't mess your SEO, compatible with [react transition group]((https://www.react-reveal.com/docs/transition-group/) and has a tiny footprint in application bundle.
+`react-reveal` is MIT licensed, supports server side rendering, won't mess your SEO, compatible with [react transition group](https://www.react-reveal.com/docs/transition-group/) and has a tiny footprint in application bundle.
 
 Last but not least, do star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package!
 
@@ -40,7 +40,7 @@ yarn add react-reveal
 
 ## Quick Start
 
-Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) to your project. Lets try `Zoom` effect first.
+Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) to your project. Lets try `Zoom` effect first:
 
 ```javascript
 import Zoom from 'react-reveal/Zoom';
@@ -90,7 +90,7 @@ If you don't want any tag at all then another option is to [expose DOM ref](http
 
 ```jsx
 function CustomComponent({ innerRef, className, style }) {
-  return <div ref={innerRef} className={className} style={style}>Some content</div>;
+  return (<div ref={innerRef} className={className} style={style}>Some content</div>);
 }
 ```
 
