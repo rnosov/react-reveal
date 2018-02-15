@@ -6,9 +6,9 @@ Instead of trying to squeeze everything that requires attention into one screen,
 
 The other problem many single page applications are facing is actually their speed. As you add and remove elements from the page transitions are often rough and jerky. `react-reveal` rich suite of effects could really smoothen these transitions to make for a modern and polished user experience.
 
-`react-reveal` is MIT licensed, supports server side rendering, won't mess your SEO, compatible with [react transition group](https://www.react-reveal.com/docs/transition-group/) and has a tiny footprint in application bundle.
+`react-reveal` is MIT licensed, supports server side rendering, won't mess your SEO, compatible with [react transition group](https://www.react-reveal.com/docs/transition-group/) and has a tiny footprint in the application js bundle ( doesn't require any CSS files either ). So, what are you waiting for? Come and join the React UX revolution!
 
-Last but not least, do star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package!
+Last but not least, do star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package.
 
 ## Examples
 
@@ -124,7 +124,7 @@ It would be a very good idea to specify width and height of any image you wish t
 
 ## Children
 
-`react-reveal` will attach a reveal effect to each child. In other words
+`react-reveal` will attach a reveal effect to each child it gets. In other words,
 
 ```jsx
 <Zoom>
@@ -133,13 +133,18 @@ It would be a very good idea to specify width and height of any image you wish t
 </Zoom>
 ```
 
-will be equivalent to 
+will be equivalent to:
 
 ```jsx
-<Zoom><div>First Child</div></Zoom>
-<Zoom><div>Second Child</div></Zoom>  
+<Zoom>
+  <div>First Child</div>
+</Zoom>
+<Zoom>
+  <div>Second Child</div>
+</Zoom>  
 ```
-if you don't want this to happen you should pass only a single child to `react-reveal` elements:
+
+If you don't want this to happen, you should wrap multiple children in a `div` tag:
 
 ```jsx
 <Zoom>
@@ -153,7 +158,7 @@ if you don't want this to happen you should pass only a single child to `react-r
 
 ## Server Side Rendering
 
-`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. If you want you can disable the fadeout effect like so ( place this code somewhere near the entry point of your application):
+`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. If you want you can disable the fadeout effect like so ( place this code somewhere near the entry point of your app):
 
 ```jsx
 import {ssrFadeout} from 'react-reveal/globals';
