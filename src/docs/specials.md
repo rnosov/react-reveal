@@ -5,7 +5,7 @@ title: Specials
 Simple effects designed to attract attention. The idea behind these effects is to alert a user
 that something has changed in the application state ( for example a new message has been received ).
 
-There are two handy props `when` and `spy`. A `spy` prop is the easiest to understand. You assign a variable from your component state to this prop and whenever this variable changes a reveal action is performed. `when` prop is a bit more complicated. It perform a reveal action whenever it changes from a falsy to a truthy value. 
+There is a handy prop called `spy` you can use with these effects. You assign a variable from your component state to this prop and whenever this variable changes a reveal action is performed.
 
 Have a look at the examples to get the idea on how to use them. Please note, that for most effects to work properly they need to be near the centre of their bounding box. 
 

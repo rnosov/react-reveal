@@ -1,5 +1,5 @@
 /*
- * Carousel Example Component For react-reveal
+ * Todo Example Component For react-reveal
  *
  * Copyright © Roman Nosov 2017
  *
@@ -17,21 +17,51 @@ class Example extends React.Component {
     super(props);
     this.state = {
       change: false,
+      collapse: true,
+      enter: true,
+      exit: true,
+      appear: false,
     };
+    this.handleCheck = this.handleCheck.bind(this);
   }
 
   componentWillReceiveProps() {
       this.setState({ change: !this.state.change});
   }
 
-
+  handleCheck(event) {
+    const name = event.currentTarget.getAttribute('id');
+    this.setState({ [name]: !this.state[name], change: !this.state.change});
+    Page.gtag('event', name, {'event_category' : 'examples',});
+  }
 
   menu() {
     return (
-      <h3 className="text-center">
-        Todo App example
-      </h3>
-
+      <div>
+        <h3 className="text-center">
+          Todo Example
+        </h3>
+        <div className="btn-toolbar justify-content-center mb-2" role="toolbar">
+          <div className="form-row justify-content-center mt-1">
+            <div className="custom-control custom-checkbox mr-2">
+              <input id="appear" checked={this.state.appear} onChange={this.handleCheck} type="checkbox" className="custom-control-input" />
+              <label className="custom-control-label" htmlFor="appear">Appear</label>
+            </div>
+            <div className="custom-control custom-checkbox mr-2">
+              <input id="enter" checked={this.state.enter} onChange={this.handleCheck} type="checkbox" className="custom-control-input" />
+              <label className="custom-control-label" htmlFor="enter">Enter</label>
+            </div>
+            <div className="custom-control custom-checkbox mr-2">
+              <input id="exit" checked={this.state.exit} onChange={this.handleCheck} type="checkbox" className="custom-control-input" />
+              <label className="custom-control-label" htmlFor="exit">Exit</label>
+            </div>
+            <div className="custom-control custom-checkbox">
+              <input id="collapse" checked={this.state.collapse} onChange={this.handleCheck} type="checkbox" className="custom-control-input" />
+              <label className="custom-control-label" htmlFor="collapse">Collapse</label>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -39,6 +69,7 @@ class Example extends React.Component {
     return `// You can edit this code below the import statements
 import React from 'react';
 import Fade from 'react-reveal/Fade';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 
 class TodoExample extends React.Component {
   constructor(props) {
@@ -53,7 +84,7 @@ class TodoExample extends React.Component {
         'item 2',
         'item 3',
         'item 4',
-      ].map( (text, id) => ({ id, text, disabled: true }) ),
+      ].map( (text, id) => ({ id, text }) ),
     };
     this.state.id = this.state.todos.length;
   }
@@ -61,50 +92,77 @@ class TodoExample extends React.Component {
     event.preventDefault();
     this.setState({
       id: this.state.id + 1,
-      todos: [...this.state.todos, { id: this.state.id, text: this.state.todo }],
+      todos: [
+        ...this.state.todos,
+        { id: this.state.id, text: this.state.todo || '-' }
+      ],
       todo: '',
     });
   }
   remove(event) {
-    this.setState({ todos: this.state.todos.filter( item => !item.remove).map( (item) => {
-      return item.id === +event.currentTarget.getAttribute('data-id')
-      ? { ...item, remove: true }
-      : item
-      ;
-    })});
+    this.setState({ todos: this.state.todos.filter( item =>
+      item.id !== +event.currentTarget.getAttribute('data-id')
+    )});
+
   }
   handleChange({ target: { name, value } }) {
     this.setState({ [name]: value });
   }
   render() {
     return (
-      <form onSubmit={this.add}>
-        <ul className="list-group">
-          {this.state.todos.map( (item) =>
-            <Fade skipInitial={item.disabled} key={item.id} collapse bottom when={!item.remove}>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                {item.text}
-                <button data-id={item.id} type="button" onClick={this.remove} className="close" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-
-              </li>
-            </Fade>
-          )}
-        </ul>
-        <div className="col-md-6 mb-2">
-          <label htmlFor='todoField'>{name}</label>
-          <input
-            type="text"
-            className="form-control"
-            id='todoField'
-            placeholder='Todo item'
-            name='todo'
-            value={this.state.todo}
-            onChange={this.handleChange}
-          />
+      <form onSubmit={this.add} autoComplete="off">
+        <div className="col-md-10 mb-2">
+          <TransitionGroup
+            component="ul"
+            className="list-group"${this.state.appear?`
+            appear={true}`:''}${!this.state.enter?`
+            enter={false}`:''}${!this.state.exit?`
+            exit={false}`:''}
+          >
+            {this.state.todos.map( (item) =>
+              <Fade key={item.id}${this.state.collapse?' collapse':''} bottom>
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  {item.text}
+                  <button
+                    data-id={item.id}
+                    onClick={this.remove}
+                    type="button"
+                    className="close"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </li>
+              </Fade>
+            )}
+          </TransitionGroup>
         </div>
-        <p>Count: {this.state.todos.length}</p>
+        <div className="col-md-7">
+          <label htmlFor='todoField'>{name}</label>
+          <div className="input-group mb-1">
+            <input
+              type="text"
+              className="form-control"
+              id='todoField'
+              placeholder='Todo item'
+              name='todo'
+              value={this.state.todo}
+              onChange={this.handleChange}
+            />
+            <div className="input-group-append">
+              <button
+                onClick={this.add}
+                className="btn btn-outline-success"
+                type="button"
+              >
+                Add Item
+              </button>
+            </div>
+          </div>
+          <small id="emailHelp" className="form-text text-muted">
+            Item Count: {this.state.todos.length}
+          </small>
+        </div>
       </form>
     );
   }

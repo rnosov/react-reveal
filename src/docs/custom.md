@@ -28,3 +28,5 @@ You may also specify leaving animation class using `effectOut` prop.
 
 You can also use the rest of the [props](/docs/props). In addition there are out versions of some props: `durationOut`, `delayOut`, `countOut`, `foreverOut`
 
+Have a look at this [example](/examples/common/custom/).
+

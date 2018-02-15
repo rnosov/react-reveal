@@ -13,14 +13,13 @@ Perhaps the most interesting `react-reveal` prop is a `when` prop. It controls w
 </Zoom>
 
 <Zoom when={true}>
-  <h1>This is default setting and this message will be revealed as soon 
-   as user scrolls past it</h1>
+  <h1>I will be seen</h1>
 </Zoom>
 ```
 
-In other words `when` prop is controlling whether to trigger reveal effect or not. By default, `when` prop is `true`. In that state, as soon as a user would scroll to the element being revealed the reveal action will occur. If you initialize `when` prop to a falsey value then the element will be hidden until you set `when` prop to a truthy value.
+In other words `when` prop is controlling whether to trigger reveal effect or not. By default, `when` prop is `true`. Once you use this prop it disables the initial reveal animation. In order to trigger reveal effect you'll need to change it to an opposing value ( `true` to `false` or vice versa ). If you still need the initial animation use `appear` prop. If you initialize `when` prop to a falsey value then the element will be hidden until you set `when` prop to a truthy value.
 
-The reveal action will occur whenever you change `when` prop from a falsy to a truthy value. Conversely, the conceal action will take place when you change `when` prop from a truthy to a falsy value. It probably makes sense to bind this prop to a component state variable .
+The reveal action will occur whenever you change `when` prop from a falsy to a truthy value. Conversely, the conceal action will take place when you change `when` prop from a truthy to a falsy value. It probably makes sense to set this prop to a variable from the component state.
 
 ## Collapse
 

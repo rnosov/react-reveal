@@ -2,7 +2,15 @@
 title: Introduction
 ---
 
-[React Reveal](https://www.npmjs.com/package/react-reveal) is a dead simple way to add some cool reveal on scroll animations to your React app. Don't forget to star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package!
+[React Reveal](https://www.npmjs.com/package/react-reveal) is an attention management framework for your React app. The traditional way of calling attention to a certain element has been in-your-face method of placing it in a popup or putting it in a sticky navigation element like sticky headers, footers or sidebars. As the number of these elements proliferate, the app is at danger of starting to resemble a control panel from a jumbo jet cockpit. There should be a better way of managing a user attention and `react-reveal`  can do just that. 
+
+Instead of trying to squeeze everything that requires attention into one screen, you can draw user attention to important bits as they scroll past. `react-reveal` provides a dead simple way to add cool reveal-on-scroll animations to your React app. In addition, it has a first class support for collapsing elements thereby abolishing the need for the universally hated popups.
+
+The other problem many single page applications are facing is actually their speed. As you add and remove elements from the page transitions are often rough and jerky. `react-reveal` rich suite of effects could really smoothen these transitions to make for a modern and polished user experience.
+
+`react-reveal` is MIT licensed, supports server side rendering, won't mess your SEO, compatible with [react transition group](/docs/transition-group/) and has a tiny footprint in the application js bundle ( doesn't require any CSS files either ). So, what are you waiting for? Come and join the React UX revolution!
+
+Last but not least, do star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package.
 
 ## Installation
 
@@ -20,7 +28,7 @@ yarn add react-reveal
 
 ## Quick Start
 
-Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) to your project. Lets try `Zoom` effect first.
+Import effects from [React Reveal](https://www.npmjs.com/package/react-reveal) to your project. Lets try `Zoom` effect first:
 
 ```javascript
 import Zoom from 'react-reveal/Zoom';
@@ -69,8 +77,8 @@ or if you want to customize `div` props:
 If you don't want any tag at all then another option is to [expose DOM ref](https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components) to `react-reveal`. You do that by using `refProp` prop. Consider following custom React Component:
 
 ```jsx
-function CustomComponent({ innerRef }) {
-  return <div ref={innerRef}>Some content</div>;
+function CustomComponent({ innerRef, className, style }) {
+  return (<div ref={innerRef} className={className} style={style}>Some content</div>);
 }
 ```
 
@@ -104,12 +112,52 @@ It would be a very good idea to specify width and height of any image you wish t
 
 ## Children
 
-Please be aware that `react-reveal` components ( such as `Fade`, `Zoom`, etc ) can only have a single child. If you want to reveal several elements at once you'd need to wrap them in a container tag such as `div`.
+`react-reveal` will attach a reveal effect to each child it gets. In other words,
+
+```jsx
+<Zoom>
+  <div>First Child</div>
+  <div>Second Child</div>
+</Zoom>
+```
+
+will be equivalent to:
+
+```jsx
+<Zoom>
+  <div>First Child</div>
+</Zoom>
+<Zoom>
+  <div>Second Child</div>
+</Zoom>  
+```
+
+If you don't want this to happen, you should wrap multiple children in a `div` tag:
+
+```jsx
+<Zoom>
+  <div>
+    <div>First Child</div>
+    <div>Second Child</div>
+  </div>
+</Zoom>
+```
+
+
+## Server Side Rendering
+
+`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. If you want you can disable the fadeout effect like so ( place this code somewhere near the entry point of your app):
+
+```jsx
+import {ssrFadeout} from 'react-reveal/globals';
+
+ssrFadeout(false);
+```
+
+## Search Engine Optimisation 
+
+`react-reveal` is regularly checked against googlebot in the Search Console to make sure that googlebot can see the content in the revealed elements. 
 
 ## Examples
 
 Have a look at [demos](/examples/) to see what kind of effects are possible.
-
-## Server Side Rendering
-
-`react-reveal` will try to autodetect server side rendering (SSR) and apply gentle fade out effect on the initial render. 

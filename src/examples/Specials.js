@@ -83,7 +83,7 @@ class Example extends React.Component {
       change: false,
       spy: false,
     };
-    this.when = this.when.bind(this);
+    this.name = this.name.bind(this);
     this.spy = this.spy.bind(this);
   }
 
@@ -91,9 +91,9 @@ class Example extends React.Component {
       this.setState({ change: !this.state.change});
   }
 
-  when() {
+  name() {
     this.setState({ spy: false, change: !this.state.change});
-    Page.gtag('event','when', {'event_category' : 'examples',});
+    Page.gtag('event','name', {'event_category' : 'examples',});
   }
 
   spy() {
@@ -106,7 +106,7 @@ class Example extends React.Component {
       <div>
         <div className="btn-toolbar justify-content-center mb-2" role="toolbar">
           <div className="btn-group" role="group">
-            <button onClick={ this.when } type="button" className={`btn ${this.state.spy === false ? 'btn-primary' : 'btn-secondary'}`}>When</button>
+            <button onClick={ this.name } type="button" className={`btn ${this.state.spy === false ? 'btn-primary' : 'btn-secondary'}`}>{this.props.name}</button>
             <button onClick={ this.spy } type="button" className={`btn ${this.state.spy === true ? 'btn-primary' : 'btn-secondary'}`}>Spy</button>
           </div>
         </div>
@@ -123,33 +123,27 @@ class ${effect}Example extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.state = { num: 1 };
-  }${this.state.spy?'':`
-  isOdd() {
-    return !!(this.state.num % 2);
-  }`}
+    this.state = { val: '' };
+  }
   render() {
     return (
       <div>
-        <${effect} ${this.state.spy?'spy={this.state.num}':'when={this.isOdd()}'}>
+        <${effect} ${this.state.spy?'spy={this.state.val}':''}>
           <h1>React Reveal</h1>
         </${effect}>
-        <div>
-          <input
-            type="number"
+        <div>${this.state.spy?`<input
+            type="text"
             className="form-control"
-            value={this.state.num}
+            value={this.state.val}
             onChange={this.handleChange}
-          />
-          <p>
-            Do a ${effect} effect, ${!this.state.spy?'when the number is odd':'when the number is changed'}
-          </p>
+          />`:''}
+          ${this.state.spy?`Do a ${effect} effect, when the field is changed`:`${effect} effect`}
         </div>
       </div>
     );
   }
   handleChange(event) {
-    this.setState({ num: event.target.value });
+    this.setState({ val: event.target.value });
   }
 }
 

@@ -1,3 +1,19 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fadeInUp {
+  animation-name: fadeInUp;
+}
+
 .prism-code {
   display: block;
   white-space: pre;
@@ -28,7 +44,7 @@
 }
 
 .live-editor > pre.prism-code {
-	overflow: visible;	
+	overflow: visible;
 }
 
 .live-preview {
@@ -52,7 +68,7 @@
 }
 
 .live-preview p {
-  font-size: 1.1rem;  
+  font-size: 1.1rem;
 }
 
 div.alert > pre {

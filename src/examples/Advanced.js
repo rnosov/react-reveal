@@ -20,7 +20,7 @@ const
   itemClass = 'nav-item',
   nav = navMap({ prefix, linkClass, itemClass }, [
     {title: 'Form errors', to: 'form'},
-    //{title: 'Todo', to: 'todo'},
+    {title: 'Todo', to: 'todo'},
     //{title: 'Collapsing Animations', to: 'collapse'},
     //{title: 'Custom Animations', to: 'custom'},
     //{title: 'Stepped Animations', to: 'stepper'},
@@ -37,7 +37,7 @@ function Advanced() {
         <Switch>
           <Route render={ () => <Form /> }    path={prefix} exact   />
           <Route render={ () => <Form /> }    path={prefix + 'form'}   />
-          <Route render={ () => <Todo /> }        path={prefix + 'todo'}   />
+          <Route render={ () => <Todo /> }    path={prefix + 'todo'}   />
           <Route render={ ComingSoon }        path={prefix + 'custom'}   />
           <Route render={ NotFound }                               		/>
         </Switch>

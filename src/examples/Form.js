@@ -1,5 +1,5 @@
 /*
- * Carousel Example Component For react-reveal
+ * Form errors Example Component For react-reveal
  *
  * Copyright © Roman Nosov 2017
  *
@@ -19,9 +19,11 @@ class Example extends React.Component {
     this.state = {
       change: false,
       collapse: true,
+      disabled: false,
     };
     this.collapse = this.collapse.bind(this);
     this.without = this.without.bind(this);
+    this.disable = this.disable.bind(this);
   }
 
   componentWillReceiveProps() {
@@ -29,13 +31,17 @@ class Example extends React.Component {
   }
 
   collapse() {
-    this.setState({ collapse: true, change: !this.state.change});
+    this.setState({ collapse: true, disabled: false, change: !this.state.change});
     Page.gtag('event','collapse', {'event_category' : 'examples',});
   }
 
   without() {
-    this.setState({ collapse: false, change: !this.state.change});
+    this.setState({ collapse: false, disabled: false, change: !this.state.change});
     Page.gtag('event','without', {'event_category' : 'examples',});
+  }
+  disable() {
+    this.setState({ disabled: !this.state.disabled, change: !this.state.change});
+    Page.gtag('event','disable', {'event_category' : 'examples',});
   }
 
   menu() {
@@ -43,8 +49,9 @@ class Example extends React.Component {
       <div>
         <div className="btn-toolbar justify-content-center mb-2" role="toolbar">
           <div className="btn-group" role="group">
-            <button onClick={ this.collapse } type="button" className={`btn ${this.state.collapse === true ? 'btn-primary' : 'btn-secondary'}`}>Collapse</button>
-            <button onClick={ this.without } type="button" className={`btn ${this.state.collapse === false ? 'btn-primary' : 'btn-secondary'}`}>Without Collapse</button>
+            <button onClick={ this.collapse } type="button" className={`btn ${!this.state.disabled && this.state.collapse === true ? 'btn-primary' : 'btn-secondary'}`}>Collapse</button>
+            <button onClick={ this.without } type="button" className={`btn ${!this.state.disabled && this.state.collapse === false ? 'btn-primary' : 'btn-secondary'}`}>Without Collapse</button>
+            <button onClick={ this.disable } type="button" className={`btn ${this.state.disabled ? 'btn-primary' : 'btn-secondary'}`}>Disable animations</button>
           </div>
         </div>
         <p>
@@ -70,7 +77,7 @@ class FormExample extends React.Component {
     this.state={};
   }
   makeField(id, col, name) {
-    const value = this.state[name] || '';
+    const value = this.state[id] || '';
     const invalid = !!(value.length % 2);
     return(
       <div className={\`col-md-$\{col} mb-3\`}>
@@ -80,30 +87,29 @@ class FormExample extends React.Component {
           className={'form-control'+(invalid?' is-invalid':'')}
           id={id}
           placeholder={name}
-          name={name}
           value={value}
           onChange={this.handleChange}
+          autoComplete="false"
         />
-        <Fade bottom${this.state.collapse?' collapse':''} when={invalid}>
-          <div
-            className="invalid-feedback"
+        <Fade bottom${this.state.collapse?' collapse':''} when={invalid}${this.state.disabled?' disabled':''}>
+          <div className="invalid-feedback"${this.state.disabled?'':`
             //Boostrap 4 uses some CSS tricks to simplify
             //error handling but we're doing it differently
             //so the next line disables these tricks
             style={{ display: 'block' }}
-          >
+          `}>
             Oh no, the number of characters is odd
           </div>
         </Fade>
       </div>
     );
   }
-  handleChange({ target: { name, value } }) {
-    this.setState({ [name]: value });
+  handleChange({ target: { id, value } }) {
+    this.setState({ [id]: value });
   }
   render() {
     return (
-      <form>
+      <form autoComplete="false">
         <div className="form-row">
           {this.makeField('f1',4, 'First name')}
           {this.makeField('f2',4, 'Last name')}
@@ -117,8 +123,8 @@ class FormExample extends React.Component {
         <button className="btn btn-primary" type="button">
           Submit form
         </button>
-        <small id="emailHelp" className="form-text text-muted">
-          This button does nothing and is here just for demo.
+        <small className="form-text text-muted">
+          This button does nothing and is here just for the demo.
         </small>
       </form>
     );

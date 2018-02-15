@@ -38,4 +38,4 @@ function Sidebar({ items, reveal, belowBreakpoint, isToggled, toggle }) {
   );
 }
 
-export default responsive(Sidebar, Fade, { bottom: true, cascade: true, force: true, duration: 1200 });
+export default responsive(Sidebar, Fade, { appear: true, bottom: true, cascade: true, force: true, duration: 1200 });

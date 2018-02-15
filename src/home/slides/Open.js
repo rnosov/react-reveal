@@ -5,7 +5,7 @@ import Fade from 'react-reveal/Fade';
 
 const bg = '/assets/keyboard1.jpg';
 function Open({ reveal }) {
- return reveal(
+  return reveal(
         <div id="bg">
           <div className="container jumbotron">
           <div className="mx-4">

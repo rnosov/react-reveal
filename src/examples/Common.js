@@ -21,8 +21,8 @@ import Roll from 'react-reveal/Roll';
 import Bounce from 'react-reveal/Bounce';
 import Slide from 'react-reveal/Slide';
 import LightSpeed from 'react-reveal/LightSpeed';
+import Reveal from 'react-reveal/Reveal';
 
-//const example = <h3>React-Reveal React-Reveal React-Reveal React-Reveal</h3>;
 const example = <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur blandit faucibus mollis. Praesent ultrices vehicula hendrerit. Maecenas ut ante ut magna viverra consequat. Sed pretium viverra quam non blandit. Nullam bibendum odio non posuere venenatis. Aliquam a quam non velit pharetra convallis. Duis lorem libero, vehicula fermentum elementum vel, finibus at purus. Curabitur feugiat felis a dolor ultricies interdum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras sit amet sem interdum, lacinia nulla ac, tincidunt odio. </p>;
 
 const
@@ -38,6 +38,7 @@ const
     {title: 'Slide'},
     {title: 'Roll'},
     {title: 'LightSpeed'},
+    {title: 'Custom CSS', to: 'custom'},
   ]);
 
 function Common() {
@@ -58,6 +59,7 @@ function Common() {
           <Route render={ () => <Example name="Roll"       effect={Roll}       />} path={prefix + 'roll'}       />
           <Route render={ () => <Example name="Slide"      effect={Slide}      />} path={prefix + 'slide'}      />
           <Route render={ () => <Example name="LightSpeed" effect={LightSpeed} />} path={prefix + 'lightspeed'} />
+          <Route render={ () => <Example name="Reveal"     effect={Reveal}     />} path={prefix + 'custom'} />
           <Route render={ NotFound } />
         </Switch>
       </div>
@@ -77,11 +79,17 @@ class StressTest extends React.Component {
     for (let i=0; i<100; i++)
       this.reset[i] = false;
     this.state ={ ...this.reset };
+    //this.state.trigger = true;
     this.handleReveal = this.handleReveal.bind(this);
+    //if (props.out)
+    //  window.setTimeout( () => this.setState({ trigger: false }), 500 );
   }
 
-  componentWillReceiveProps() {
-      this.setState({ ...this.reset });
+  componentWillReceiveProps(props) {
+   //if (props.out)
+   //   window.setTimeout( () => this.setState({ trigger: false }), 500 );
+   // else this.setState({ trigger: true });
+    this.setState({ ...this.reset });
   }
 
   handleReveal() {
@@ -89,21 +97,27 @@ class StressTest extends React.Component {
   }
 
   render() {
-    const {name, dir} = this.props;
+    const {name, dir, opposite, out, change} = this.props;
     return (
       <div className="text-center mt-5">
         {Array(...Array(100)).map( (val, index) => (
           <this.props.effect
+            appear
             key={index}
+            effect={this.props.effect === Reveal ? 'fadeInUp' : void 0}
+            //key={name+dir+opposite.toString()+out.toString()+index}
+            //key={index+change}
             left={name === 'Rotate' ? (dir === 'left' || dir === 'top' ):dir === 'left'}
             right={name === 'Rotate' ? (dir === 'right' || dir === 'bottom' ):dir === 'right'}
             top={name === 'Rotate' ? (dir === 'right' || dir === 'left' ):dir === 'top'}
             bottom={name === 'Rotate' ? (dir === 'top' || dir === 'bottom' ):dir === 'bottom'}
-            spy={this.props.change}
+            spy={change}
             when={!this.state[index]}
+            //appear={!out}
+            //when={out?this.state.trigger:true}
             wait={1000}
-            opposite={this.props.opposite}
-            onReveal={this.props.out?()=> this.setState({ [index]: true }):(index%10?void 0:this.handleReveal)}
+            opposite={opposite}
+            onReveal={out?()=> this.setState({ [index]: true }):(index%10?void 0:this.handleReveal)}
           >
             {example}
           </this.props.effect>
@@ -129,6 +143,7 @@ class Example extends React.Component {
       opposite: false,
       cascade: false,
       change: false,
+      collapse: false,
     }
     this.left = this.left.bind(this);
     this.right = this.right.bind(this);
@@ -138,6 +153,7 @@ class Example extends React.Component {
     this.handleOut = this.handleOut.bind(this);
     this.handleOpposite = this.handleOpposite.bind(this);
     this.handleCascade = this.handleCascade.bind(this);
+    this.handleCollapse = this.handleCollapse.bind(this);
     //this.left = this.left.bind(this);
   }
 
@@ -202,41 +218,60 @@ class Example extends React.Component {
     Page.gtag('event','cascade', {'event_category' : 'examples',});
   }
 
+  handleCollapse(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({
+      collapse: value,
+      change: !this.state.change
+    });
+    Page.gtag('event','collapse', {'event_category' : 'examples',});
+  }
+
   menu() {
     return (
       <div>
-        <div className="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-          <div className="btn-group ml-2" role="group">
-            <button onClick={this.left} type="button" className={`btn ${this.state.dir === 'left' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Left')}</button>
-            <button onClick={this.right} type="button" className={`btn ${this.state.dir === 'right' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Right')}</button>
+        {this.props.name === 'Reveal' ?''
+          :<div className="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+            <div className="btn-group ml-2" role="group">
+              <button onClick={this.left} type="button" className={`btn ${this.state.dir === 'left' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Left')}</button>
+              <button onClick={this.right} type="button" className={`btn ${this.state.dir === 'right' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Right')}</button>
+            </div>
+            {this.props.name === 'LightSpeed'
+              ? void 0
+              : <div className="btn-group ml-2" role="group">
+                  <button onClick={this.top} type="button" className={`btn ${this.state.dir === 'top' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Top')}</button>
+                  <button onClick={this.bottom} type="button" className={`btn ${this.state.dir === 'bottom' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Bottom')}</button>
+                </div>
+            }
+            <div className="btn-group ml-2" role="group">
+              <button onClick={this.clear} type="button" className={`btn ${this.state.dir === '' ? 'btn-primary' : 'btn-secondary'}`}>Clear</button>
+            </div>
+            <div className="input-group">
+            </div>
           </div>
-          {this.props.name === 'LightSpeed'
-            ? void 0
-            : <div className="btn-group ml-2" role="group">
-                <button onClick={this.top} type="button" className={`btn ${this.state.dir === 'top' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Top')}</button>
-                <button onClick={this.bottom} type="button" className={`btn ${this.state.dir === 'bottom' ? 'btn-primary' : 'btn-secondary'}`}>{this.transformRotate('Bottom')}</button>
-              </div>
-          }
-          <div className="btn-group ml-2" role="group">
-            <button onClick={this.clear} type="button" className={`btn ${this.state.dir === '' ? 'btn-primary' : 'btn-secondary'}`}>Clear</button>
-          </div>
-          <div className="input-group">
-          </div>
-        </div>
+        }
         <div className="form-row justify-content-center mt-1">
           <div className="custom-control custom-checkbox mr-2">
             <input id="customFadeOut" checked={this.state.out} onChange={this.handleOut} type="checkbox" className="custom-control-input" />
-            <label className="custom-control-label" htmlFor="customFadeOut">Fade Out</label>
+            <label className="custom-control-label" htmlFor="customFadeOut">When</label>
           </div>
-          <div className="custom-control custom-checkbox mr-2">
+          {this.props.name === 'Reveal' ?''
+          :<div className="custom-control custom-checkbox mr-2">
             <input id="customOpposite" checked={this.state.opposite} onChange={this.handleOpposite} type="checkbox" className="custom-control-input" />
             <label className="custom-control-label" htmlFor="customOpposite">Opposite</label>
           </div>
-          <div className="custom-control custom-checkbox">
+          }
+          {this.props.name === 'Reveal' ?''
+          :<div className="custom-control custom-checkbox mr-2">
             <input id="customCascade" checked={this.state.cascade} onChange={this.handleCascade} type="checkbox" className="custom-control-input" />
             <label className="custom-control-label" htmlFor="customCascade">Cascade</label>
           </div>
-
+          }
+          <div className="custom-control custom-checkbox">
+            <input id="customCollapse" checked={this.state.collapse} onChange={this.handleCollapse} type="checkbox" className="custom-control-input" />
+            <label className="custom-control-label" htmlFor="customCollapse">Collapse</label>
+          </div>
         </div>
       </div>
     );
@@ -264,6 +299,19 @@ class Example extends React.Component {
   //    }
   //  }
 
+  getProps(effect) {
+    let props = effect === 'Reveal' ? ' effect="fadeInUp"' : this.transformRotate(this.state.dir).toLowerCase();
+    if (this.state.opposite)
+      props += ' opposite';
+    if (this.state.out)
+      props += ' when={this.state.isOn}';
+    if (this.state.cascade)
+      props += ' cascade';
+    if (this.state.collapse)
+      props += ' collapse';
+    return props;
+  }
+
   code( effect ) {
     return `// You can edit this code below the import statements
 import React from 'react';
@@ -272,39 +320,36 @@ import ${effect} from 'react-reveal/${effect}';
 class ${effect}Example extends React.Component {
   ${ this.state.out? `constructor(props) {
     super(props);
-    this.state = { isOn: true };
+    this.state = { isOn: false };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    this.setState({ isOn: !this.state.isOn });
   }
   `:''}render() {
     return (
-      <div>
-        <${effect}${this.transformRotate(this.state.dir).toLowerCase()}${''/*this.state.out?'':' duration={1000}'*/}${this.state.opposite?' opposite':''}${this.state.out?' when={this.state.isOn}':''}${this.state.cascade?' cascade':''}>
+      <div${this.state.out?` className="mt-5 text-center"`:''}>
+        <${effect}${this.getProps(effect)}>
           ${this.state.cascade?`<div>
             <h2>React Reveal</h2>
             <h2>React Reveal</h2>
             <h2>React Reveal</h2>
           </div>`:'<h1>React Reveal</h1>'}
         </${effect}>
-        <p>
-          ${this.state.out?`The idea behind it is that we initially
-          sеt “isOn” state variable to truе
-          and then sеt a timeout that will
-          sеt “isOn” to falsе
-        `:`Try replacing “left” attribute
+        ${this.state.out?`<button
+          className="btn btn-primary my-3"
+          type="button"
+          onClick={this.handleClick}
+        >
+          { this.state.isOn ? 'Hide' : 'Show' } Message
+        </button>`:`<p>
+          Try replacing “left” attribute
           wіth “right”, “top” or “bottom”
           оf the ${effect} component
-        `}</p>
+        </p>`}
       </div>
     );
-  }${ this.state.out? `
-  componentDidMount() {
-    this.timeout = window.setTimeout(
-      () => this.setState({ isOn: false }), ${this.state.cascade?'2000':'1000'}
-    );
   }
-  componentWillUnmount() {
-    if (this.timeout)
-      this.timeout = window.clearTimeout(this.timeout);
-  }`:''}
 }
 
 export default ${effect}Example;
@@ -317,7 +362,7 @@ ${this.state.change?'':' '}
     return (
       <Page scroll title={name}>
         <div style={{ minHeight: '100vh' }}>
-          <Editor previewClass="live-preview" importName={name} menu={this.menu()}>{this.code(name)}</Editor>
+          <Editor previewClass={!this.state.out?'live-preview':void 0} importName={name} menu={this.menu()}>{this.code(name)}</Editor>
           <p className="lead mt-5">
             The following is the stress test for the chosen effect.
             A 100 paragraphs of lorem ipsum text will be revealed as you scroll down.
@@ -325,13 +370,13 @@ ${this.state.change?'':' '}
             The following whitespace is intentionally left blank. Scroll down to begin stress test.
           </p>
         </div>
+        <StressTest name={name} effect={effect} dir={this.state.dir} change={this.state.change} opposite={this.state.opposite} out={this.state.out} />
       </Page>
     );
   }
 
 }
 
-        //<StressTest name={name} effect={effect} dir={this.state.dir} change={this.state.change} opposite={this.state.opposite} out={this.state.out} />
 
 export default Common;
 

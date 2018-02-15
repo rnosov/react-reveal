@@ -34,8 +34,11 @@ import Swing from 'react-reveal/Swing';
 import Tada from 'react-reveal/Tada';
 import Wobble from 'react-reveal/Wobble';
 
-const scope = { Fade, Flip, Rotate, Zoom, Roll, Bounce, Slide, LightSpeed,
-	Flash, HeadShake, Jello, Jump, Pulse, RubberBand, Shake, Spin, Swing, Tada, Wobble };
+import Reveal from 'react-reveal/Reveal';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
+
+const scope = { Reveal, Fade, Flip, Rotate, Zoom, Roll, Bounce, Slide, LightSpeed,
+	Flash, HeadShake, Jello, Jump, Pulse, RubberBand, Shake, Spin, Swing, Tada, Wobble, TransitionGroup };
 
 class Example extends React.Component {
 

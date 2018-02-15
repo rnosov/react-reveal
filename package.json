@@ -12,7 +12,7 @@
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
     "react-live": "1.8.0-0",
-    "react-reveal": "^1.0.2",
+    "react-reveal": "^1.1.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.0",
     "react-transition-group": "^2.2.1"
