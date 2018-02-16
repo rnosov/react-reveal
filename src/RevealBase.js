@@ -312,7 +312,7 @@ class RevealBase extends React.Component {
   }
 
   cascade(children) {
-    let newChildren;//, reverse = false;
+    let newChildren;
     if (typeof children === 'string') {
           newChildren = children.split("").map( (ch, index) => <span key={index} style={{display: 'inline-block', whiteSpace:'pre'}}>{ch}</span> );
           //reverse = this.props.reverse;
@@ -321,23 +321,23 @@ class RevealBase extends React.Component {
           newChildren = React.Children.toArray(children);
     //if (newChildren.length === 1)
     //  return newChildren;
-    let duration = this.props[this.isOn || !this.props.outEffect ?'inEffect':'outEffect'].duration,
+    let { duration, reverse } = this.props[this.isOn || !this.props.outEffect ?'inEffect':'outEffect'],
           count = newChildren.length,
           total = duration*2;
+          //reverse = false;
     if (this.props.collapse) {
       total = parseInt(this.state.style.animationDuration, 10);
       duration = total/2;
     }
-    //total =  duration + ( this.props.cascade === true ? 1000 : this.props.cascade);
-    //let i = reverse ? count : 0;
-    let i = 0;
+    let i = reverse ? count : 0;
+    //let i = 0;
     newChildren = newChildren.map( child =>
       typeof child === 'object' && 'type' in child && typeof child.type === 'string'
       ? React.cloneElement(child,{
           style: {
             ...child.props.style,
             ...(this.props.collapse?{...this.state.style, boxSizing: void 0, height: void 0, border: void 0, padding: void 0, transition: void 0}:this.state.style),
-            animationDuration: Math.round(cascade( /*reverse ? i-- : i++ */i++,0 , count, duration, total)) + 'ms',
+            animationDuration: Math.round(cascade( reverse ? i-- : i++ /*i++*/,0 , count, duration, total)) + 'ms',
           },
           //ref: i === count? (el => this.finalEl = el) : void 0,
         })

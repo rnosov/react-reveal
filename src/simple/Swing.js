@@ -16,6 +16,7 @@ import { animation, defaults } from '../lib/globals';
 const
   propTypes = {
     duration: number,
+    timeout: number,
     delay: number,
     count: number,
     forever: bool,
@@ -43,7 +44,7 @@ const rule = `
 }
 `;
 
-function Swing({ children, out, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
+function Swing({ children, out, timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -51,7 +52,7 @@ function Swing({ children, out, duration = defaults.duration, delay = defaults.d
       return animation(rule);
     }
 
-    return reverse ? false : { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
+    return reverse ? false : { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', } };
   }
 
   return context

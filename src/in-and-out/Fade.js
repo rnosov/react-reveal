@@ -23,6 +23,7 @@ const
     mirror: bool,
     opposite: bool,
     duration: number,
+    timeout: number,
     distance: string,
     delay: number,
     count: number,
@@ -30,7 +31,7 @@ const
   };
 
 function Fade({ children, out, distance, left, right, up, down, top, bottom, big, mirror, opposite, forever,
-              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
+              timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -50,7 +51,7 @@ function Fade({ children, out, distance, left, right, up, down, top, bottom, big
       );
     }
 
-    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
+    return { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
   }
 
   return context

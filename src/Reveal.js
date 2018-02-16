@@ -20,6 +20,7 @@ const
     effect: string,
     effectOut: string,
     duration: number,
+    timeout: number,
     delay: number,
     count: number,
     forever: bool,
@@ -40,12 +41,12 @@ const
 
 
 
-function Reveal({ children, duration, delay, count, forever, durationOut, delayOut, countOut, foreverOut, effect, effectOut, inEffect, outEffect,  ...props}) {
+function Reveal({ children, timeout, duration, delay, count, forever, durationOut, delayOut, countOut, foreverOut, effect, effectOut, inEffect, outEffect,  ...props}) {
 
   function factory(reverse) {
     return reverse
     ? effectOut ? { duration: durationOut, delay: delayOut, count: countOut, forever: foreverOut, className: effectOut, style: {} } : outEffect
-    : effect ? { duration, delay, count, forever, className: effect, style: {} } : inEffect;
+    : effect ? { duration: timeout === undefined ? duration : timeout, delay, count, forever, className: effect, style: {} } : inEffect;
   }
 
   return wrap(props, factory, children);

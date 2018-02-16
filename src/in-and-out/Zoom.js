@@ -23,13 +23,14 @@ const
     mirror: bool,
     opposite: bool,
     duration: number,
+    timeout: number,
     delay: number,
     count: number,
     forever: bool,
   };
 
 function Zoom({ children, out, left, right, top, bottom, up, down, mirror, opposite, forever,
-              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
+              timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -79,7 +80,7 @@ function Zoom({ children, out, left, right, top, bottom, up, down, mirror, oppos
       return animation(rule);
     }
 
-    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', } };
+    return { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
   }
 
   return context

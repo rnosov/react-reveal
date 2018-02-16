@@ -23,13 +23,14 @@ const
     mirror: bool,
     opposite: bool,
     duration: number,
+    timeout: number,
     delay: number,
     count: number,
     forever: bool,
   };
 
 function Slide({ children, out, left, right, up, down, top, bottom, big, mirror, opposite, forever,
-              duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
+              timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
 
   function factory(reverse) {
 
@@ -49,7 +50,7 @@ function Slide({ children, out, left, right, up, down, top, bottom, big, mirror,
       );
     }
 
-    return { make, duration, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
+    return { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
   }
 
   return context
