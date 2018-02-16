@@ -332,14 +332,16 @@ class RevealBase extends React.Component {
     //let i = reverse ? count : 0;
     let i = 0;
     newChildren = newChildren.map( child =>
-      React.cloneElement(child,{
-        style: {
-          ...child.props.style,
-          ...(this.props.collapse?{...this.state.style, boxSizing: void 0, height: void 0, border: void 0, padding: void 0, transition: void 0}:this.state.style),
-          animationDuration: Math.round(cascade( /*reverse ? i-- : i++ */i++,0 , count, duration, total)) + 'ms',
-        },
-        //ref: i === count? (el => this.finalEl = el) : void 0,
-      }));
+      typeof child === 'object' && 'type' in child && typeof child.type === 'string'
+      ? React.cloneElement(child,{
+          style: {
+            ...child.props.style,
+            ...(this.props.collapse?{...this.state.style, boxSizing: void 0, height: void 0, border: void 0, padding: void 0, transition: void 0}:this.state.style),
+            animationDuration: Math.round(cascade( /*reverse ? i-- : i++ */i++,0 , count, duration, total)) + 'ms',
+          },
+          //ref: i === count? (el => this.finalEl = el) : void 0,
+        })
+      : child );
     return newChildren;
   }
 
@@ -454,5 +456,6 @@ class RevealBase extends React.Component {
 RevealBase.propTypes = propTypes;
 RevealBase.defaultProps = defaultProps;
 RevealBase.contextTypes = contextTypes;
+RevealBase.displayName = 'RevealBase';
 //RevealBase.childContextTypes = childContextTypes;
 export default RevealBase;

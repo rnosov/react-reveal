@@ -1,6 +1,6 @@
 # React Reveal
 
-[React Reveal](https://www.npmjs.com/package/react-reveal) is an attention management framework for your React app. The traditional way of calling attention to a certain element has been in-your-face method of placing it in a popup or putting it in a sticky navigation element like sticky headers, footers or sidebars. As the number of these elements proliferate, the app is at danger of starting to resemble a control panel from a jumbo jet cockpit. There should be a better way of managing a user attention and `react-reveal`  can do just that. 
+[React Reveal](https://www.react-reveal.com/) is an attention management framework for your React app. The traditional way of calling attention to a certain element has been in-your-face method of placing it in a popup or putting it in a sticky navigation element like sticky headers, footers or sidebars. As the number of these elements proliferate, the app is at danger of starting to resemble a control panel from a jumbo jet cockpit. There should be a better way of managing a user attention and `react-reveal`  can do just that. 
 
 Instead of trying to squeeze everything that requires attention into one screen, you can draw user attention to important bits as they scroll past. `react-reveal` provides a dead simple way to add cool reveal-on-scroll animations to your React app. In addition, it has a first class support for collapsing elements thereby abolishing the need for the universally hated popups.
 
@@ -159,13 +159,7 @@ If you don't want this to happen, you should wrap multiple children in a `div` t
 
 ## Server Side Rendering
 
-`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. If you want you can disable the fadeout effect like so ( place this code somewhere near the entry point of your app):
-
-```jsx
-import {ssrFadeout} from 'react-reveal/globals';
-
-ssrFadeout(false);
-```
+`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. 
 
 ## Search Engine Optimisation 
 
