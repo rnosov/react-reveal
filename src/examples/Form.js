@@ -49,9 +49,9 @@ class Example extends React.Component {
       <div>
         <div className="btn-toolbar justify-content-center mb-2" role="toolbar">
           <div className="btn-group" role="group">
-            <button onClick={ this.collapse } type="button" className={`btn ${!this.state.disabled && this.state.collapse === true ? 'btn-primary' : 'btn-secondary'}`}>Collapse</button>
-            <button onClick={ this.without } type="button" className={`btn ${!this.state.disabled && this.state.collapse === false ? 'btn-primary' : 'btn-secondary'}`}>Without Collapse</button>
-            <button onClick={ this.disable } type="button" className={`btn ${this.state.disabled ? 'btn-primary' : 'btn-secondary'}`}>Disable animations</button>
+            <button onClick={ this.collapse } type="button" className={`btn ${!this.state.disabled && this.state.collapse === true ? 'btn-info' : 'btn-secondary'}`}>Collapse</button>
+            <button onClick={ this.without } type="button" className={`btn ${!this.state.disabled && this.state.collapse === false ? 'btn-info' : 'btn-secondary'}`}>Without Collapse</button>
+            <button onClick={ this.disable } type="button" className={`btn ${this.state.disabled ? 'btn-info' : 'btn-secondary'}`}>Disable animations</button>
           </div>
         </div>
         <p>
@@ -59,7 +59,6 @@ class Example extends React.Component {
           This form doesn't really like when text fields contain strings with a odd number
           of characters and thus error messages could be triggered very easily.
           Try entering some text in the fields to see error message animations. <Link to="/docs/when/">Read More</Link>
-
         </p>
       </div>
     );
@@ -118,9 +117,9 @@ class FormExample extends React.Component {
         <div className="form-row">
           {this.makeField('f4',6, 'City')}
           {this.makeField('f5',3, 'State')}
-          {this.makeField('f5',3, 'Zip')}
+          {this.makeField('f6',3, 'Zip')}
         </div>
-        <button className="btn btn-primary" type="button">
+        <button className="btn btn-success" type="button">
           Submit form
         </button>
         <small className="form-text text-muted">

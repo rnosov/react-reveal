@@ -106,8 +106,8 @@ class Example extends React.Component {
       <div>
         <div className="btn-toolbar justify-content-center mb-2" role="toolbar">
           <div className="btn-group" role="group">
-            <button onClick={ this.name } type="button" className={`btn ${this.state.spy === false ? 'btn-primary' : 'btn-secondary'}`}>{this.props.name}</button>
-            <button onClick={ this.spy } type="button" className={`btn ${this.state.spy === true ? 'btn-primary' : 'btn-secondary'}`}>Spy</button>
+            <button onClick={ this.name } type="button" className={`btn ${this.state.spy === false ? 'btn-info' : 'btn-secondary'}`}>{this.props.name}</button>
+            <button onClick={ this.spy } type="button" className={`btn ${this.state.spy === true ? 'btn-info' : 'btn-secondary'}`}>Spy</button>
           </div>
         </div>
       </div>
@@ -119,31 +119,33 @@ class Example extends React.Component {
 import React from 'react';
 import ${effect} from 'react-reveal/${effect}';
 
-class ${effect}Example extends React.Component {
+class ${effect}Example extends React.Component {${this.state.spy?`
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = { val: '' };
+    this.handleClick = this.handleClick.bind(this);
+    this.state = { counter: 0 };
   }
+  handleClick() {
+    this.setState({ counter: this.state.counter + 1 });
+  }`:''}
   render() {
     return (
       <div>
-        <${effect} ${this.state.spy?'spy={this.state.val}':''}>
+        <${effect}${this.state.spy?' spy={this.state.counter}':''}>
           <h1>React Reveal</h1>
-        </${effect}>
-        <div>${this.state.spy?`<input
-            type="text"
-            className="form-control"
-            value={this.state.val}
-            onChange={this.handleChange}
-          />`:''}
-          ${this.state.spy?`Do a ${effect} effect, when the field is changed`:`${effect} effect`}
-        </div>
+        </${effect}>${this.state.spy?`
+        <button
+          className="btn btn-success mt-4"
+          type="button"
+          onClick={this.handleClick}
+        >
+          Click Counter: {this.state.counter}
+        </button>
+        <small className="form-text text-muted">
+          Apply ${effect} animation, when the counter is changed
+        </small>`:''}
       </div>
     );
-  }
-  handleChange(event) {
-    this.setState({ val: event.target.value });
   }
 }
 
@@ -159,7 +161,7 @@ ${this.state.change?'':' '}
         <div className="text-center">
           <Link to="/docs/specials/">Documentation</Link>
         </div>
-        <Editor previewClass="live-preview" importName={name} menu={this.menu()}>{this.code(name)}</Editor>
+        <Editor previewClass="mt-5 text-center" importName={name} menu={this.menu()}>{this.code(name)}</Editor>
       </Page>
     );
   }

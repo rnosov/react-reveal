@@ -83,6 +83,7 @@ class Example extends React.Component {
 			  	  <div className="ml-2 live-preview-container" >
 			  	    <div>{this.props.menu}</div>
 			  	  	<LivePreview className={this.props.previewClass} />
+              <div>{this.props.footer}</div>
 			  	  </div>
 			  	</div>
           <div className="col-12 col-md-6 order-md-1 live-editor" ref={ (node) => this.node = node } >

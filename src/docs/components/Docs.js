@@ -22,7 +22,7 @@ const
     { title: 'Migrating to 1.1'     , to: 'migrating' },
     { title: 'Common Effects'       , to: 'common' },
     { title: 'Special Effects'      , to: 'specials' },
-    { title: 'Custom Effects'       , to: 'custom' },
+    { title: 'Custom CSS Effects'   , to: 'custom' },
     { title: 'Component Props'      , to: 'props' },
     { title: 'when Prop'            , to: 'when' },
     { title: 'Cascade Effect'       , to: 'cascade' },
