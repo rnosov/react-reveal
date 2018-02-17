@@ -298,7 +298,6 @@ class RevealBase extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.cascade) console.log('Mount:', this.props);
     if (!this.el || this.props.disabled)
       return;
     const parentGroup = this.context.transitionGroup;
@@ -372,7 +371,6 @@ class RevealBase extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.cascade) console.log('Rec:', props);
     if ('when' in props)
       this.isOn = !!props.when;
     if (!this.isOn && props.onExited && ('exit' in props) && props.exit === false ) {
@@ -383,7 +381,7 @@ class RevealBase extends React.Component {
       return;
     //if (props.responsive && !props.when && this.isOn && props.collapse && !this.props.collapse) {
     if (props.collapse && !this.props.collapse) {
-      this.setState({ collapse: RevealBase.getInitialCollapseStyle(props)});
+      this.setState({ style: { }, collapse: RevealBase.getInitialCollapseStyle(props)});
       this.isShown = false;
       return;
     }
@@ -412,8 +410,7 @@ class RevealBase extends React.Component {
   }
 
   render() {
-    if (this.props.cascade) console.log('Render:', this.props);
-
+    //if (this.props.cascade) console.log('Render:', this.props);
     let child = this.getChild();
     //if (this.props.disabled)
     //  return child;
