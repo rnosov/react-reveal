@@ -1,4 +1,14 @@
 // credit: http://www.javascriptkit.com/javatutors/touchevents2.shtml
+ var supportsPassive = false;
+    try {
+      var opts = Object.defineProperty({}, 'passive', {
+        get: function() {
+          supportsPassive = true;
+        }
+      });
+      window.addEventListener("testPassive", null, opts);
+      window.removeEventListener("testPassive", null, opts);
+    } catch (e) {}
 export default function swipedetect(el, callback){
 
     var touchsurface = el,
@@ -14,6 +24,11 @@ export default function swipedetect(el, callback){
     startTime,
     handleswipe = callback || function(swipedir){}
 
+
+
+    // Use our detect's results. passive applied if supported, capture will be false either way.
+    //elem.addEventListener('touchstart', fn, supportsPassive ? { passive: true } : false);
+
     touchsurface.addEventListener('touchstart', function(e){
         var touchobj = e.changedTouches[0];
         swipedir = 'none';
@@ -22,7 +37,7 @@ export default function swipedetect(el, callback){
         startY = touchobj.pageY;
         startTime = new Date().getTime(); // record time when finger first makes contact with surface
         //e.preventDefault();
-    }, false)
+    }, supportsPassive ? { passive: true } : false)
 
     //touchsurface.addEventListener('touchmove', function(e){
     //    e.preventDefault() // prevent scrolling when inside DIV
@@ -43,5 +58,5 @@ export default function swipedetect(el, callback){
         }
         handleswipe(swipedir)
         //e.preventDefault()
-    }, false)
+    }, supportsPassive ? { passive: true } : false)
 }
