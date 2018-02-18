@@ -66,7 +66,7 @@ class Example extends React.Component {
   }
 
   code( effect ) {
-    return `// You can edit this code below the import statements
+    return `// You can live edit this code below the import statements
 import React from 'react';
 import Fade from 'react-reveal/Fade';
 import TransitionGroup from 'react-transition-group/TransitionGroup';

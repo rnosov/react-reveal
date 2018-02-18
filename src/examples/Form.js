@@ -40,7 +40,7 @@ class Example extends React.Component {
     Page.gtag('event','without', {'event_category' : 'examples',});
   }
   disable() {
-    this.setState({ disabled: !this.state.disabled, change: !this.state.change});
+    this.setState({ disabled: !this.state.disabled, collapse: false, change: !this.state.change});
     Page.gtag('event','disable', {'event_category' : 'examples',});
   }
 
@@ -65,7 +65,7 @@ class Example extends React.Component {
   }
 
   code( effect ) {
-    return `// You can edit this code below the import statements
+    return `// You can live edit this code below the import statements
 import React from 'react';
 import Fade from 'react-reveal/Fade';
 
@@ -80,15 +80,14 @@ class FormExample extends React.Component {
     const invalid = !!(value.length % 2);
     return(
       <div className={\`col-md-$\{col} mb-3\`}>
-        <label htmlFor={id}>{name}</label>
+        <label>{name}</label>
         <input
           type="text"
           className={'form-control'+(invalid?' is-invalid':'')}
-          id={id}
+          data-id={id}
           placeholder={name}
           value={value}
           onChange={this.handleChange}
-          autoComplete="false"
         />
         <Fade bottom${this.state.collapse?' collapse':''} when={invalid}${this.state.disabled?' disabled':''}>
           <div className="invalid-feedback"${this.state.disabled?'':`
@@ -103,12 +102,14 @@ class FormExample extends React.Component {
       </div>
     );
   }
-  handleChange({ target: { id, value } }) {
-    this.setState({ [id]: value });
+  handleChange({ target }) {
+    this.setState({
+      [target.getAttribute('data-id')]: target.value
+    });
   }
   render() {
     return (
-      <form autoComplete="false">
+      <form autoComplete="off">
         <div className="form-row">
           {this.makeField('f1',4, 'First name')}
           {this.makeField('f2',4, 'Last name')}
@@ -123,7 +124,8 @@ class FormExample extends React.Component {
           Submit form
         </button>
         <small className="form-text text-muted">
-          This button does nothing and is here just for the demo.
+          This button does nothing and is here
+          just for the demo.
         </small>
       </form>
     );

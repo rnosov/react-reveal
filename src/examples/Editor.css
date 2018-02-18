@@ -1,16 +1,19 @@
 @keyframes fadeInUp {
-  from {
+  to {
     opacity: 0;
-    transform: translate3d(0, 100%, 0);
+    transform: translate3d(100%, 0, 0);
+    height: 0px;
   }
 
-  to {
+  from {
     opacity: 1;
+    height:100px;
     transform: translate3d(0, 0, 0);
   }
 }
 
 .fadeInUp {
+  border: 1px solid red;
   animation-name: fadeInUp;
 }
 

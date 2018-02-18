@@ -22,6 +22,7 @@ import Bounce from 'react-reveal/Bounce';
 import Slide from 'react-reveal/Slide';
 import LightSpeed from 'react-reveal/LightSpeed';
 import Reveal from 'react-reveal/Reveal';
+import Pulse from 'react-reveal/HeadShake';
 
 const example = <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur blandit faucibus mollis. Praesent ultrices vehicula hendrerit. Maecenas ut ante ut magna viverra consequat. Sed pretium viverra quam non blandit. Nullam bibendum odio non posuere venenatis. Aliquam a quam non velit pharetra convallis. Duis lorem libero, vehicula fermentum elementum vel, finibus at purus. Curabitur feugiat felis a dolor ultricies interdum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras sit amet sem interdum, lacinia nulla ac, tincidunt odio. </p>;
 
@@ -238,7 +239,7 @@ class Example extends React.Component {
       text: value,
       change: !this.state.change
     });
-    Page.gtag('event','cascade', {'event_category' : 'examples',});
+    Page.gtag('event','text', {'event_category' : 'examples',});
   }
 
   handleCollapse(event) {
@@ -256,7 +257,7 @@ class Example extends React.Component {
     if (this.props.name === 'Reveal') return <div />;
     return (
       <div>
-
+        <Pulse>
         <div className="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
           <div className="btn-group ml-2" role="group">
             <button onClick={this.left} type="button" className={`btn ${this.state.dir === 'left' ? 'btn-info' : 'btn-secondary'}`}>{this.transformRotate('Left')}</button>
@@ -279,7 +280,7 @@ class Example extends React.Component {
           : void 0
           }
         </div>
-
+        </Pulse>
         <div className="form-row justify-content-center mt-1">
           <div className="custom-control custom-checkbox mr-2">
             <input id="customFadeOut" checked={this.state.out} onChange={this.handleOut} type="checkbox" className="custom-control-input" />
@@ -360,7 +361,7 @@ class Example extends React.Component {
   }
 
   code( effect ) {
-    return `// You can edit this code below the import statements
+    return `// You can live edit this code below the import statements
 import React from 'react';
 import ${effect} from 'react-reveal/${effect}';
 

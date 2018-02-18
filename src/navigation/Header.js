@@ -33,9 +33,11 @@ function Header({ reveal, icon, belowBreakpoint }) {
     return {
       container: {
         marginLeft: 'auto',
+        minHeight: '2.5rem',
         paddingTop: '0.375rem' ,
         border: '1px solid transparent',
         marginTop: '-2.5rem' ,
+        //paddingBottom: '0.6rem' ,
         width: '100%  ',
         marginRight: 0,
         ...flex('column')
@@ -81,4 +83,5 @@ function Header({ reveal, icon, belowBreakpoint }) {
 	);
 }
 
-export default hamburger(Header, Fade, { right: true, opposite: true } );
+//export default hamburger(Header, Fade, { collapseProps: {className: 'w-100'}, right: true, opposite: true } );
+export default hamburger(Header, Fade, { collapseEl: <div className='w-100' />, distance: '100px',left: true, opposite: false } );

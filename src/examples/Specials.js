@@ -115,7 +115,7 @@ class Example extends React.Component {
   }
 
   code( effect ) {
-    return `// You can edit this code below the import statements
+    return `// You can live edit this code below the import statements
 import React from 'react';
 import ${effect} from 'react-reveal/${effect}';
 
