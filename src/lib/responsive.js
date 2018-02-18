@@ -10,7 +10,7 @@
 import React from 'react';
 import withReveal from './withReveal';
 
-function responsive(WrappedComponent, Effect, { breakpoint = '768px', ...rest } = { breakpoint: '768px' } ) {
+function responsive( WrappedComponent, Effect, { breakpoint = '768px', ...rest } = { breakpoint: '768px' } ) {
 
   const RevealedComponent =  withReveal(WrappedComponent, Effect, rest);
 

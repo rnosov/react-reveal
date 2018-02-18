@@ -26,7 +26,8 @@ const
   propTypes = {
     //when: any,
     //spy: any,
-    collapse: bool,//oneOfType([bool, shape({ height: string })]),
+    collapse: bool,// oneOfType([bool, shape({ tag: string, props: object })]),
+    collapseEl: element,
     cascade: bool,
     wait: number,
 //    step: oneOfType([instanceOf(Step), string]),
@@ -170,32 +171,28 @@ class RevealBase extends React.Component {
       //    //      duration = delta,
       //    //      delay = this.props.delay + (this.isOn ? 0 : this.props.duration - delta)
 
-  collapse(props, inOut) {
-      const total = inOut.duration + (props.cascade ? inOut.duration : 0),
-      //      delta = total>>2,
-      //      duration = props.when ? delta : total - delta,
-      //      delay = inOut.delay + (props.when ? 0 : delta),
-            delta1 = total>>2,
-            delta2 = delta1>>1,
-            duration = delta1, // + (props.when ? 0 : delta2),
-            delay = inOut.delay + (this.isOn ? 0 : total - delta1 - delta2),
-            animationDuration = `${total - delta1 + (this.isOn ? delta2 : -delta2)}ms`,
-            animationDelay = `${inOut.delay + (this.isOn ? delta1 - delta2 : 0)}ms`,
-            height = this.isOn ? this.getDimensionValue() : 0;
-            //padding = this.isOn ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('padding')) || false) : 0,
-            //border = this.isOn ? ((this.dummyEl&&window.getComputedStyle(this.dummyEl, null).getPropertyValue('border')) || false) : 0;
-      //if (height !== false)
-        return {
-            height,
-            //padding, border,
-            transition: `height ${duration}ms ease ${delay}ms`,// padding ${duration}ms ease ${delay}ms, border ${duration}ms ease ${delay}ms`,
-            animationDuration,
-            animationDelay,
-            //margin: 0, padding: 0, border: '1px solid transparent',
-            boxSizing: 'border-box',
-            //transition: `height ${duration}ms ease ${delay}ms`,
-          //collapsing: true,
-        };
+  collapse(state, props, inOut) {
+    const total = inOut.duration + (props.cascade ? inOut.duration : 0),
+          height = this.isOn ? this.getDimensionValue() : 0;
+    const
+          delta1 = total>>2,
+          delta2 = delta1>>1,
+          duration = delta1, // + (props.when ? 0 : delta2),
+          delay = inOut.delay + (this.isOn ? 0 : total - delta1 - delta2);
+          state.style.animationDuration = `${total - delta1 + (this.isOn ? delta2 : -delta2)}ms`;
+          state.style.animationDelay = `${inOut.delay + (this.isOn ? delta1 - delta2 : 0)}ms`;
+    //const delta = total>>2,
+    //      duration = props.when ? delta : total - delta,
+    //      delay = inOut.delay + (props.when ? 0 : delta);
+          //duration = total;
+          //delay = inOut.delay;
+    state.collapse = {
+      height,
+      transition: `height ${duration}ms ease ${delay}ms`,// padding ${duration}ms ease ${delay}ms, border ${duration}ms ease ${delay}ms`,
+      //margin: 0, padding: 0, border: '1px solid transparent',
+      //boxSizing: 'border-box',
+    };
+    return state;
   }
 
   animate(props) {
@@ -212,9 +209,7 @@ class RevealBase extends React.Component {
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
     if ((props.outEffect||this.isOn) && inOut.make)
         animationName = inOut.make();
-    this.setState({
-      collapse: collapse ? this.collapse(props, inOut) : undefined,
-      style: {
+    let state = { collapse: undefined, style: {
         ...inOut.style,
         animationDuration: `${inOut.duration}ms`,
         animationDelay: `${inOut.delay}ms`,
@@ -223,8 +218,8 @@ class RevealBase extends React.Component {
         //visibility: 'visible',
         animationName,
       },
-      className: inOut.className,
-    });
+      className: inOut.className };
+    this.setState( collapse ? this.collapse(state, props, inOut) : state );
     if (leaving) {
       this.savedChild = React.cloneElement(this.getChild());
       this.animationEnd( this.invisible, props.cascade, inOut);
@@ -366,7 +361,7 @@ class RevealBase extends React.Component {
           height: 0,
           //padding: 0,
           //border: 0,
-          boxSizing: 'border-box',
+          //boxSizing: 'border-box',
     };
   }
 
@@ -423,17 +418,26 @@ class RevealBase extends React.Component {
       //className = this.props.className ? (className||'') + ' ' + this.props.className : className;
     let
       newClass = this.props.disabled ? className : `${ this.props.outEffect ? namespace : '' }${ this.state.className ? ' ' + this.state.className : '' }${ className ? ' ' + className : '' }`||void 0,
-      newStyle = this.props.disabled ? style : { ...style, ...this.state.style };
+      newStyle;
     if (this.props.cascade && !this.props.disabled && children && this.state.style.animationName) {
       newChildren = this.cascade(children);
-      newStyle.animationName = void 0;
+      newStyle = { ...style, opacity: 1 };
     }
+    else
+      newStyle = this.props.disabled ? style : { ...style, ...this.state.style };
     const props = { ...this.props.props, className: newClass, style: newStyle, [this.props.refProp]: this.saveRef };
     //if (this.props.collapse && !this.props.disabled)
     //  props.key = 1;
     const el = React.cloneElement(child, props, newChildren||children);
     if ( 'collapse' in this.props )
-      return <div /*ref={el => this.dummyEl = el} */style={this.props.disabled?undefined:this.state.collapse}>{el}</div>
+      return this.props.collapseEl
+        ? React.cloneElement(this.props.collapseEl, { style: {...this.props.collapseEl.style, ...(this.props.disabled ? undefined : this.state.collapse)}, children: el })
+        : <div style={ this.props.disabled ? undefined : this.state.collapse } children={el} />;
+      //return <div {...this.props.collapse} style={ this.props.disabled ? undefined : this.state.collapse } children={el} />;
+    //if ( 'collapse' in this.props )
+    //  return typeof this.props.collapse === 'object'
+    //    ? <div {...this.props.collapse.props} style={{...this.props.collapse.style,...(this.props.disabled?undefined:this.state.collapse)}} children={el} />
+    //    : <div style={this.props.disabled?undefined:this.state.collapse} children={el} />;
     return el;
   }
 
