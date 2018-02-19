@@ -1,14 +1,11 @@
 # React Reveal
 
-[React Reveal](https://www.react-reveal.com/) is an attention management framework for your React app. The traditional way of calling attention to a certain element has been in-your-face method of placing it in a popup or putting it in a sticky navigation element like sticky headers, footers or sidebars. As the number of these elements proliferate, the app is at danger of starting to resemble a control panel from a jumbo jet cockpit. There should be a better way of managing a user attention and `react-reveal`  can do just that. 
-
-Instead of trying to squeeze everything that requires attention into one screen, you can draw user attention to important bits as they scroll past. `react-reveal` provides a dead simple way to add cool reveal-on-scroll animations to your React app. In addition, it has a first class support for collapsing elements thereby abolishing the need for the universally hated popups.
-
-The other problem many single page applications are facing is actually their speed. As you add and remove elements from the page transitions are often rough and jerky. `react-reveal` rich suite of effects could really smoothen these transitions to make for a modern and polished user experience.
-
-`react-reveal` is MIT licensed, supports server side rendering, won't mess your SEO, compatible with [react transition group](https://www.react-reveal.com/docs/transition-group/) and has a tiny footprint in the application js bundle ( doesn't require any CSS files either ). So, what are you waiting for? Come and join the React UX revolution!
-
-Last but not least, do star the [Github repository](https://github.com/rnosov/react-reveal) if you liked this package.
+[React Reveal](https://www.react-reveal.com/) is
+an attention management framework for React. It's MIT licensed, has a tiny footprint
+and written specifically for React in ES6. It can be used to create various cool reveal
+on scroll animations in your application.
+If you liked this package, don't forget to star
+the [Github repository](https://github.com/rnosov/react-reveal).
 
 ## Examples
 

@@ -117,25 +117,29 @@ function makeCarousel(WrappedComponent, config = {}) {
           children={[
             <div ref={ node => this.beforeNode = node } key={1} style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 1 : 2 }}>
               <before.type
-                    appear
-                    wait={this.props.defaultWait}
-                    {...before.props}
-                    opposite
-                    when={!swap}
-                    mirror={backwards}
-                    onReveal={!swap ? this.handleReveal : void 0}
-                  />
+                mountOnEnter
+                unmountOnExit
+                appear
+                wait={this.props.defaultWait}
+                {...before.props}
+                opposite
+                when={!swap}
+                mirror={backwards}
+                onReveal={!swap ? this.handleReveal : void 0}
+              />
             </div>,
             <div key={2} ref={ node => this.afterNode = node } style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 2 : 1 }}>
               <after.type
-                    appear
-                    wait={this.props.defaultWait}
-                    {...after.props}
-                    opposite
-                    when={swap}
-                    mirror={backwards}
-                    onReveal={swap ? this.handleReveal : void 0}
-                  />
+                mountOnEnter
+                unmountOnExit
+                appear
+                wait={this.props.defaultWait}
+                {...after.props}
+                opposite
+                when={swap}
+                mirror={backwards}
+                onReveal={swap ? this.handleReveal : void 0}
+              />
             </div>
           ]}
         />
