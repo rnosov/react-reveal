@@ -15,15 +15,15 @@ function Carousel({ position, total, handleClick, children }) {
   return (
     <div className="carousel mb-4">
       <div className="carousel-children">
-      	{children}
+        {children}
         <div onClick={handleClick} data-position={position - 1} className="carousel-arrow carousel-prev"> &lt; </div>
         <div onClick={handleClick} data-position={position + 1} className="carousel-arrow carousel-next"> &gt; </div>
       </div>
       <div className="carousel-dots">
         {Array(...Array(total)).map( (val, index) =>
-        	<span className="carousel-dot" key={index} onClick={handleClick} data-position={index}>
-        		{index === position ? '●' : '○' }
-        	</span>
+          <span className="carousel-dot" key={index} onClick={handleClick} data-position={index}>
+            {index === position ? '●' : '○' }
+          </span>
         )}
       </div>
     </div>

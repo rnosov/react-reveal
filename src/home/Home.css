@@ -3,6 +3,9 @@
     background: #fff;
     overflow: hidden;
     height: 500px;
+    background-size: cover;
+    background-repeat:   no-repeat;
+    background-position: center center;
 }
 #bg>div.container {
     z-index: 2;
@@ -10,22 +13,9 @@
 }
 #bg img {
     width: 100%;
+    background: black;
     background: #ccc;
-    opacity: 0.5;
-}
-img {
-    opacity: 0.5;
-}
-#bg>#img {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    z-index: 1;
-}
-
-#bg p a{
-  color: #336;
+    /*opacity: 0.5;*/
 }
 
 .jumbotron {

@@ -19,7 +19,7 @@ const
   routes = makeRoutes(prefix, indexPath),
   nav = navMap({ prefix, linkClass }, [
     { title: 'Introduction'         , to: indexPath },
-    { title: 'Migrating to 1.1'     , to: 'migrating' },
+    //{ title: 'Migrating to 1.1'     , to: 'migrating' },
     { title: 'Common Effects'       , to: 'common' },
     { title: 'Special Effects'      , to: 'specials' },
     { title: 'Custom CSS Effects'   , to: 'custom' },

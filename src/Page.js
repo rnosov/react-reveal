@@ -13,7 +13,7 @@ import Fade from 'react-reveal/Fade';
 import Helmet from 'react-helmet';
 
 const trackingId = 'UA-113142916-1',
-      currentVer = '1.26';
+      currentVer = '1.27';
 const
   propTypes = {
     title: string.isRequired,

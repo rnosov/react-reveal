@@ -1,0 +1,23 @@
+#brand-bg {
+    position: relative;
+    /*background: #fff;*/
+    background: black;
+    overflow: hidden;
+    height: 500px;
+}
+#brand-bg>div.container {
+    z-index: 2;
+    position: relative;
+}
+#brand-bg img {
+    background: black;
+}
+#brand-bg>#img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left:-208px;
+    width: 416px;
+    z-index: 1;
+    max-height: 500px;
+}
