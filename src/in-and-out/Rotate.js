@@ -8,7 +8,6 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React from 'react';
 import { bool, number } from 'prop-types';
 import wrap from '../lib/wrap';
 import { animation, defaults } from '../lib/globals';

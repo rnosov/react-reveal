@@ -7,10 +7,9 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React from 'react';
 import { bool, string, number, object, oneOf, oneOfType } from 'prop-types';
 import { defaults } from './lib/globals';
-import wrap from '../lib/wrap';
+import wrap from './lib/wrap';
 import Fade from './in-and-out/Fade';
 
 const

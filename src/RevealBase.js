@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { string, object, number, bool, func, any, oneOfType, oneOf, instanceOf, shape, element } from 'prop-types';
+import { string, object, number, bool, func, oneOfType, oneOf, shape, element } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, fadeOutEnabled } from './lib/globals';
 //import Step from './lib/Step';
 import throttle from './lib/throttle';
