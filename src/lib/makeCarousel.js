@@ -41,7 +41,8 @@ function makeCarousel(WrappedComponent, config = {}) {
         current: 0,
         next: 1,
         backwards: false,
-        swap: false
+        swap: false,
+        appear: false,
       };
       this.turn = 0;
       this.handleReveal = this.handleReveal.bind(this);
@@ -49,8 +50,8 @@ function makeCarousel(WrappedComponent, config = {}) {
       this.target = this.target.bind(this);
     }
 
-    target({target}) {
-      this.move(+target.getAttribute('data-position'));
+    target({currentTarget}) {
+      this.move(+currentTarget.getAttribute('data-position'));
     }
 
     handleReveal() {
@@ -78,7 +79,8 @@ function makeCarousel(WrappedComponent, config = {}) {
         current: pos,
         next: this.state.current,
         backwards: newPos<this.state.current,
-        swap: !this.state.swap
+        swap: !this.state.swap,
+        appear: true,
       });
     }
 
@@ -119,7 +121,7 @@ function makeCarousel(WrappedComponent, config = {}) {
               <before.type
                 mountOnEnter
                 unmountOnExit
-                appear
+                appear={this.state.appear}
                 wait={this.props.defaultWait}
                 {...before.props}
                 opposite
@@ -132,7 +134,7 @@ function makeCarousel(WrappedComponent, config = {}) {
               <after.type
                 mountOnEnter
                 unmountOnExit
-                appear
+                appear={this.state.appear}
                 wait={this.props.defaultWait}
                 {...after.props}
                 opposite

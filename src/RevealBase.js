@@ -82,7 +82,7 @@ class RevealBase extends React.Component {
     this.state = {
       collapse: props.collapse ? RevealBase.getInitialCollapseStyle(props): void 0,
       style: {
-        opacity: !this.isOn && props.outEffect ? 0 : void 0,
+        opacity: (!this.isOn||props.always) && props.outEffect ? 0 : void 0,
         //visibility: props.when  ? 'visible' : 'hidden',
       },
     };
@@ -211,7 +211,7 @@ class RevealBase extends React.Component {
     //const inOut = props[this.isOn || !props.outEffectEffect ?'inEffect':'outEffect'];
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
     if ((props.outEffect||this.isOn) && inOut.make)
-        animationName = inOut.make();
+        animationName = this.animationName || inOut.make();
     let state = {/* status: leaving ? 'exiting':'entering',*/
         hasAppeared: true,
         hasExited: false,
@@ -283,6 +283,8 @@ class RevealBase extends React.Component {
     if (!this||!this.el) return;
     if (!props)
       props = this.props;
+    if (ssr)
+      disableSsr();
     if ( this.isOn && this.isShown && 'spy' in props ){
         this.isShown = false;
         this.setState({ style: {} });
@@ -302,10 +304,12 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el || this.props.disabled)
       return;
+    if ('make' in this.props)
+      this.animationName = this.props.inEffect.make();
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
     if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
-    || (ssr && !fadeOutEnabled && this.props.outEffect && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
+    || (ssr && !fadeOutEnabled && this.props.outEffect && !this.props.always && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
       ) {
       this.isShown = true;
       this.setState({
@@ -364,8 +368,9 @@ class RevealBase extends React.Component {
 
   static getInitialCollapseStyle(props) {
     return {
+          //height: ismounting  ? void 0 : 0,
           height: 0,
-          visibility: props.when  ? 'visible' : 'hidden',
+          visibility: props.when  ? void 0 : 'hidden',
           //height: props.when ? void 0 : 0,
           //padding: 0,
           //border: 0,
@@ -453,6 +458,6 @@ class RevealBase extends React.Component {
 RevealBase.propTypes = propTypes;
 RevealBase.defaultProps = defaultProps;
 RevealBase.contextTypes = contextTypes;
-//RevealBase.displayName = 'RevealBase';
+RevealBase.displayName = 'RevealBase';
 //RevealBase.childContextTypes = childContextTypes;
 export default RevealBase;

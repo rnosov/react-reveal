@@ -68,7 +68,7 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
       && 'timing' in window.performance
       && 'domContentLoadedEventEnd' in window.performance.timing
       && window.performance.timing.domLoading
-      && Date.now() - window.performance.timing.domLoading<500)
+      && Date.now() - window.performance.timing.domLoading<300)
     ssr = false;
   collapseend = document.createEvent('Event');
   collapseend.initEvent('collapseend', true, true);
