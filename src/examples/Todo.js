@@ -138,8 +138,7 @@ class TodoExample extends React.Component {
           </TransitionGroup>
         </div>
         <div className="col-md-7">
-          <label htmlFor='todoField'>{name}</label>
-          <div className="input-group mb-1">
+          <div className="input-group mt-4 mb-1">
             <input
               type="text"
               className="form-control"

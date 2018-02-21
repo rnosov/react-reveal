@@ -16,7 +16,8 @@ import Bounce from 'react-reveal/Bounce';
 import Slide from 'react-reveal/Slide';
 import LightSpeed from 'react-reveal/LightSpeed';
 
-import cat from './striped-cat-small.jpg';
+//import cat from './striped-cat-small.jpg';
+const cat = '/assets/striped-cat-small.jpg';
 
 function makeSlide(name, pic, arr) {
   const El = withReveal( ({ reveal }) => reveal(
@@ -39,21 +40,33 @@ function makeSlide(name, pic, arr) {
   return <El key={name} />;
 }
 
-let conf, slides;
+let conf, slides, preloads = {};
+function preload(src) {
+  if (src in preloads)
+    return;
+  preloads[src] = new Image();
+  preloads[src].src = src;
+}
 
 function Home() {
   if (!conf)
     conf = [
-      {name: 'Flip', pic: '/assets/cat-on-tree.jpg', effects: [<Flip delay={800}/>, <Flip right delay={2000}/>, <Flip top delay={3000}/>  ]},
-      {name: 'Zoom', pic: '/assets/cat-on-plate.jpg', effects: [<Zoom/>, <Zoom left/>, <Zoom right/>, <Zoom top/>, <Zoom bottom/> ]},
       {name: 'Fade', pic: '/assets/cat-on-couch.jpg', effects: [<Fade left/>, <Fade right/>, <Fade top/>, <Fade bottom/> ] },
+      {name: 'Zoom', pic: '/assets/cat-on-plate.jpg', effects: [<Zoom/>, <Zoom left/>, <Zoom right/>, <Zoom top/>, <Zoom bottom/> ]},
+      {name: 'Flip', pic: '/assets/cat-on-tree.jpg', effects: [<Flip delay={800}/>, <Flip right delay={2000}/>, <Flip top delay={3000}/>  ]},
       {name: 'Bounce', pic: '/assets/cat-on-grass.jpg', effects: [<Bounce/>, <Bounce left/>, <Bounce right/>, <Bounce top/>, <Bounce bottom/> ]},
       {name: 'Roll', pic: '/assets/cat-on-bed.jpg', effects: [<Roll left/>, <Roll right/>, <Roll top/>, <Roll bottom/> ]},
       {name: 'LightSpeed', pic: '/assets/cat-on-hands.jpg', effects: [<LightSpeed left/>, <LightSpeed right/> ]},
       {name: 'Rotate', pic: '/assets/cat-on-floor.jpg', effects: [<Rotate/>, <Rotate top left/>, <Rotate top right/>, <Rotate bottom left/>, <Rotate bottom right/> ]},
     ];
-  if (!slides)
+  if (!slides) {
     slides = conf.map( slide => makeSlide(slide.name, slide.pic, slide.effects) );
+    //preload(cat);
+    window.setTimeout( () => {
+      for (let i=0; i<conf.length; i++)
+        preload(conf[i].pic);
+    }, 5000);
+  }
   return (
     <Page title='Home'>
       <main>
@@ -91,16 +104,23 @@ function Home() {
             tiny footprint in the application js bundle ( doesn't require any CSS files either ).
             In order to start using it have a look at the <Link to="/docs/">documentation</Link>.
           </p></section>
-          <h3>Kitty Trial</h3>
+          <h2>Kitty Trial</h2>
           <p>The following is a test of React Reveal by a cute picture of a cat. Scroll down and enjoy!</p>
           </article>
           {
-            conf.map( ({ name, effects }) => effects.map( (example, index) =>
-              <div key={name + index} className="row">
-                <example.type {...example.props} delay={0}>
-                  <img  className="mx-auto d-block my-4" height="285" width="390" src={cat} alt="striped cat" />
-                </example.type>
-              </div>
+            conf.map( ({ name, effects }) => (
+              <React.Fragment key={name}>
+              <h3 className="text-center"><Link to={`/examples/common/${name}`}>{name}</Link></h3>
+              {
+                effects.map( (example, index) =>
+                  <div key={index} className="row">
+                    <example.type {...example.props} delay={0} make always>
+                      <img className="d-block mx-auto my-4" height="285" width="390" src={cat} alt="cute cat" />
+                    </example.type>
+                  </div>
+                )
+              }
+              </React.Fragment>
             ))
           }
         </div>

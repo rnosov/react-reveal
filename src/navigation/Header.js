@@ -67,10 +67,10 @@ function Header({ reveal, icon, belowBreakpoint }) {
               </ul>
               <ul className="navbar-nav justify-self-end">
                 <li className="nav-item">
-                  <a className="nav-link" href="https://www.npmjs.com/package/react-reveal">NPM Package</a>
+                  <a className="nav-link" href="https://github.com/rnosov/react-reveal">Github</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="https://github.com/rnosov/react-reveal">Github</a>
+                  <a className="nav-link" href="https://www.npmjs.com/package/react-reveal">NPM Package</a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="https://github.com/rnosov/react-reveal/tree/site">Site Source</a>

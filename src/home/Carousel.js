@@ -22,7 +22,7 @@ function Carousel({ position, total, handleClick, children }) {
       <div className="carousel-dots">
         {Array(...Array(total)).map( (val, index) =>
           <span className="carousel-dot" key={index} onClick={handleClick} data-position={index}>
-            {index === position ? '●' : '○' }
+            {index === position ? '● ' : '○ ' }
           </span>
         )}
       </div>

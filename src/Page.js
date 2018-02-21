@@ -9,11 +9,11 @@
 
 import React from 'react';
 import { string, bool } from 'prop-types';
-import Fade from 'react-reveal/Fade';
+//import Fade from 'react-reveal/Fade';
 import Helmet from 'react-helmet';
 
 const trackingId = 'UA-113142916-1',
-      currentVer = '1.27';
+      currentVer = '1.28';
 const
   propTypes = {
     title: string.isRequired,
@@ -81,15 +81,15 @@ class Page extends React.Component {
       window.scrollTo (0, 0);
   }
 
-	render() {
-		const { className, title, children } = this.props;
-		return (
-			<Fade disabled={!this.props.animate} force>
-    		<div className={className}>
-	  			<Helmet title={title} />
-					{children}
-			  </div>
-	  	</Fade>
+  render() {
+			//<Fade disabled={!this.props.animate} force>
+	  	//</Fade>
+    const { className, title, children } = this.props;
+    return (
+        <div className={className}>
+          <Helmet title={title} />
+          {children}
+        </div>
 		);
 	}
 
@@ -102,7 +102,7 @@ if (process.env.NODE_ENV === 'production') {
   document.head.appendChild(script);
   window.dataLayer = window.dataLayer || [];
   Page.gtag('js', new Date());
-  Page.gtag('config', trackingId, { 'send_page_view': false, 'app_name': 'react-reveal' });
+  Page.gtag('config', trackingId, { 'send_page_view': false });
   Page.gtag('event', `App Load (${currentVer})`, {'non_interaction': true } );
 }
 

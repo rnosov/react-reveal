@@ -13,7 +13,7 @@ import Code from './Code';
 
 function Article({ title, content }) {
   return (
-    <Page animate scroll className='markdown-body' title={title}>
+    <Page scroll className='markdown-body' title={title}>
       <h1>{title}</h1>
       <Code>{content}</Code>
     </Page>

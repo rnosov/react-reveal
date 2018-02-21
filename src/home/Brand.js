@@ -2,7 +2,7 @@ import React from 'react';
 import withReveal from 'react-reveal/withReveal';
 import { Link } from 'react-router-dom';
 //import Animation from 'react-reveal/Animation';
-import Fade from 'react-reveal/Fade';
+//import Fade from 'react-reveal/Fade';
 import Slide from 'react-reveal/Slide';
 import Zoom from 'react-reveal/Zoom';
 import './Brand.css';
@@ -14,17 +14,17 @@ const bg = '/assets/black-cat4.jpg';
 function heading(first, second) {
   return (
     <h1 className="text-center">
-      <Fade top cascade duration={1000} delay={1000}c>
+      <Zoom left cascade duration={1000} delay={500} always>
         <div style={{display: 'inline-block'}}>
           {first}
         </div>
-      </Fade>
+      </Zoom>
       <span style={{whiteSpace:'pre'}}> </span>
-      <Fade bottom cascade duration={1000} delay={1000}>
+      <Zoom right cascade duration={1000} delay={500} always>
         <div style={{display: 'inline-block'}}>
           {second}
         </div>
-      </Fade>
+      </Zoom>
     </h1>
   );
 }
@@ -37,9 +37,9 @@ function Brand({ reveal }) {
               {heading('React', 'Reveal')}
               <p className="lead">
                 <a href="https://www.npmjs.com/package/react-reveal">React Reveal</a> is
-                an attention management framework for React. It's MIT licensed, has a tiny footprint
+                an animation framework for React. It's MIT licensed, has a tiny footprint
                 and written specifically for React in ES6. It can be used to create various cool reveal
-                on scroll animations in your application.
+                on scroll effects in your application.
                 If you liked this package, don't forget to star
                 the <a href="https://github.com/rnosov/react-reveal">Github repository</a>.
               </p>
@@ -47,7 +47,7 @@ function Brand({ reveal }) {
               <Link className="btn btn-primary mr-3" to="/docs/" role="button">Documentation</Link>
             </div>
           </div>
-          <Zoom duration={2000} delay={2000}>
+          <Zoom duration={2000} delay={2000} always>
             <div id="img">
                 <img alt="" src={bg} />
             </div>

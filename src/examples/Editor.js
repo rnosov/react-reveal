@@ -40,12 +40,16 @@ import TransitionGroup from 'react-transition-group/TransitionGroup';
 const scope = { Reveal, Fade, Flip, Rotate, Zoom, Roll, Bounce, Slide, LightSpeed,
 	Flash, HeadShake, Jello, Jump, Pulse, RubberBand, Shake, Spin, Swing, Tada, Wobble, TransitionGroup };
 
-class Example extends React.Component {
+class Editor extends React.Component {
 
  constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, mountPreview: false };
     this.handleChange = throttle(this.handleChange.bind(this), 2000);
+  }
+
+  componentDidMount() {
+    this.setState({ mountPreview: true });
   }
 
   componentDidCatch() {
@@ -82,7 +86,10 @@ class Example extends React.Component {
 			  	<div className="col-12 col-md-6 order-md-2">
 			  	  <div className="ml-2 live-preview-container" >
 			  	    <div>{this.props.menu}</div>
-			  	  	<LivePreview className={this.props.previewClass} />
+              {this.state.mountPreview
+                ?	<LivePreview className={this.props.previewClass} />
+                : <h2>Loading, please wait</h2>
+              }
               <div>{this.props.footer}</div>
 			  	  </div>
 			  	</div>
@@ -97,4 +104,4 @@ class Example extends React.Component {
 }
 
 
-export default Example;
+export default Editor;
