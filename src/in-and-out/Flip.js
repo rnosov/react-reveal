@@ -107,8 +107,9 @@ function Flip({ children, out, left, right, top, bottom, x, y, mirror, opposite,
     return { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', backfaceVisibility: 'visible', } };
   }
 
+  const checksum = 0 + (left?1:0) + (right||y?10:0) + (top||x?100:0) + (bottom?1000:0) + (mirror?10000:0) + (opposite?100000:0);
   return context
-    ? wrap(props, factory, children)
+    ? wrap(props, factory, children, checksum)
     : factory(out)
   ;
 }

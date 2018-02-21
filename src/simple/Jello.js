@@ -67,7 +67,7 @@ function Jello({ children, out, timeout, duration = defaults.duration, delay = d
   }
 
   return context
-    ? wrap(props, factory, children)
+    ? wrap(props, factory, children, true)
     : factory(out)
   ;
 }

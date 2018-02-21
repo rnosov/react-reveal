@@ -211,7 +211,7 @@ class RevealBase extends React.Component {
     //const inOut = props[this.isOn || !props.outEffectEffect ?'inEffect':'outEffect'];
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
     if ((props.outEffect||this.isOn) && inOut.make)
-        animationName = this.animationName || inOut.make();
+        animationName = (!leaving && this.enterAnimation) || inOut.make();
     let state = {/* status: leaving ? 'exiting':'entering',*/
         hasAppeared: true,
         hasExited: false,
@@ -304,8 +304,8 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el || this.props.disabled)
       return;
-    if ('make' in this.props)
-      this.animationName = this.props.inEffect.make();
+    if ('make' in this.props.inEffect)
+      this.enterAnimation = this.props.inEffect.make();
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
     if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
@@ -381,6 +381,8 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if ('when' in props)
       this.isOn = !!props.when;
+    if ( props.checksum !== this.props.checksum && 'make' in this.props.inEffect)
+      this.enterAnimation = this.props.inEffect.make();
     if (!this.isOn && props.onExited && ('exit' in props) && props.exit === false ) {
       props.onExited();
       return;

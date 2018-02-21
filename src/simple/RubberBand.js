@@ -63,7 +63,7 @@ function RubberBand({ children, out, timeout, duration = defaults.duration, dela
   }
 
   return context
-    ? wrap(props, factory, children)
+    ? wrap(props, factory, children, true)
     : factory(out)
   ;
 }

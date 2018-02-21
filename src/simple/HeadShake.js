@@ -59,7 +59,7 @@ function HeadShake({ children, out, timeout, duration = defaults.duration, delay
   }
 
   return context
-    ? wrap(props, factory, children)
+    ? wrap(props, factory, children, true)
     : factory(out)
   ;
 }

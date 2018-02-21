@@ -53,8 +53,9 @@ function Fade({ children, out, distance, left, right, up, down, top, bottom, big
     return { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', }, reverse: left, };
   }
 
+  const checksum = (distance?distance.toString():0) + (left?1:0) + (right?10:0) + (top||down?100:0) + (bottom||up?1000:0) + (mirror?10000:0) + (opposite?100000:0) + (big?1000000:0);
   return context
-    ? wrap(props, factory, children)
+    ? wrap(props, factory, children, checksum)
     : factory(out)
   ;
 }

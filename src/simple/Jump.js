@@ -54,7 +54,7 @@ function Jump({ children, out, timeout, duration = defaults.duration, delay = de
   }
 
   return context
-    ? wrap(props, factory, children)
+    ? wrap(props, factory, children, true)
     : factory(out)
   ;
 }
