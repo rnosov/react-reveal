@@ -70,6 +70,8 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
       && window.performance.timing.domLoading
       && Date.now() - window.performance.timing.domLoading<300)
     ssr = false;
+  if (ssr)
+    window.setTimeout(disableSsr, 1500);
   collapseend = document.createEvent('Event');
   collapseend.initEvent('collapseend', true, true);
   let element = document.createElement('style');

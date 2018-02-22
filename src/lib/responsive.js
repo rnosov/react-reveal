@@ -71,6 +71,7 @@ function responsive( WrappedComponent, Effect, { breakpoint = '768px', ...rest }
           collapse={!this.state.match}
           disabled={this.props.disableAboveBreakpoint&&this.state.match}
           when={this.state.match || this.state.isClicked}
+          collapseOnly={!this.state.match}
         />
       );
     }

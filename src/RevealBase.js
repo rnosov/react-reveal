@@ -51,6 +51,8 @@ const
     mountOnEnter: bool,
     inEffect: inOut.isRequired,
     outEffect: oneOfType([ inOut, oneOf([ false ]) ]).isRequired,
+    alwaysReveal: bool,
+    collapseOnly: bool,
   },
   defaultProps = {
     fraction: 0.2,
@@ -179,13 +181,18 @@ class RevealBase extends React.Component {
   collapse(state, props, inOut) {
     const total = inOut.duration + (props.cascade ? inOut.duration : 0),
           height = this.isOn ? this.getDimensionValue() : 0;
-    const
-          delta1 = total>>2,
-          delta2 = delta1>>1,
-          duration = delta1, // + (props.when ? 0 : delta2),
-          delay = inOut.delay + (this.isOn ? 0 : total - delta1 - delta2);
-          state.style.animationDuration = `${total - delta1 + (this.isOn ? delta2 : -delta2)}ms`;
-          state.style.animationDelay = `${inOut.delay + (this.isOn ? delta1 - delta2 : 0)}ms`;
+    let duration, delay;
+    if (props.collapseOnly) {
+      duration = inOut.duration/3;
+      delay = inOut.delay;
+    }
+    else {
+      let delta1 = total>>2, delta2 = delta1>>1;
+      duration = delta1; // + (props.when ? 0 : delta2),
+      delay = inOut.delay + (this.isOn ? 0 : total - delta1 - delta2);
+      state.style.animationDuration = `${total - delta1 + (this.isOn ? delta2 : -delta2)}ms`;
+      state.style.animationDelay = `${inOut.delay + (this.isOn ? delta1 - delta2 : 0)}ms`;
+    }
     //const delta = total>>2,
     //      duration = props.when ? delta : total - delta,
     //      delay = inOut.delay + (props.when ? 0 : delta);
@@ -194,6 +201,7 @@ class RevealBase extends React.Component {
     state.collapse = {
       height,
       transition: `height ${duration}ms ease ${delay}ms`,// padding ${duration}ms ease ${delay}ms, border ${duration}ms ease ${delay}ms`,
+      overflow: props.collapseOnly ? 'hidden' : undefined,
       //margin: 0, padding: 0, border: '1px solid transparent',
       //boxSizing: 'border-box',
     };
@@ -211,9 +219,12 @@ class RevealBase extends React.Component {
           inOut = props[leaving ? 'outEffect' : 'inEffect'],
           collapse = 'collapse' in props;
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
+    let state;
+    if (!props.collapseOnly)
+    {
     if ((props.outEffect||this.isOn) && inOut.make)
         animationName = (!leaving && this.enterAnimation) || inOut.make(leaving, props);
-    let state = {/* status: leaving ? 'exiting':'entering',*/
+    state = {/* status: leaving ? 'exiting':'entering',*/
         hasAppeared: true,
         hasExited: false,
         collapse: undefined,
@@ -227,6 +238,9 @@ class RevealBase extends React.Component {
         animationName,
       },
       className: inOut.className };
+    }
+    else
+      state = { hasAppeared: true, hasExited: false, style: {opacity: 1}};
     this.setState( collapse ? this.collapse(state, props, inOut) : state );
     if (leaving) {
       this.savedChild = React.cloneElement(this.getChild());
@@ -305,7 +319,7 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el || this.props.disabled)
       return;
-    if ('make' in this.props.inEffect)
+    if ('make' in this.props.inEffect && !this.props.collapseOnly)
       this.enterAnimation = this.props.inEffect.make(false, this.props);
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
@@ -383,7 +397,7 @@ class RevealBase extends React.Component {
     if ('when' in props)
       this.isOn = !!props.when;
     if (props.checksum !== this.props.checksum)
-      this.enterAnimation = props.inEffect.make(false, props);
+      this.enterAnimation = props.checksum !== false && !props.collapseOnly ? props.inEffect.make(false, props) : void 0;
     if (!this.isOn && props.onExited && ('exit' in props) && props.exit === false ) {
       props.onExited();
       return;
