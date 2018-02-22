@@ -12,8 +12,10 @@ import React from 'react';
 function withReveal(WrappedComponent, effect) {
   return function(props) {
 
-    function reveal(node, params) {
-      return <effect.type {...effect.props} {...props} {...params}>{node}</effect.type>;
+    function reveal(node) {
+      if (effect)
+        return <effect.type {...effect.props} {...props}>{node}</effect.type>;
+      return <node.type {...node.props} {...props} />;
     }
 
     return (

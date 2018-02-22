@@ -11,8 +11,9 @@ import React from 'react';
 import responsive from './responsive';
 import makeIcon from './HamburgerIcon';
 import { animation } from './globals';
+import Fade from './Fade';
 
-function hamburger(WrappedComponent, Effect, config) {
+function hamburger(WrappedComponent, config = {} ) {
 
   let responsiveNode;
 
@@ -22,7 +23,9 @@ function hamburger(WrappedComponent, Effect, config) {
     return makeIcon(responsiveNode.state.isClicked, animation, responsiveNode.handleClick, iconProps);
   }
 
-  const ResponsiveComponent = responsive(WrappedComponent, Effect, config);
+  if ('duration' in config)
+    config.duration*=3;
+  const ResponsiveComponent = responsive(WrappedComponent, { ...config, effect: <Fade {...config} /> });
 
   return function(props) {
     return (
