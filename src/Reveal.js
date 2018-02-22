@@ -48,7 +48,7 @@ function Reveal({ children, timeout, duration, delay, count, forever, durationOu
     : effect ? { duration: timeout === undefined ? duration : timeout, delay, count, forever, className: effect, style: {} } : inEffect;
   }
 
-  return wrap(props, factory, children);
+  return wrap(props, factory(false), factory(true), children);
 }
 
 Reveal.propTypes = propTypes;

@@ -26,56 +26,49 @@ const
     forever: bool,
   };
 
-function LightSpeed({ children, out, left, right, mirror, opposite, forever,
-                    timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults, context = false) {
+function make(reverse, { left, right, mirror, opposite, }) {
+  if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
+      [left, right] = [right, left];
+  const dist = '100%',
+    x = left ? '-' + dist : ( right ? dist : '0' );
+  const rule = !reverse
+    ? `from {
+        transform: translate3d(${x}, 0, 0) skewX(-30deg);
+        opacity: 0;
+      }
+      60% {
+        transform: skewX(20deg);
+        opacity: 1;
+      }
+      80% {
+        transform: skewX(-5deg);
+        opacity: 1;
+      }
+      to {
+        transform: none;
+        opacity: 1;
+      }`
+    : `from {
+        opacity: 1;
+      }
+      to {
+        transform: translate3d(${x}, 0, 0) skewX(30deg);
+        opacity: 0;
+      }
+    `;
+  return animation(rule);
+}
 
-  function factory(reverse) {
-
-    function make() {
-      if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
-          [left, right] = [right, left];
-      const dist = '100%',
-        x = left ? '-' + dist : ( right ? dist : '0' );
-      const rule = !reverse
-        ? `from {
-            transform: translate3d(${x}, 0, 0) skewX(-30deg);
-            opacity: 0;
-          }
-
-          60% {
-            transform: skewX(20deg);
-            opacity: 1;
-          }
-
-          80% {
-            transform: skewX(-5deg);
-            opacity: 1;
-          }
-
-          to {
-            transform: none;
-            opacity: 1;
-          }`
-        : `from {
-            opacity: 1;
-          }
-
-          to {
-            transform: translate3d(${x}, 0, 0) skewX(30deg);
-            opacity: 0;
-          }
-        `;
-      return animation(rule);
-    }
-
-    return { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', } };
-  }
-
-  const checksum = 0 + (left?1:0) + (right?10:0) + (mirror?10000:0) + (opposite?100000:0);
-  return context
-    ? wrap(props, factory, children, checksum)
-    : factory(out)
-  ;
+function LightSpeed({ children, out, forever,
+                    timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, ...props } = defaults) {
+  const effect = {
+    make,
+    duration: timeout === undefined ? duration : timeout,
+    delay, forever, count,
+    style: { animationFillMode: 'both', }
+  };
+  const checksum = 0 + (props.left?1:0) + (props.right?10:0) + (props.mirror?10000:0) + (props.opposite?100000:0);
+  return wrap(props, effect, effect, children, checksum);
 }
 
 LightSpeed.propTypes = propTypes;

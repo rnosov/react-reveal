@@ -80,9 +80,11 @@ class RevealBase extends React.Component {
     super(props, context);
     this.isOn = 'when' in props ? !!props.when : true;
     this.state = {
-      collapse: props.collapse ? RevealBase.getInitialCollapseStyle(props): void 0,
+      collapse: props.collapse //&& (props.appear || (context.transitionGroup&&!context.transitionGroup.isMounting))
+       ? RevealBase.getInitialCollapseStyle(props)
+       : void 0,
       style: {
-        opacity: (!this.isOn||props.always) && props.outEffect ? 0 : void 0,
+        opacity: (!this.isOn||props.alwaysReveal) && props.outEffect ? 0 : void 0,
         //visibility: props.when  ? 'visible' : 'hidden',
       },
     };
@@ -208,10 +210,9 @@ class RevealBase extends React.Component {
     const leaving = !this.isOn && props.outEffect,
           inOut = props[leaving ? 'outEffect' : 'inEffect'],
           collapse = 'collapse' in props;
-    //const inOut = props[this.isOn || !props.outEffectEffect ?'inEffect':'outEffect'];
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
     if ((props.outEffect||this.isOn) && inOut.make)
-        animationName = (!leaving && this.enterAnimation) || inOut.make();
+        animationName = (!leaving && this.enterAnimation) || inOut.make(leaving, props);
     let state = {/* status: leaving ? 'exiting':'entering',*/
         hasAppeared: true,
         hasExited: false,
@@ -305,11 +306,11 @@ class RevealBase extends React.Component {
     if (!this.el || this.props.disabled)
       return;
     if ('make' in this.props.inEffect)
-      this.enterAnimation = this.props.inEffect.make();
+      this.enterAnimation = this.props.inEffect.make(false, this.props);
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
     if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
-    || (ssr && !fadeOutEnabled && this.props.outEffect && !this.props.always && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
+    || (ssr && !fadeOutEnabled && this.props.outEffect && !this.props.alwaysReveal && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
       ) {
       this.isShown = true;
       this.setState({
@@ -381,8 +382,8 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if ('when' in props)
       this.isOn = !!props.when;
-    if ( props.checksum !== this.props.checksum && 'make' in this.props.inEffect)
-      this.enterAnimation = this.props.inEffect.make();
+    if (props.checksum !== this.props.checksum)
+      this.enterAnimation = props.inEffect.make(false, props);
     if (!this.isOn && props.onExited && ('exit' in props) && props.exit === false ) {
       props.onExited();
       return;

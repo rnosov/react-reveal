@@ -9,11 +9,11 @@
 
 import React from 'react';
 
-function withReveal(WrappedComponent, Effect, config) {
+function withReveal(WrappedComponent, effect) {
   return function(props) {
 
     function reveal(node, params) {
-      return <Effect {...props} {...config} {...params}>{node}</Effect>;
+      return <effect.type {...effect.props} {...props} {...params}>{node}</effect.type>;
     }
 
     return (

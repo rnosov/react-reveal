@@ -35,21 +35,13 @@ from, to {
 }
 `;
 
-function Shake({ children, out, timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults, context = false) {
+function make() {
+  return animation(rule);
+}
 
-  function factory(reverse) {
-
-    function make() {
-      return animation(rule);
-    }
-
-    return reverse ? false : { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', } };
-  }
-
-  return context
-    ? wrap(props, factory, children, true)
-    : factory(out)
-  ;
+function Shake({ children, out, timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults) {
+  const effect = { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', } };
+  return wrap(props, effect, false, children, true);
 }
 
 Shake.propTypes = propTypes;
