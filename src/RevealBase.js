@@ -422,7 +422,6 @@ class RevealBase extends React.Component {
   }
 
   getChild() {
-
     if (this.savedChild && !this.props.disabled)
       return this.savedChild;
     if (typeof this.props.children === 'object') {
