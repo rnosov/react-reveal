@@ -15,6 +15,9 @@ import 'prismjs/components/prism-jsx.min';
 import 'prismjs/themes/prism.css';
 import 'github-markdown-css';
 
+//import 'prismjs/plugins/line-numbers/prism-line-numbers'
+//import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
+
 class Code extends React.Component {
 
   constructor(props) {
@@ -32,27 +35,35 @@ class Code extends React.Component {
     return true;
   }
 
-	componentDidMount() {
-    const codes = window.document.querySelectorAll('code');
+  static highlight() {
+    const codes = window.document.querySelectorAll('pre>code');
     for (let i = 0, len = codes.length; i < len; i++)
       Prism.highlightElement(codes[i]);
     const linkes = window.document.querySelectorAll('.markdown-body a');
     for (let i = 0, len = linkes.length; i < len; i++)
       linkes[i].onclick = this.handleLink;
+  }
+
+  componentDidMount() {
+    Code.highlight();
+
+
     //window.document.querySelectorAll('code').forEach((block) => {
-		//	Prism.highlightElement(block);
-		//});
+    //  Prism.highlightElement(block);
+    //});
     //window.document.querySelectorAll('.markdown-body a').forEach((block) => {
     //  block.onclick = this.handleLink;
     //});
-	}
+  }
 
-	render() {
-		return (
-			<div dangerouslySetInnerHTML={{__html: this.props.children}} />
-		);
-	}
+  render() {
+    return (
+      <div dangerouslySetInnerHTML={{__html: this.props.children}} />
+    );
+  }
 
 }
+
+//window.setTimeout( Code.highlight, 30);
 
 export default withRouter(Code);

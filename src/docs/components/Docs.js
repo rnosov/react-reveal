@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import Sidebar from './Sidebar';
+import Sidebar from '../../navigation/Sidebar';
 import makeRoutes from './routes';
 import navMap from '../../navigation/navMap';
 
@@ -26,7 +26,6 @@ const
     { title: 'Component Props'      , to: 'props' },
     { title: 'when Prop'            , to: 'when' },
     { title: 'Cascade Effect'       , to: 'cascade' },
-    { title: 'Transition Group'     , to: 'transition-group' },
     //{ title: 'Higher Order Components' , to: 'with-reveal' },
     //{ title: 'Responsive Elements' , to: 'responsive' },
     //{ title: 'Hamburger Menu' , to: 'hamburger' },

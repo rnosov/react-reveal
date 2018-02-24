@@ -30,12 +30,14 @@ function Sidebar({ items, reveal, belowBreakpoint, isToggled, toggle }) {
     <div>
       {button}
       {reveal(
-        <div className="list-group">
-          {items}
-        </div>
+        <Fade appear={items.length>3} bottom cascade force duration={1200}>
+          <div className="list-group">
+            {items}
+          </div>
+        </Fade>
       )}
     </div>
   );
 }
 
-export default responsive(Sidebar, Fade, { appear: true, bottom: true, cascade: true, force: true, duration: 1200 });
+export default responsive(Sidebar);

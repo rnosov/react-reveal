@@ -3,7 +3,7 @@ title: Introduction
 ---
 
 [React Reveal](https://github.com/rnosov/react-reveal) is
-an attention management framework for React. It's MIT licensed, has a tiny footprint
+an animation framework for React. It's MIT licensed, has a tiny footprint
 and written specifically for React in ES6. It can be used to create various cool reveal
 on scroll animations in your application.
 If you liked this package, don't forget to star
@@ -155,7 +155,14 @@ If you don't want this to happen, you should wrap multiple children in a `div` t
 
 ## Server Side Rendering
 
-`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering.
+`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. If it's something you
+don't really want then you can place the following code somewhere near the entry point of your app to disable this fadeout effect on initial loading:
+
+```jsx
+import config from 'react-reveal/globals';
+
+config({ ssrFadeout: false });
+```
 
 ## Search Engine Optimisation 
 

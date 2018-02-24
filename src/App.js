@@ -15,6 +15,7 @@ import Footer from './navigation/Footer';
 import NoMatch from './navigation/NoMatch';
 import Home from './home/Home';
 import Docs from './docs/components/Docs';
+import Tutorials from './tutorials/Tutorials';
 import Demos from './examples/Demos';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <Header />
       <Switch>
         <Route exact path='/' component={Home} />
+        <Route path='/tutorials/' component={Tutorials} />
         <Route path='/docs/' component={Docs} />
         <Route path='/examples/' component={Demos} />
         <Route component={NoMatch} />

@@ -8,8 +8,8 @@
  */
 
 import React from 'react';
-import Article from './Article';
-import { Route, Switch } from 'react-router-dom';
+import Article from '../../Article';
+import { Route, Switch, Redirect } from 'react-router-dom';
 //import 'markdown-with-front-matter-loader';
 
 function makeRoutes(prefix, indexPath)  {
@@ -22,8 +22,14 @@ function makeRoutes(prefix, indexPath)  {
       path={path === indexPath ? prefix + (`(${path})?`) : prefix + path }
       render={ () => <Article title={docs.get(path).title} content={docs.get(path).__content} /> }
     />));
-  routes.push(<Route key="NoMatch" render={ () => <Article title="Not Found" content="Article not found" />} />);
-  return <Switch>{routes}</Switch>;
+  //routes.push();
+  return (
+    <Switch>
+      {routes}
+      <Redirect from='/docs/transition-group' to='/tutorials/transition-group/' />
+      <Route key="NoMatch" render={ () => <Article title="Not Found" content="Article not found" />} />
+    </Switch>
+  );
 }
 
 export default makeRoutes;

@@ -93,12 +93,12 @@ class Example extends React.Component {
 
   name() {
     this.setState({ spy: false, change: !this.state.change});
-    Page.gtag('event','name', {'event_category' : 'examples',});
+    Page.event('name');
   }
 
   spy() {
     this.setState({ spy: true, change: !this.state.change});
-    Page.gtag('event','spy', {'event_category' : 'examples',});
+    Page.event('spy');
   }
 
   menu() {

@@ -10,7 +10,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import hamburger from 'react-reveal/hamburger';
-import Fade from 'react-reveal/Fade';
+//import Fade from 'react-reveal/Fade';
 import { ie10 } from 'react-reveal/globals';
 
 function flex(mainAxis = 'row') {
@@ -64,13 +64,16 @@ function Header({ reveal, icon, belowBreakpoint }) {
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/examples/" activeClassName="active">Examples</NavLink>
                 </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/tutorials/" activeClassName="active">Tutorials</NavLink>
+                </li>
               </ul>
               <ul className="navbar-nav justify-self-end">
                 <li className="nav-item">
                   <a className="nav-link" href="https://github.com/rnosov/react-reveal">Github</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="https://www.npmjs.com/package/react-reveal">NPM Package</a>
+                  <a className="nav-link" href="https://www.npmjs.com/package/react-reveal">NPM</a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="https://github.com/rnosov/react-reveal/tree/site">Site Source</a>
@@ -84,4 +87,4 @@ function Header({ reveal, icon, belowBreakpoint }) {
 }
 
 //export default hamburger(Header, Fade, { collapseProps: {className: 'w-100'}, right: true, opposite: true } );
-export default hamburger(Header, Fade, { collapseEl: <div className='w-100' />, distance: '100px',left: true, opposite: false } );
+export default hamburger(Header, { collapseEl: <div className='w-100' />, duration: 300 });

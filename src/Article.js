@@ -8,14 +8,14 @@
  */
 
 import React from 'react';
-import Page from '../../Page';
+import Page from './Page';
 import Code from './Code';
 
-function Article({ title, content }) {
+function Article({ title, content, children }) {
   return (
-    <Page scroll className='markdown-body' title={title}>
+    <Page scroll className='markdown-body' title={title} style={{minHeight: '100vh'}}>
       <h1>{title}</h1>
-      <Code>{content}</Code>
+      {content ? (<Code>{content}</Code>) : children}
     </Page>
   );
 }

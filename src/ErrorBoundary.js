@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component {
   componentDidCatch (error, info) {
     this.setState({ hasError: true });
     console.log('Error Boundary:', error.toString(), info);
-    Page.gtag('event','error', { 'event_category' : 'errors', 'event_label' : error.toString() });
+    Page.event('error: ' + error.toString());
   }
 
   render () {

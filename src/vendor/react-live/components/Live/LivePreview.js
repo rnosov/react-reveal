@@ -6,8 +6,7 @@ class LivePreview extends React.Component {
 
   constructor() {
     super();
-    this.state= { error: false, isOn: true };
-    this.handleLive = this.handleLive.bind(this);
+    this.state= { error: false };
   }
 
   componentDidCatch(error, info) {
@@ -17,14 +16,6 @@ class LivePreview extends React.Component {
 
   componentWillReceiveProps(next, context) {
      this.setState({ error: false })
-  }
-
-  handleLive(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    this.setState({
-      isOn: value,
-    });
   }
 
   displayError() {
@@ -52,14 +43,7 @@ class LivePreview extends React.Component {
     //        />            <span className="custom-control-indicator"></span>
     //        <span className="custom-control-description">Live Preview</span>
     //      </label>;
-    const checkbox =  <div key="0" className="custom-control custom-checkbox mr-0 mb-2 align-self-center">
-            <input id="customPreview" checked={this.state.isOn} onChange={this.handleLive} type="checkbox" className="custom-control-input" />
-            <label className="custom-control-label" htmlFor="customPreview">Live Preview</label>
-          </div>;
-    if (!this.state.isOn)
-      return [checkbox];
     return [
-      checkbox,
       this.displayError(),
       (this.context.live.error||this.state.error)?void 0 : (
       <div

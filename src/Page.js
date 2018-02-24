@@ -13,7 +13,7 @@ import { string, bool } from 'prop-types';
 import Helmet from 'react-helmet';
 
 const trackingId = 'UA-113142916-1',
-      currentVer = '1.28';
+      currentVer = '1.34';
 const
   propTypes = {
     title: string.isRequired,
@@ -37,13 +37,13 @@ class Page extends React.Component {
       try {
         const response = await fetch('/manifest.json');
         const json = await response.json();
-        Page.gtag('event','version check', { 'event_category' : 'page', 'event_label' : currentVer });
+        Page.event('version-check:' + currentVer);
         if (parseFloat(json.version) > parseFloat(currentVer))
           window.location.reload(true);
       }
       catch(e) {
         console.log('Version error:', e.toString());
-        Page.gtag('event','version error', { 'event_category' : 'errors', 'event_label' : e.toString() });
+        Page.event('version-error:' + e.toString());
       }
     }
   }
@@ -57,8 +57,18 @@ class Page extends React.Component {
       page_title: this.props.title,
       page_referrer: document.referrer,
     });
+    //Page.clicky(document.location.pathname, this.props.title, 'pageview');
     Page.fetchVer();
 	}
+
+  static event(title) {
+    Page.clicky('#' + document.location.pathname, title);
+  }
+
+  static clicky(href, title, type) {
+    if (window.clicky)
+      window.clicky.log(href, title, type);
+  }
 
 	static gtag() {
     //console.log(arguments);
@@ -84,9 +94,9 @@ class Page extends React.Component {
   render() {
 			//<Fade disabled={!this.props.animate} force>
 	  	//</Fade>
-    const { className, title, children } = this.props;
+    const { className, title, children, style } = this.props;
     return (
-        <div className={className}>
+        <div className={className} style={style}>
           <Helmet title={title} />
           {children}
         </div>
@@ -94,6 +104,7 @@ class Page extends React.Component {
 	}
 
 }
+
 
 if (process.env.NODE_ENV === 'production') {
   let script = document.createElement('script');
@@ -104,6 +115,14 @@ if (process.env.NODE_ENV === 'production') {
   Page.gtag('js', new Date());
   Page.gtag('config', trackingId, { 'send_page_view': false });
   Page.gtag('event', `App Load (${currentVer})`, {'non_interaction': true } );
+
+  window.clicky_site_ids = window.clicky_site_ids || [];
+  window.clicky_site_ids.push(101102816);
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = '//static.getclicky.com/js';
+  ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
 }
 
 Page.propTypes = propTypes;

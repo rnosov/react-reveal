@@ -32,16 +32,16 @@ class Example extends React.Component {
 
   collapse() {
     this.setState({ collapse: true, disabled: false, change: !this.state.change});
-    Page.gtag('event','collapse', {'event_category' : 'examples',});
+    Page.event('collapse');
   }
 
   without() {
     this.setState({ collapse: false, disabled: false, change: !this.state.change});
-    Page.gtag('event','without', {'event_category' : 'examples',});
+    Page.event('without');
   }
   disable() {
     this.setState({ disabled: !this.state.disabled, collapse: false, change: !this.state.change});
-    Page.gtag('event','disable', {'event_category' : 'examples',});
+    Page.event('disable');
   }
 
   menu() {
@@ -76,19 +76,24 @@ class FormExample extends React.Component {
     this.state={};
   }
   makeField(id, col, name) {
-    const value = this.state[id] || '';
-    const invalid = !!(value.length % 2);
+  const
+    value = this.state[id] || '',
+    invalid = !!(value.length % 2), // check if odd
+    className = 'form-control' + (invalid?' is-invalid':'');
     return(
       <div className={\`col-md-$\{col} mb-3\`}>
         <label>{name}</label>
         <input
           type="text"
-          className={'form-control'+(invalid?' is-invalid':'')}
+          className={className}
           data-id={id}
           placeholder={name}
           value={value}
           onChange={this.handleChange}
         />
+        {/* The next line is where you specify that the
+            error message should be shown only
+            when the 'invalid' variable is true    */}
         <Fade bottom${this.state.collapse?' collapse':''} when={invalid}${this.state.disabled?' disabled':''}>
           <div className="invalid-feedback"${this.state.disabled?'':`
             //Boostrap 4 uses some CSS tricks to simplify
@@ -111,14 +116,14 @@ class FormExample extends React.Component {
     return (
       <form autoComplete="off">
         <div className="form-row">
-          {this.makeField('f1',4, 'First name')}
-          {this.makeField('f2',4, 'Last name')}
-          {this.makeField('f3',4, 'Username' )}
+          {this.makeField('f1',4, 'First nаme')}
+          {this.makeField('f2',4, 'Lаst name')}
+          {this.makeField('f3',4, 'Usernаme' )}
         </div>
         <div className="form-row">
-          {this.makeField('f4',6, 'City')}
-          {this.makeField('f5',3, 'State')}
-          {this.makeField('f6',3, 'Zip')}
+          {this.makeField('f4',6, 'Citу')}
+          {this.makeField('f5',3, 'Stаte')}
+          {this.makeField('f6',3, 'Ziр')}
         </div>
         <button className="btn btn-success" type="button">
           Submit form

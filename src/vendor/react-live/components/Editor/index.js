@@ -6,6 +6,8 @@ import normalizeHtml from '../../utils/normalizeHtml'
 import htmlToPlain from '../../utils/htmlToPlain'
 import selectionRange from '../../vendor/selection-range'
 import { getIndent, getDeindentLevel } from '../../utils/getIndent'
+import debounce from 'react-reveal/debounce';
+//import Prism from 'prismjs';
 
 class Editor extends Component {
   static defaultProps = {
@@ -149,7 +151,8 @@ class Editor extends Component {
     }
   }
 
-  onKeyUp = evt => {
+  onKeyUp = event => {event.persist();this.onKeyUpDelayed(event)}
+  onKeyUpDelayed = debounce( evt => {
     if (this.props.onKeyUp) {
       this.props.onKeyUp(evt)
     }
@@ -182,7 +185,8 @@ class Editor extends Component {
     } else {
       this.undoTimestamp = 0
     }
-  }
+  }, 550)
+
 
   onCompositionStart = evt => {
     if (this.props.onCompositionStart) {
@@ -246,7 +250,7 @@ class Editor extends Component {
       <pre
         {...rest}
         ref={this.onRef}
-        className={cn('prism-code', className)}
+        className={cn('prism-code', className) + ' line-numbers'}
         style={style}
         spellCheck="false"
         contentEditable={contentEditable}

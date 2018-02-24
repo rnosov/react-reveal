@@ -44,8 +44,9 @@ class Editor extends React.Component {
 
  constructor(props) {
     super(props);
-    this.state = { hasError: false, mountPreview: false };
+    this.state = { hasError: false, mountPreview: false, isOn: true };
     this.handleChange = throttle(this.handleChange.bind(this), 2000);
+    this.handleLive = this.handleLive.bind(this);
   }
 
   componentDidMount() {
@@ -57,7 +58,15 @@ class Editor extends React.Component {
   }
 
   handleChange() {
-    Page.gtag('event','edit', {'event_category' : 'examples',});
+    Page.event('edit');
+  }
+
+  handleLive(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({
+      isOn: value,
+    });
   }
 
   truncate(code) {
@@ -83,18 +92,22 @@ class Editor extends React.Component {
 		return (
 			<LiveProvider transformCode={ (code) => this.truncate(code) } scope={scope} code={code} mountStylesheet={false}>
 			  <div className="row no-gutters" >
-			  	<div className="col-12 col-md-6 order-md-2">
-			  	  <div className="ml-2 live-preview-container" >
+			  	<div className={'col-12' + (this.props.stacked ? ' order-last mt-3':` col-md-${this.props.wide?'5':'6'} order-md-2`)}>
+			  	  <div className={(this.props.stacked ?'':'ml-2 ')+'live-preview-container'} >
 			  	    <div>{this.props.menu}</div>
-              {this.state.mountPreview
-                ?	<LivePreview className={this.props.previewClass} />
-                : <h2>Loading, please wait</h2>
+              <div key="0" className="custom-control custom-checkbox mr-0 mb-2 align-self-center">
+                <input id="customPreview" checked={this.state.isOn} onChange={this.handleLive} type="checkbox" className="custom-control-input" />
+                <label className="custom-control-label" htmlFor="customPreview">Live Preview</label>
+              </div>
+              {this.state.mountPreview && this.state.isOn
+                ?	<LivePreview className={this.props.previewClass} style={{ border: this.props.stacked? "1px solid black" : undefined}}/>
+                : <div />
               }
               <div>{this.props.footer}</div>
 			  	  </div>
 			  	</div>
-          <div className="col-12 col-md-6 order-md-1 live-editor" ref={ (node) => this.node = node } >
-            <LiveEditor onChange={this.handleChange} style={{ paddingTop: '0px'}} />
+          <div className={'col-12' + (this.props.stacked ? ' order-first' : ` col-md-${this.props.wide?'7':'6'} order-md-1`) +' live-editor'} ref={ (node) => this.node = node } >
+            <LiveEditor onChange={this.handleChange} style={{ padding: '0.7rem', margin: 0}} />
           </div>
 			 	</div>
 			</LiveProvider>

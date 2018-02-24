@@ -94,7 +94,7 @@ class StressTest extends React.Component {
   }
 
   handleReveal() {
-    Page.gtag('event','scroll', {'event_category' : 'examples',});
+    Page.event('scroll');
   }
 
   render() {
@@ -165,33 +165,33 @@ class Example extends React.Component {
 
   left() {
     this.setState({ dir: 'left', change: !this.state.change});
-    Page.gtag('event','left', {'event_category' : 'examples',});
+    Page.event('left');
   }
 
   right() {
     this.setState({ dir: 'right', change: !this.state.change});
-    Page.gtag('event','right', {'event_category' : 'examples',});
+    Page.event('right');
   }
 
   top() {
     this.setState({ dir: 'top', change: !this.state.change});
-    Page.gtag('event','top', {'event_category' : 'examples',});
+    Page.event('top');
   }
 
   bottom() {
     this.setState({ dir: 'bottom', change: !this.state.change});
-    Page.gtag('event','bottom', {'event_category' : 'examples',});
+    Page.event('bottom');
   }
 
   clear() {
     this.setState({ dir: '', big: false, change: !this.state.change});
-    Page.gtag('event','clear', {'event_category' : 'examples',});
+    Page.event('clear');
   }
 
 
   handleBig() {
     this.setState({ big: !this.state.big, change: !this.state.change});
-    Page.gtag('event','big', {'event_category' : 'examples',});
+    Page.event('big');
   }
 
   componentWillReceiveProps() {
@@ -204,9 +204,10 @@ class Example extends React.Component {
     this.setState({
       out: value,
       opposite: value && this.state.opposite,
+      collapse: value && this.state.collapse,
       change: !this.state.change
     });
-    Page.gtag('event','when', {'event_category' : 'examples',});
+    Page.event('when');
   }
 
   handleOpposite(event) {
@@ -217,7 +218,7 @@ class Example extends React.Component {
       opposite: value,
       change: !this.state.change
     });
-    Page.gtag('event','opposite', {'event_category' : 'examples',});
+    Page.event('opposite');
   }
 
   handleCascade(event) {
@@ -228,7 +229,7 @@ class Example extends React.Component {
       text: value && this.state.text,
       change: !this.state.change
     });
-    Page.gtag('event','cascade', {'event_category' : 'examples',});
+    Page.event('cascade');
   }
 
   handleText(event) {
@@ -239,7 +240,7 @@ class Example extends React.Component {
       text: value,
       change: !this.state.change
     });
-    Page.gtag('event','text', {'event_category' : 'examples',});
+    Page.event('text');
   }
 
   handleCollapse(event) {
@@ -250,7 +251,7 @@ class Example extends React.Component {
       collapse: value,
       change: !this.state.change
     });
-    Page.gtag('event','collapse', {'event_category' : 'examples',});
+    Page.event('collapse');
   }
 
   menu() {
@@ -259,22 +260,22 @@ class Example extends React.Component {
       <div>
 
         <div className="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-          <div className="btn-group ml-2" role="group">
+          <div className="btn-group mr-2" role="group">
             <button onClick={this.left} type="button" className={`btn ${this.state.dir === 'left' ? 'btn-info' : 'btn-secondary'}`}>{this.transformRotate('Left')}</button>
             <button onClick={this.right} type="button" className={`btn ${this.state.dir === 'right' ? 'btn-info' : 'btn-secondary'}`}>{this.transformRotate('Right')}</button>
           </div>
           {this.props.name === 'LightSpeed'
             ? void 0
-            : <div className="btn-group ml-2" role="group">
+            : <div className="btn-group mr-2" role="group">
                 <button onClick={this.top} type="button" className={`btn ${this.state.dir === 'top' ? 'btn-info' : 'btn-secondary'}`}>{this.transformRotate('Top')}</button>
                 <button onClick={this.bottom} type="button" className={`btn ${this.state.dir === 'bottom' ? 'btn-info' : 'btn-secondary'}`}>{this.transformRotate('Bottom')}</button>
               </div>
           }
-          <div className="btn-group ml-2" role="group">
+          <div className="btn-group mr-2" role="group">
             <button onClick={this.clear} type="button" className={`btn ${this.state.dir === '' ? 'btn-info' : 'btn-secondary'}`}>Clear</button>
           </div>
           {this.props.name === 'Fade'
-          ? <div className="btn-group ml-2" role="group">
+          ? <div className="btn-group mr-2" role="group">
               <button onClick={this.handleBig} type="button" className={`btn ${this.state.big ? 'btn-info' : 'btn-secondary'}`}>Big</button>
             </div>
           : void 0
@@ -284,11 +285,11 @@ class Example extends React.Component {
         <div className="form-row justify-content-center mt-1">
           <div className="custom-control custom-checkbox mr-2">
             <input id="customFadeOut" checked={this.state.out} onChange={this.handleOut} type="checkbox" className="custom-control-input" />
-            <label className="custom-control-label" htmlFor="customFadeOut">When</label>
+            <label className="custom-control-label" htmlFor="customFadeOut">Conditional</label>
           </div>
           <div className="custom-control custom-checkbox mr-2">
             <input id="customOpposite" checked={this.state.opposite} onChange={this.handleOpposite} type="checkbox" className="custom-control-input" />
-            <label className="custom-control-label" htmlFor="customOpposite">Opposite</label>
+            <label className="custom-control-label" htmlFor="customOpposite">Opposite Exit</label>
           </div>
           <div className="custom-control custom-checkbox mr-2">
             <input id="customCollapse" checked={this.state.collapse} onChange={this.handleCollapse} type="checkbox" className="custom-control-input" />

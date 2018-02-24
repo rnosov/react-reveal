@@ -32,7 +32,7 @@ class Example extends React.Component {
   handleCheck(event) {
     const name = event.currentTarget.getAttribute('id');
     this.setState({ [name]: !this.state[name], change: !this.state.change});
-    Page.gtag('event', name, {'event_category' : 'examples',});
+    Page.event(name);
   }
 
   menu() {
@@ -74,19 +74,23 @@ import TransitionGroup from 'react-transition-group/TransitionGroup';
 class TodoExample extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.add = this.add.bind(this);
-    this.remove = this.remove.bind(this);
+    this.groupProps = {
+      appear: ${this.state.appear?'true':'false'},
+      enter: ${this.state.enter?'true':'false'},
+      exit: ${this.state.exit?'true':'false'},
+    };
     this.state={
       todo: '',
       todos: [
         'item 1',
         'item 2',
         'item 3',
-        'item 4',
       ].map( (text, id) => ({ id, text }) ),
     };
     this.state.id = this.state.todos.length;
+    this.handleChange = this.handleChange.bind(this);
+    this.add = this.add.bind(this);
+    this.remove = this.remove.bind(this);
   }
   add(event) {
     event.preventDefault();
@@ -111,33 +115,31 @@ class TodoExample extends React.Component {
   render() {
     return (
       <form onSubmit={this.add} autoComplete="off">
-        <div className="col-md-10 mb-2">
-          <TransitionGroup
-            component="ul"
-            className="list-group"${this.state.appear?`
-            appear={true}`:''}${!this.state.enter?`
-            enter={false}`:''}${!this.state.exit?`
-            exit={false}`:''}
-          >
+        <div className="col-12 mb-2">
+          <TransitionGroup {...this.groupProps}>
             {this.state.todos.map( (item) =>
+              // The next line is what controls
+              // animated transitions
               <Fade key={item.id}${this.state.collapse?' collapse':''} bottom>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  {item.text}
-                  <button
-                    data-id={item.id}
-                    onClick={this.remove}
-                    type="button"
-                    className="close"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </li>
+                <div className="card">
+                  <div className="card-body justify-content-between">
+                    {item.text}
+                    <button
+                      data-id={item.id}
+                      onClick={this.remove}
+                      type="button"
+                      className="close"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
               </Fade>
             )}
           </TransitionGroup>
         </div>
-        <div className="col-md-7">
+        <div className="col-10">
           <div className="input-group mt-4 mb-1">
             <input
               type="text"
@@ -175,7 +177,7 @@ ${this.state.change?'':' '}
   render() {
     return (
       <Page scroll title="Todo example">
-        <Editor menu={this.menu()}>{this.code()}</Editor>
+        <Editor wide menu={this.menu()}>{this.code()}</Editor>
       </Page>
     );
   }

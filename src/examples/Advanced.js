@@ -20,7 +20,7 @@ const
   itemClass = 'nav-item',
   nav = navMap({ prefix, linkClass, itemClass }, [
     {title: 'Form errors', to: 'form'},
-    {title: 'Todo', to: 'todo'},
+    {title: 'Todo App', to: 'todo'},
     //{title: 'Collapsing Animations', to: 'collapse'},
     //{title: 'Custom Animations', to: 'custom'},
     //{title: 'Stepped Animations', to: 'stepper'},
