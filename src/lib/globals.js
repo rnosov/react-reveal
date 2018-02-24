@@ -68,7 +68,7 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
       && 'timing' in window.performance
       && 'domContentLoadedEventEnd' in window.performance.timing
       && window.performance.timing.domLoading
-      && Date.now() - window.performance.timing.domLoading<300)
+      && Date.now() - window.performance.timing.domLoading<400)
     ssr = false;
   if (ssr)
     window.setTimeout(disableSsr, 1500);
@@ -83,4 +83,8 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
     window.document.addEventListener("visibilitychange", hideAll);
     window.document.addEventListener("collapseend", hideAll);
   }
+}
+
+export default function config({ ssrFadeout }) {
+  fadeOutEnabled = ssrFadeout;
 }

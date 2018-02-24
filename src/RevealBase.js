@@ -53,6 +53,7 @@ const
     outEffect: oneOfType([ inOut, oneOf([ false ]) ]).isRequired,
     alwaysReveal: bool,
     collapseOnly: bool,
+    ssrFadeout: bool,
   },
   defaultProps = {
     fraction: 0.2,
@@ -216,8 +217,8 @@ class RevealBase extends React.Component {
       return;
     this.isShown = this.isOn;
     const leaving = !this.isOn && props.outEffect,
-          inOut = props[leaving ? 'outEffect' : 'inEffect'],
-          collapse = 'collapse' in props;
+          inOut = props[leaving ? 'outEffect' : 'inEffect'];
+          //collapse = 'collapse' in props;
     let animationName = (('style' in inOut) && inOut.style.animationName) || void 0;
     let state;
     if (!props.collapseOnly)
@@ -241,7 +242,7 @@ class RevealBase extends React.Component {
     }
     else
       state = { hasAppeared: true, hasExited: false, style: {opacity: 1}};
-    this.setState( collapse ? this.collapse(state, props, inOut) : state );
+    this.setState( props.collapse ? this.collapse(state, props, inOut) : state );
     if (leaving) {
       this.savedChild = React.cloneElement(this.getChild());
       this.animationEnd( this.invisible, props.cascade, inOut);
@@ -324,7 +325,7 @@ class RevealBase extends React.Component {
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
     if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
-    || (ssr && !fadeOutEnabled && this.props.outEffect && !this.props.alwaysReveal && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
+    || (ssr && !fadeOutEnabled && !this.props.ssrFadeout && this.props.outEffect && !this.props.alwaysReveal && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
       ) {
       this.isShown = true;
       this.setState({
@@ -335,7 +336,7 @@ class RevealBase extends React.Component {
       this.onReveal(this.props);
       return;
     }
-    if ( ssr && fadeOutEnabled && this.props.outEffect && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)) {
+    if ( ssr && ( fadeOutEnabled || this.props.ssrFadeout )&& this.props.outEffect && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms 1000ms' } });
       window.setTimeout(this.revealHandler, 2000);
       return;

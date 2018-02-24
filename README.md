@@ -153,7 +153,15 @@ If you don't want this to happen, you should wrap multiple children in a `div` t
 
 ## Server Side Rendering
 
-`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. 
+`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. If it's something you
+don't really want then you can place the following code somewhere near the entry point of your app to disable this fadeout effect on initial loading:
+
+```jsx
+import config from 'react-reveal/globals';
+
+config({ ssrFadeout: false });
+```
+
 
 ## Search Engine Optimisation 
 
