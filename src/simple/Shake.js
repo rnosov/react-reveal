@@ -35,9 +35,11 @@ from, to {
 }
 `;
 
+let name = false;
 function make() {
-  return animation(rule);
+  return name || (name = animation(rule));
 }
+
 
 function Shake({ children, out, timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults) {
   const effect = { make, duration: timeout === undefined ? duration : timeout, delay, forever, count, style: { animationFillMode: 'both', } };

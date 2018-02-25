@@ -11,6 +11,8 @@
 
 export const namespace = 'react-reveal';//, is16 = parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
+export const raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||  window.mozRequestAnimationFrame || function(callback) {window.setTimeout(callback, 1000 / 60);};
+
 export let
   ssr = true,
   disableSsr = () => ssr = false,
@@ -68,7 +70,7 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
       && 'timing' in window.performance
       && 'domContentLoadedEventEnd' in window.performance.timing
       && window.performance.timing.domLoading
-      && Date.now() - window.performance.timing.domLoading<400)
+      && Date.now() - window.performance.timing.domLoading<300)
     ssr = false;
   if (ssr)
     window.setTimeout(disableSsr, 1500);

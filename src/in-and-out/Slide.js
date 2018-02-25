@@ -28,7 +28,11 @@ const
     forever: bool,
   };
 
+const lookup = {};
 function make(reverse, { left, right, up, down, top, bottom, big, mirror, opposite, }) {
+  const checksum = ( (left?1:0) | (right?2:0) | (top||down?4:0) | (bottom||up?8:0) | (mirror?16:0) | (opposite?32:0) | (reverse?64:0) | (big?128:0));
+  if (lookup.hasOwnProperty(checksum))
+    return lookup[checksum];
   const transform = left||right||up||down||top||bottom;
   let x, y;
   if (transform) {
@@ -38,10 +42,11 @@ function make(reverse, { left, right, up, down, top, bottom, big, mirror, opposi
     x = left ? '-' + dist : ( right ? dist : '0' );
     y = down || top ? '-'+ dist : ( up || bottom ? dist : '0' );
   }
-  return animation(
+  lookup[checksum] = animation(
     `${!reverse?'from':'to'} {${ transform ? ` transform: translate3d(${x}, ${y}, 0);` : ''}}
      ${ reverse?'from':'to'} {transform: none;} `
   );
+  return lookup[checksum];
 }
 
 function Slide({ children, out, forever,
@@ -55,8 +60,7 @@ function Slide({ children, out, forever,
     style: { animationFillMode: 'both', },
     reverse: props.left,
   };
-  const checksum = 0 + (props.left?1:0) + (props.right?10:0) + (props.top||props.down?100:0) + (props.bottom||props.up?1000:0) + (props.mirror?10000:0) + (props.opposite?100000:0) + (props.big?1000000:0);
-  return wrap(props, effect, effect, children, checksum);
+  return wrap(props, effect, effect, children);
 }
 
 Slide.propTypes = propTypes;

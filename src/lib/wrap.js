@@ -10,13 +10,13 @@
 import React from 'react';
 import RevealBase from '../RevealBase';
 
-export default function wrap(props, inEffect, outEffect, children, checksum = false) {
+export default function wrap(props, inEffect, outEffect, children) {
   if ('in' in props)
     props.when = props.in;
   if (React.Children.count(children) < 2)
-    return  <RevealBase {...props} inEffect={inEffect} outEffect={outEffect} children={children} checksum={checksum} />
+    return  <RevealBase {...props} inEffect={inEffect} outEffect={outEffect} children={children} />
   children = React.Children.map(children, child =>
-    <RevealBase {...props} inEffect={inEffect} outEffect={outEffect} children={child} checksum={checksum} />
+    <RevealBase {...props} inEffect={inEffect} outEffect={outEffect} children={child} />
   );
   return 'Fragment' in React ? <React.Fragment>{children}</React.Fragment> : <span>{children}</span>;
 }

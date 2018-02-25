@@ -28,7 +28,11 @@ const
     forever: bool,
   };
 
+const lookup = {};
 function make(reverse, { left, right, top, bottom, x, y, mirror, opposite, }) {
+  const checksum = (left?1:0) | (right||y?2:0) | (top||x?4:0) | (bottom?8:0) | (mirror?16:0) | (opposite?32:0) | (reverse?64:0);
+  if (lookup.hasOwnProperty(checksum))
+    return lookup[checksum];
   if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
       [left, right, top, bottom, x, y] = [right, left, bottom, top, y, x];
   let rule;
@@ -87,7 +91,8 @@ function make(reverse, { left, right, top, bottom, x, y, mirror, opposite, }) {
           animation-timing-function: ease-in;
           opacity: ${reverse?'0':'1'};
         }`;
-  return(animation(rule));
+  lookup[checksum] = animation(rule);
+  return lookup[checksum];
 }
 
 function Flip({ children, out, forever,
@@ -98,8 +103,7 @@ function Flip({ children, out, forever,
     delay, forever, count,
     style: { animationFillMode: 'both',  backfaceVisibility: 'visible', },
   };
-  const checksum = 0 + (props.left?1:0) + (props.right||props.y?10:0) + (props.top||props.x?100:0) + (props.bottom?1000:0) + (props.mirror?10000:0) + (props.opposite?100000:0);
-  return wrap(props, effect, effect, children, checksum);
+  return wrap(props, effect, effect, children);
 }
 
 Flip.propTypes = propTypes;

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { string, object, number, bool, func, oneOfType, oneOf, shape, element } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, fadeOutEnabled } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, fadeOutEnabled, raf } from './lib/globals';
 //import Step from './lib/Step';
 import throttle from './lib/throttle';
 
@@ -94,7 +94,25 @@ class RevealBase extends React.Component {
     this.savedChild = false;
     this.isListener = false;
     this.isShown = false;
-    this.revealHandler = throttle(this.reveal.bind(this, false), 66);
+
+    this.ticking = false;
+    const update = () => {
+      this.reveal();
+      this.ticking = false;
+    };
+
+    const requestTick = () => {
+      if (!this.ticking) {
+      raf(update);
+        this.ticking = true;
+      }
+    };
+
+    this.revealHandler = requestTick;
+    //this.revealHandler = myThrottle(this.reveal.bind(this, false));
+    //this.revealHandler = rafThrottle(this.reveal.bind(this, false));
+    //this.revealHandler = rafThrottle(throttle(this.reveal.bind(this, false), 66));
+    //this.revealHandler = throttle(rafThrottle(this.reveal.bind(this, false)), 66);
     this.resizeHandler = throttle(this.resize.bind(this), 500);
     this.saveRef = this.saveRef.bind(this);
   }
@@ -223,22 +241,25 @@ class RevealBase extends React.Component {
     let state;
     if (!props.collapseOnly)
     {
-    if ((props.outEffect||this.isOn) && inOut.make)
-        animationName = (!leaving && this.enterAnimation) || inOut.make(leaving, props);
-    state = {/* status: leaving ? 'exiting':'entering',*/
+      if ((props.outEffect||this.isOn) && inOut.make)
+        animationName = inOut.make;
+        //animationName = inOut.make(leaving, props);
+      //animationName = (!leaving && this.enterAnimation) || inOut.make(leaving, props);
+      state = {/* status: leaving ? 'exiting':'entering',*/
         hasAppeared: true,
         hasExited: false,
         collapse: undefined,
         style: {
-        ...inOut.style,
-        animationDuration: `${inOut.duration}ms`,
-        animationDelay: `${inOut.delay}ms`,
-        animationIterationCount: inOut.forever ? 'infinite' : inOut.count,
-        opacity: 1,
-        //visibility: 'visible',
-        animationName,
-      },
-      className: inOut.className };
+          ...inOut.style,
+          animationDuration: `${inOut.duration}ms`,
+          animationDelay: `${inOut.delay}ms`,
+          animationIterationCount: inOut.forever ? 'infinite' : inOut.count,
+          opacity: 1,
+          //visibility: 'visible',
+          animationName,
+        },
+        className: inOut.className
+      };
     }
     else
       state = { hasAppeared: true, hasExited: false, style: {opacity: 1}};
@@ -264,7 +285,7 @@ class RevealBase extends React.Component {
 
   unlisten() {
     if (this.isListener) {
-      window.removeEventListener('scroll', this.revealHandler);
+      window.removeEventListener('scroll', this.revealHandler, { passive: true });
       window.removeEventListener('orientationchange', this.revealHandler);
       window.document.removeEventListener('visibilitychange', this.revealHandler);
       window.document.removeEventListener('collapseend', this.revealHandler);
@@ -287,7 +308,7 @@ class RevealBase extends React.Component {
   listen() {
     if (!this.isListener) {
       this.isListener = true;
-      window.addEventListener('scroll', this.revealHandler);
+      window.addEventListener('scroll', this.revealHandler, { passive: true });
       window.addEventListener('orientationchange', this.revealHandler);
       window.document.addEventListener('visibilitychange', this.revealHandler);
       window.document.addEventListener('collapseend', this.revealHandler);
@@ -320,8 +341,14 @@ class RevealBase extends React.Component {
   componentDidMount() {
     if (!this.el || this.props.disabled)
       return;
-    if ('make' in this.props.inEffect && !this.props.collapseOnly)
-      this.enterAnimation = this.props.inEffect.make(false, this.props);
+    if (!this.props.collapseOnly) {
+      if ('make' in this.props.inEffect)
+        this.props.inEffect.make(false, this.props);
+      if ('when' in this.props && this.props.outEffect && 'make' in this.props.outEffect)
+        this.props.outEffect.make(true, this.props);
+    }
+        //this.enterAnimation = this.props.inEffect.make(false, this.props);
+
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
     if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
@@ -397,8 +424,14 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if ('when' in props)
       this.isOn = !!props.when;
-    if (props.checksum !== this.props.checksum)
-      this.enterAnimation = props.checksum !== false && !props.collapseOnly ? props.inEffect.make(false, props) : void 0;
+
+    //if ('make' in props.inEffect)
+    //    props.inEffect.make(false, props);
+    //if ('when' in props && props.outEffect && 'make' in props.outEffect)
+    //    props.outEffect.make(true, props);
+
+    //if (props.checksum !== this.props.checksum)
+    //  this.enterAnimation = props.checksum !== false && !props.collapseOnly ? props.inEffect.make(false, props) : void 0;
     if (!this.isOn && props.onExited && ('exit' in props) && props.exit === false ) {
       props.onExited();
       return;
@@ -444,6 +477,7 @@ class RevealBase extends React.Component {
     const child = this.getChild();
     //if (this.props.disabled)
     //  return child;
+
     if (typeof child.ref === 'function')
       this.childRef = child.ref;
     let
@@ -452,6 +486,11 @@ class RevealBase extends React.Component {
     let
       newClass = this.props.disabled ? className : `${ this.props.outEffect ? namespace : '' }${ this.state.className ? ' ' + this.state.className : '' }${ className ? ' ' + className : '' }`||void 0,
       newStyle;
+
+    if (typeof this.state.style.animationName === 'function')
+      this.state.style.animationName = this.state.style.animationName(!this.isOn ,this.props);
+
+
     if (this.props.cascade && !this.props.disabled && children && this.state.style.animationName) {
       newChildren = this.cascade(children);
       newStyle = { ...style, opacity: 1 };

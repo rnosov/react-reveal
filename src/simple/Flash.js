@@ -31,8 +31,9 @@ from, 50%, to {
 }
 `;
 
+let name = false;
 function make() {
-  return animation(rule);
+  return name || (name = animation(rule));
 }
 
 function Flash({ children, out, timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults) {

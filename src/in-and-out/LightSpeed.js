@@ -26,7 +26,11 @@ const
     forever: bool,
   };
 
+const lookup = {};
 function make(reverse, { left, right, mirror, opposite, }) {
+  const checksum = (left?1:0) | (right?2:0) | (mirror?16:0) | (opposite?32:0) | (reverse?64:0);
+  if (lookup.hasOwnProperty(checksum))
+    return lookup[checksum];
   if ( !mirror !== !(reverse&&opposite)) // Boolean XOR
       [left, right] = [right, left];
   const dist = '100%',
@@ -56,7 +60,8 @@ function make(reverse, { left, right, mirror, opposite, }) {
         opacity: 0;
       }
     `;
-  return animation(rule);
+  lookup[checksum] = animation(rule);
+  return lookup[checksum];
 }
 
 function LightSpeed({ children, out, forever,
@@ -68,7 +73,7 @@ function LightSpeed({ children, out, forever,
     style: { animationFillMode: 'both', }
   };
   const checksum = 0 + (props.left?1:0) + (props.right?10:0) + (props.mirror?10000:0) + (props.opposite?100000:0);
-  return wrap(props, effect, effect, children, checksum);
+  return wrap(props, effect, effect, children);
 }
 
 LightSpeed.propTypes = propTypes;
