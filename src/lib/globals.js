@@ -11,7 +11,7 @@
 
 export const namespace = 'react-reveal';//, is16 = parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
-export const raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||  window.mozRequestAnimationFrame || function(callback) {window.setTimeout(callback, 1000 / 60);};
+export const raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||  window.mozRequestAnimationFrame || function(callback) {window.setTimeout(callback, 66);};
 
 export let
   ssr = true,

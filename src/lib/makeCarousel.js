@@ -94,9 +94,8 @@ function makeCarousel(WrappedComponent, config = {}) {
     }
 
     componentDidMount() {
-
-      //swipedetect(this.beforeNode, this.handleSwipe );
-      //swipedetect(this.afterNode, this.handleSwipe );
+      swipedetect(this.beforeNode, this.handleSwipe );
+      swipedetect(this.afterNode, this.handleSwipe );
     }
 
     render() {

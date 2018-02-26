@@ -11,7 +11,7 @@ import React from 'react';
 import { string, object, number, bool, func, oneOfType, oneOf, shape, element } from 'prop-types';
 import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, fadeOutEnabled, raf } from './lib/globals';
 //import Step from './lib/Step';
-import throttle from './lib/throttle';
+//import throttle from './lib/throttle';
 
 const
   inOut = shape({
@@ -79,6 +79,19 @@ class RevealBase extends React.Component {
   //  return { transitionGroup: null }; // allows for nested Transitions
   //}
 
+  makeHandler(handler) {
+    const update = () => {
+      handler.call(this);
+      this.ticking = false;
+    };
+    return () => {
+      if (!this.ticking) {
+        raf(update);
+        this.ticking = true;
+      }
+    };
+  }
+
   constructor(props, context) {
     super(props, context);
     this.isOn = 'when' in props ? !!props.when : true;
@@ -94,26 +107,14 @@ class RevealBase extends React.Component {
     this.savedChild = false;
     this.isListener = false;
     this.isShown = false;
-
     this.ticking = false;
-    const update = () => {
-      this.reveal();
-      this.ticking = false;
-    };
-
-    const requestTick = () => {
-      if (!this.ticking) {
-      raf(update);
-        this.ticking = true;
-      }
-    };
-
-    this.revealHandler = requestTick;
+    this.revealHandler = this.makeHandler(this.reveal);
+    this.resizeHandler = this.makeHandler(this.resize);
     //this.revealHandler = myThrottle(this.reveal.bind(this, false));
     //this.revealHandler = rafThrottle(this.reveal.bind(this, false));
     //this.revealHandler = rafThrottle(throttle(this.reveal.bind(this, false), 66));
     //this.revealHandler = throttle(rafThrottle(this.reveal.bind(this, false)), 66);
-    this.resizeHandler = throttle(this.resize.bind(this), 500);
+    //this.resizeHandler = throttle(this.resize.bind(this), 500);
     this.saveRef = this.saveRef.bind(this);
   }
 
@@ -286,10 +287,10 @@ class RevealBase extends React.Component {
   unlisten() {
     if (this.isListener) {
       window.removeEventListener('scroll', this.revealHandler, { passive: true });
-      window.removeEventListener('orientationchange', this.revealHandler);
-      window.document.removeEventListener('visibilitychange', this.revealHandler);
-      window.document.removeEventListener('collapseend', this.revealHandler);
-      window.removeEventListener('resize', this.resizeHandler);
+      window.removeEventListener('orientationchange', this.revealHandler, { passive: true });
+      window.document.removeEventListener('visibilitychange', this.revealHandler, { passive: true });
+      window.document.removeEventListener('collapseend', this.revealHandler, { passive: true });
+      window.removeEventListener('resize', this.resizeHandler, { passive: true });
       this.isListener = false;
     }
     if(this.onRevealTimeout)
@@ -309,10 +310,10 @@ class RevealBase extends React.Component {
     if (!this.isListener) {
       this.isListener = true;
       window.addEventListener('scroll', this.revealHandler, { passive: true });
-      window.addEventListener('orientationchange', this.revealHandler);
-      window.document.addEventListener('visibilitychange', this.revealHandler);
-      window.document.addEventListener('collapseend', this.revealHandler);
-      window.addEventListener('resize', this.resizeHandler);
+      window.addEventListener('orientationchange', this.revealHandler, { passive: true });
+      window.document.addEventListener('visibilitychange', this.revealHandler, { passive: true });
+      window.document.addEventListener('collapseend', this.revealHandler, { passive: true });
+      window.addEventListener('resize', this.resizeHandler, { passive: true });
     }
   }
 
@@ -477,7 +478,6 @@ class RevealBase extends React.Component {
     const child = this.getChild();
     //if (this.props.disabled)
     //  return child;
-
     if (typeof child.ref === 'function')
       this.childRef = child.ref;
     let
@@ -486,11 +486,8 @@ class RevealBase extends React.Component {
     let
       newClass = this.props.disabled ? className : `${ this.props.outEffect ? namespace : '' }${ this.state.className ? ' ' + this.state.className : '' }${ className ? ' ' + className : '' }`||void 0,
       newStyle;
-
-    if (typeof this.state.style.animationName === 'function')
+    if (typeof this.state.style.animationName === 'function') // todo: needs refactotoring
       this.state.style.animationName = this.state.style.animationName(!this.isOn ,this.props);
-
-
     if (this.props.cascade && !this.props.disabled && children && this.state.style.animationName) {
       newChildren = this.cascade(children);
       newStyle = { ...style, opacity: 1 };
