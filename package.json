@@ -1,26 +1,14 @@
 {
   "name": "react-reveal",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "author": "Roman Nosov <rnosov@gmail.com>",
   "description": "Really simple way to add reveal on scroll animation to your React app.",
   "license": "MIT",
   "keywords": [
     "react",
     "reveal",
-    "scroll",
-    "scrollreveal",
-    "revealscroll",
-    "show",
-    "hide",
-    "resize",
-    "wow",
-    "animation",
-    "animate",
-    "Fade",
-    "Zoom",
-    "Flip",
-    "Rotate",
-    "Bounce"
+    "reactreveal",
+    "scroll"
   ],
   "repository": {
     "type": "git",
