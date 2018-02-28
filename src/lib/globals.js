@@ -11,10 +11,11 @@
 
 export const namespace = 'react-reveal';//, is16 = parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
-export const raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||  window.mozRequestAnimationFrame || function(callback) {window.setTimeout(callback, 66);};
 
 export let
   ssr = true,
+  observerMode = false,
+  raf = cb => window.setTimeout(cb, 66),
   disableSsr = () => ssr = false,
   fadeOutEnabled = true,
   ssrFadeout = (enable = true) => fadeOutEnabled = enable,
@@ -54,12 +55,13 @@ function hideAll() {
   insertRule(`.${namespace} { opacity: 0; }`);
   window.removeEventListener('orientationchange', hideAll, true);
   window.document.removeEventListener('visibilitychange', hideAll);
-  window.document.removeEventListener('collapseend', hideAll);
   globalHide = true;
 }
 
 //navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")
 if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document && typeof navigator !== 'undefined') { // are we in browser?
+  observerMode = 'IntersectionObserver' in window && 'IntersectionObserverEntry' in window && 'intersectionRatio' in window.IntersectionObserverEntry.prototype;
+  raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || raf;
   ssr = window.document.querySelectorAll('div[data-reactroot]').length>0; // are we prerendered?
   if (navigator.appVersion.indexOf("MSIE 10") !== -1)
     ie10 = true;
@@ -74,8 +76,10 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
     ssr = false;
   if (ssr)
     window.setTimeout(disableSsr, 1500);
-  collapseend = document.createEvent('Event');
-  collapseend.initEvent('collapseend', true, true);
+  if (!observerMode) {
+    collapseend = document.createEvent('Event');
+    collapseend.initEvent('collapseend', true, true);
+  }
   let element = document.createElement('style');
   document.head.appendChild(element);
   if (element.sheet && element.sheet.cssRules && element.sheet.insertRule) {
@@ -83,7 +87,6 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
     window.addEventListener('scroll', hideAll, true);
     window.addEventListener("orientationchange", hideAll, true);
     window.document.addEventListener("visibilitychange", hideAll);
-    window.document.addEventListener("collapseend", hideAll);
   }
 }
 

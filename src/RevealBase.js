@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { string, object, number, bool, func, oneOfType, oneOf, shape, element } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, fadeOutEnabled, raf } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, fadeOutEnabled, observerMode, raf } from './lib/globals';
 //import Step from './lib/Step';
 //import throttle from './lib/throttle';
 
@@ -26,6 +26,7 @@ const
   propTypes = {
     //when: any,
     //spy: any,
+    //margin: number,
     collapse: bool,// oneOfType([bool, shape({ tag: string, props: object })]),
     collapseEl: element,
     cascade: bool,
@@ -59,6 +60,7 @@ const
     fraction: 0.2,
     //when: true,
     refProp: 'ref',
+    //margin: 0,
   },
   //,
   //contextTypes = {
@@ -81,7 +83,7 @@ class RevealBase extends React.Component {
 
   makeHandler(handler) {
     const update = () => {
-      handler.call(this);
+      handler.call(this, this.props);
       this.ticking = false;
     };
     return () => {
@@ -105,11 +107,13 @@ class RevealBase extends React.Component {
       },
     };
     this.savedChild = false;
-    this.isListener = false;
+    //this.isListener = false;
     this.isShown = false;
-    this.ticking = false;
-    this.revealHandler = this.makeHandler(this.reveal);
-    this.resizeHandler = this.makeHandler(this.resize);
+    //this.ticking = false;
+    if (!observerMode) {
+      this.revealHandler = this.makeHandler(this.reveal);
+      this.resizeHandler = this.makeHandler(this.resize);
+    }
     //this.revealHandler = myThrottle(this.reveal.bind(this, false));
     //this.revealHandler = rafThrottle(this.reveal.bind(this, false));
     //this.revealHandler = rafThrottle(throttle(this.reveal.bind(this, false), 66));
@@ -132,14 +136,17 @@ class RevealBase extends React.Component {
       this.childRef(node);
     if (this.props.innerRef)
       this.props.innerRef(node);
-    this.el = node && ('offsetHeight' in node) ? node : undefined;
+    if (this.el !== node) { //probably redundant check
+      this.el = node && ('offsetHeight' in node) ? node : undefined;
+      this.observe(this.props, true);
+    }
   }
 
-  inViewport() {
+  inViewport(props) {
     if (!this.el || window.document.hidden) return false;
     const h = this.el.offsetHeight,
-          delta = window.pageYOffset - RevealBase.getTop(this.el),
-          tail = Math.min(h, window.innerHeight) * ( globalHide ? this.props.fraction : 0 );
+          delta = window.pageYOffset/* - props.margin */- RevealBase.getTop(this.el),
+          tail = Math.min(h, window.innerHeight) * ( globalHide ? props.fraction : 0 );
     return ( delta > tail - window.innerHeight ) && ( delta < h - tail );
   }
 
@@ -148,14 +155,14 @@ class RevealBase extends React.Component {
   //    this.setState({ style: { opacity: 0 } });
   //}
 
-  resize() {
+  resize(props) {
     if (!this||!this.el||!this.isOn)
       return;
-    if ( this.inViewport() ) {
+    if ( this.inViewport(props) ) {
       this.unlisten();
       this.isShown = this.isOn;
-      this.setState({ hasExited: !this.isOn, hasAppeared: true, collapse: undefined, style: { opacity: this.isOn || !this.props.outEffect ? 1 : 0 } });
-      this.onReveal(this.props);
+      this.setState({ hasExited: !this.isOn, hasAppeared: true, collapse: undefined, style: { opacity: this.isOn || !props.outEffect ? 1 : 0 } });
+      this.onReveal(props);
       //if (this.props.onReveal && this.isOn)
       //  this.props.wait ? this.onRevealTimeout = window.setTimeout(this.props.onReveal, this.props.wait) : this.props.onReveal();
     }
@@ -169,7 +176,7 @@ class RevealBase extends React.Component {
       this.setState( { hasExited: true, style: { ...this.state.style, visibility: 'hidden'}/*, collapsing: false */});
       //if (this.props.onExited)
       //  this.props.onExited(this.el);
-      if (this.props.collapse)
+      if (!observerMode && this.props.collapse)
         window.document.dispatchEvent(collapseend);
     }
   }
@@ -285,7 +292,7 @@ class RevealBase extends React.Component {
   }
 
   unlisten() {
-    if (this.isListener) {
+    if (!observerMode && this.isListener) {
       window.removeEventListener('scroll', this.revealHandler, { passive: true });
       window.removeEventListener('orientationchange', this.revealHandler, { passive: true });
       window.document.removeEventListener('visibilitychange', this.revealHandler, { passive: true });
@@ -306,8 +313,28 @@ class RevealBase extends React.Component {
     ssr && disableSsr();
   }
 
+  observe(props, update = false) {
+    if (!this.el)  return;
+    if (observerMode) {
+      if (this.observer) {
+        if (update)
+          this.observer.disconnect();
+        else return;
+      }
+      else if (update) return;
+      this.observer = new IntersectionObserver( ( [entry], observer ) => {
+        if (entry.intersectionRatio>0)  {
+          observer.disconnect();
+          this.observer = null;
+          this.reveal(this.props, true);
+        }
+      }, {threshold: props.fraction,/* rootMargin: this.props.margin + 'px 0px 0px 0px'*/} );
+      this.observer.observe(this.el);
+    }
+  }
+
   listen() {
-    if (!this.isListener) {
+    if (!observerMode && !this.isListener) {
       this.isListener = true;
       window.addEventListener('scroll', this.revealHandler, { passive: true });
       window.addEventListener('orientationchange', this.revealHandler, { passive: true });
@@ -317,7 +344,7 @@ class RevealBase extends React.Component {
     }
   }
 
-  reveal(props) {
+  reveal(props, inView = false) {
     if (!this||!this.el) return;
     if (!props)
       props = this.props;
@@ -327,16 +354,11 @@ class RevealBase extends React.Component {
         this.isShown = false;
         this.setState({ style: {} });
         window.setTimeout( () => this.reveal(props), 200 );
-    } else if ( this.inViewport() ) {
-      //if (this.start) {
-      //  this.hide();
-      //  this.listen();
-      //  this.start(this.step);
-      //  return;
-      //}
+    }
+    else if ( inView || this.inViewport(props) )
       this.animate(props);
-    } else
-      this.listen();
+    else
+      observerMode?this.observe(props):this.listen();
   }
 
   componentDidMount() {
@@ -348,8 +370,6 @@ class RevealBase extends React.Component {
       if ('when' in this.props && this.props.outEffect && 'make' in this.props.outEffect)
         this.props.outEffect.make(true, this.props);
     }
-        //this.enterAnimation = this.props.inEffect.make(false, this.props);
-
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
     if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
@@ -425,6 +445,9 @@ class RevealBase extends React.Component {
   componentWillReceiveProps (props) {
     if ('when' in props)
       this.isOn = !!props.when;
+
+    if (props.fraction !== this.props.fraction)
+      this.observe(props, true);
 
     //if ('make' in props.inEffect)
     //    props.inEffect.make(false, props);
