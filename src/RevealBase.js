@@ -81,22 +81,9 @@ class RevealBase extends React.Component {
   //  return { transitionGroup: null }; // allows for nested Transitions
   //}
 
-  makeHandler(handler) {
-    const update = () => {
-      handler.call(this, this.props);
-      this.ticking = false;
-    };
-    return () => {
-      if (!this.ticking) {
-        raf(update);
-        this.ticking = true;
-      }
-    };
-  }
-
   constructor(props, context) {
     super(props, context);
-    this.isOn = 'when' in props ? !!props.when : true;
+    this.isOn = props.when !== undefined ? !!props.when : true;
     this.state = {
       collapse: props.collapse //&& (props.appear || (context.transitionGroup&&!context.transitionGroup.isMounting))
        ? RevealBase.getInitialCollapseStyle(props)
@@ -110,10 +97,13 @@ class RevealBase extends React.Component {
     //this.isListener = false;
     this.isShown = false;
     //this.ticking = false;
+    //this.observerMode = observerMode && !this.props.disableObserver;
     if (!observerMode) {
       this.revealHandler = this.makeHandler(this.reveal);
       this.resizeHandler = this.makeHandler(this.resize);
     }
+    else
+      this.handleObserve = this.handleObserve.bind(this);
     //this.revealHandler = myThrottle(this.reveal.bind(this, false));
     //this.revealHandler = rafThrottle(this.reveal.bind(this, false));
     //this.revealHandler = rafThrottle(throttle(this.reveal.bind(this, false), 66));
@@ -122,14 +112,6 @@ class RevealBase extends React.Component {
     this.saveRef = this.saveRef.bind(this);
   }
 
-  static getTop(el) {
-    while (el.offsetTop === void 0)
-      el = el.parentNode;
-    let top = el.offsetTop;
-    for (;el.offsetParent; top += el.offsetTop)
-      el = el.offsetParent;
-    return top;
-  }
 
   saveRef(node) {
     if (this.childRef)
@@ -142,38 +124,12 @@ class RevealBase extends React.Component {
     }
   }
 
-  inViewport(props) {
-    if (!this.el || window.document.hidden) return false;
-    const h = this.el.offsetHeight,
-          delta = window.pageYOffset/* - props.margin */- RevealBase.getTop(this.el),
-          tail = Math.min(h, window.innerHeight) * ( globalHide ? props.fraction : 0 );
-    return ( delta > tail - window.innerHeight ) && ( delta < h - tail );
-  }
-
-  //hide() {
-  //  if (this.props.outEffect)
-  //    this.setState({ style: { opacity: 0 } });
-  //}
-
-  resize(props) {
-    if (!this||!this.el||!this.isOn)
-      return;
-    if ( this.inViewport(props) ) {
-      this.unlisten();
-      this.isShown = this.isOn;
-      this.setState({ hasExited: !this.isOn, hasAppeared: true, collapse: undefined, style: { opacity: this.isOn || !props.outEffect ? 1 : 0 } });
-      this.onReveal(props);
-      //if (this.props.onReveal && this.isOn)
-      //  this.props.wait ? this.onRevealTimeout = window.setTimeout(this.props.onReveal, this.props.wait) : this.props.onReveal();
-    }
-  }
-
   invisible() {
     if (!this || !this.el)
       return;
     this.savedChild = false;
     if (!this.isShown) {
-      this.setState( { hasExited: true, style: { ...this.state.style, visibility: 'hidden'}/*, collapsing: false */});
+      this.setState( { hasExited: true, collapse: this.props.collapse?{...this.state.collapse, visibility: 'hidden'}: null, style: { /*...this.state.style, visibility: 'hidden'*/opacity: 0}/*, collapsing: false */});
       //if (this.props.onExited)
       //  this.props.onExited(this.el);
       if (!observerMode && this.props.collapse)
@@ -288,29 +244,21 @@ class RevealBase extends React.Component {
       if (this.onRevealTimeout)
         this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
       props.wait ? this.onRevealTimeout = window.setTimeout(props.onReveal, props.wait) : props.onReveal();
+      //props.wait ? this.onRevealTimeout = window.setTimeout( this.isOn ? (() => props.onReveal(true)):(() => props.onReveal(false)), props.wait) : props.onReveal( this.isOn );
     }
-  }
-
-  unlisten() {
-    if (!observerMode && this.isListener) {
-      window.removeEventListener('scroll', this.revealHandler, { passive: true });
-      window.removeEventListener('orientationchange', this.revealHandler, { passive: true });
-      window.document.removeEventListener('visibilitychange', this.revealHandler, { passive: true });
-      window.document.removeEventListener('collapseend', this.revealHandler, { passive: true });
-      window.removeEventListener('resize', this.resizeHandler, { passive: true });
-      this.isListener = false;
-    }
-    if(this.onRevealTimeout)
-      this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
-    if (this.animationEndTimeout)
-      this.animationEndTimeout = window.clearTimeout(this.animationEndTimeout);
-    //if (this.animationEndHandler)
-    //   this.animationEndEl.removeEventListener('animationend', this.animationEndHandler);
   }
 
   componentWillUnmount() {
     this.unlisten();
     ssr && disableSsr();
+  }
+
+  handleObserve( [entry], observer ) {
+    if (entry.intersectionRatio>0)  {
+      observer.disconnect();
+      this.observer = null;
+      this.reveal(this.props, true);
+    }
   }
 
   observe(props, update = false) {
@@ -322,25 +270,8 @@ class RevealBase extends React.Component {
         else return;
       }
       else if (update) return;
-      this.observer = new IntersectionObserver( ( [entry], observer ) => {
-        if (entry.intersectionRatio>0)  {
-          observer.disconnect();
-          this.observer = null;
-          this.reveal(this.props, true);
-        }
-      }, {threshold: props.fraction,/* rootMargin: this.props.margin + 'px 0px 0px 0px'*/} );
+      this.observer = new IntersectionObserver(this.handleObserve, {threshold: props.fraction} );
       this.observer.observe(this.el);
-    }
-  }
-
-  listen() {
-    if (!observerMode && !this.isListener) {
-      this.isListener = true;
-      window.addEventListener('scroll', this.revealHandler, { passive: true });
-      window.addEventListener('orientationchange', this.revealHandler, { passive: true });
-      window.document.addEventListener('visibilitychange', this.revealHandler, { passive: true });
-      window.document.addEventListener('collapseend', this.revealHandler, { passive: true });
-      window.addEventListener('resize', this.resizeHandler, { passive: true });
     }
   }
 
@@ -350,12 +281,12 @@ class RevealBase extends React.Component {
       props = this.props;
     if (ssr)
       disableSsr();
-    if ( this.isOn && this.isShown && 'spy' in props ){
+    if ( this.isOn && this.isShown && props.spy !== undefined ){
         this.isShown = false;
         this.setState({ style: {} });
         window.setTimeout( () => this.reveal(props), 200 );
     }
-    else if ( inView || this.inViewport(props) )
+    else if ( inView || this.inViewport(props) || props.force )
       this.animate(props);
     else
       observerMode?this.observe(props):this.listen();
@@ -367,12 +298,12 @@ class RevealBase extends React.Component {
     if (!this.props.collapseOnly) {
       if ('make' in this.props.inEffect)
         this.props.inEffect.make(false, this.props);
-      if ('when' in this.props && this.props.outEffect && 'make' in this.props.outEffect)
+      if (this.props.when !== undefined && this.props.outEffect && 'make' in this.props.outEffect)
         this.props.outEffect.make(true, this.props);
     }
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
-    if (this.isOn && ((('when' in this.props || 'spy' in this.props) && !appear)
+    if (this.isOn && (((this.props.when !== undefined || this.props.spy !== undefined) && !appear)
     || (ssr && !fadeOutEnabled && !this.props.ssrFadeout && this.props.outEffect && !this.props.alwaysReveal && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
       ) {
       this.isShown = true;
@@ -386,7 +317,7 @@ class RevealBase extends React.Component {
     }
     if ( ssr && ( fadeOutEnabled || this.props.ssrFadeout )&& this.props.outEffect && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)) {
       this.setState({ style: { opacity: 0, transition: 'opacity 1000ms 1000ms' } });
-      window.setTimeout(this.revealHandler, 2000);
+      window.setTimeout( () => this.reveal(this.props, true), 2000);
       return;
     }
     if(this.isOn)
@@ -432,47 +363,26 @@ class RevealBase extends React.Component {
 
   static getInitialCollapseStyle(props) {
     return {
-          //height: ismounting  ? void 0 : 0,
           height: 0,
           visibility: props.when  ? void 0 : 'hidden',
-          //height: props.when ? void 0 : 0,
-          //padding: 0,
-          //border: 0,
-          //boxSizing: 'border-box',
     };
   }
 
   componentWillReceiveProps (props) {
-    if ('when' in props)
+    if (props.when !== undefined)
       this.isOn = !!props.when;
-
     if (props.fraction !== this.props.fraction)
       this.observe(props, true);
-
-    //if ('make' in props.inEffect)
-    //    props.inEffect.make(false, props);
-    //if ('when' in props && props.outEffect && 'make' in props.outEffect)
-    //    props.outEffect.make(true, props);
-
-    //if (props.checksum !== this.props.checksum)
-    //  this.enterAnimation = props.checksum !== false && !props.collapseOnly ? props.inEffect.make(false, props) : void 0;
     if (!this.isOn && props.onExited && ('exit' in props) && props.exit === false ) {
       props.onExited();
       return;
     }
     if (props.disabled)
       return;
-    //if (props.responsive && !props.when && this.isOn && props.collapse && !this.props.collapse) {
     if (props.collapse && !this.props.collapse) {
       this.setState({ style: { }, collapse: RevealBase.getInitialCollapseStyle(props)});
       this.isShown = false;
-      //return;
     }
-    //if ( this.isOn && props.collapse === true && this.dummyEl && this.dummyEl.offsetHeight && this.state.style.height !== this.dummyEl.offsetHeight )
-    //  this.setState({ style: { ...this.state.style, height: this.dummyEl.offsetHeight } });
-
-    //if ( 'collapse' in props )
-    //  this.setState({ collapse: { ...this.state.collapse, height: this.getDimensionValue() } });
     if ( (props.when !== this.props.when) || (props.spy !== this.props.spy))
       this.reveal(props);
     if (this.onRevealTimeout&& !this.isOn)
@@ -521,12 +431,83 @@ class RevealBase extends React.Component {
     //if (this.props.collapse && !this.props.disabled)
     //  props.key = 1;
     const el = React.cloneElement(child, props, mount ? newChildren||children :  undefined);
-    if ( 'collapse' in this.props )
+    if ( this.props.collapse !== undefined )
       return this.props.collapseEl
         ? React.cloneElement(this.props.collapseEl, { style: {...this.props.collapseEl.style, ...(this.props.disabled ? undefined : this.state.collapse)}, children: (el) })
         : <div style={ this.props.disabled ? undefined : this.state.collapse } children={el} />;
       //return <div {...this.props.collapse} style={ this.props.disabled ? undefined : this.state.collapse } children={el} />;
     return el;
+  }
+
+  makeHandler(handler) {
+    const update = () => {
+      handler.call(this, this.props);
+      this.ticking = false;
+    };
+    return () => {
+      if (!this.ticking) {
+        raf(update);
+        this.ticking = true;
+      }
+    };
+  }
+
+  static getTop(el) {
+    while (el.offsetTop === void 0)
+      el = el.parentNode;
+    let top = el.offsetTop;
+    for (;el.offsetParent; top += el.offsetTop)
+      el = el.offsetParent;
+    return top;
+  }
+
+  inViewport(props) {
+    if (!this.el || window.document.hidden) return false;
+    const h = this.el.offsetHeight,
+          delta = window.pageYOffset/* - props.margin */- RevealBase.getTop(this.el),
+          tail = Math.min(h, window.innerHeight) * ( globalHide ? props.fraction : 0 );
+    return ( delta > tail - window.innerHeight ) && ( delta < h - tail );
+  }
+
+  resize(props) {
+    if (!this||!this.el||!this.isOn)
+      return;
+    if ( this.inViewport(props) ) {
+      this.unlisten();
+      this.isShown = this.isOn;
+      this.setState({ hasExited: !this.isOn, hasAppeared: true, collapse: undefined, style: { opacity: this.isOn || !props.outEffect ? 1 : 0 } });
+      this.onReveal(props);
+      //if (this.props.onReveal && this.isOn)
+      //  this.props.wait ? this.onRevealTimeout = window.setTimeout(this.props.onReveal, this.props.wait) : this.props.onReveal();
+    }
+  }
+
+  listen() {
+    if (!observerMode && !this.isListener) {
+      this.isListener = true;
+      window.addEventListener('scroll', this.revealHandler, { passive: true });
+      window.addEventListener('orientationchange', this.revealHandler, { passive: true });
+      window.document.addEventListener('visibilitychange', this.revealHandler, { passive: true });
+      window.document.addEventListener('collapseend', this.revealHandler, { passive: true });
+      window.addEventListener('resize', this.resizeHandler, { passive: true });
+    }
+  }
+
+  unlisten() {
+    if (!observerMode && this.isListener) {
+      window.removeEventListener('scroll', this.revealHandler, { passive: true });
+      window.removeEventListener('orientationchange', this.revealHandler, { passive: true });
+      window.document.removeEventListener('visibilitychange', this.revealHandler, { passive: true });
+      window.document.removeEventListener('collapseend', this.revealHandler, { passive: true });
+      window.removeEventListener('resize', this.resizeHandler, { passive: true });
+      this.isListener = false;
+    }
+    if(this.onRevealTimeout)
+      this.onRevealTimeout = window.clearTimeout(this.onRevealTimeout);
+    if (this.animationEndTimeout)
+      this.animationEndTimeout = window.clearTimeout(this.animationEndTimeout);
+    //if (this.animationEndHandler)
+    //   this.animationEndEl.removeEventListener('animationend', this.animationEndHandler);
   }
 
 }

@@ -17,8 +17,8 @@ export let
   observerMode = false,
   raf = cb => window.setTimeout(cb, 66),
   disableSsr = () => ssr = false,
-  fadeOutEnabled = true,
-  ssrFadeout = (enable = true) => fadeOutEnabled = enable,
+  fadeOutEnabled = false,
+  ssrFadeout = (enable = false) => fadeOutEnabled = enable,
   globalHide = false,
   ie10 = false,
   collapseend;
@@ -60,7 +60,10 @@ function hideAll() {
 
 //navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")
 if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document && typeof navigator !== 'undefined') { // are we in browser?
-  observerMode = 'IntersectionObserver' in window && 'IntersectionObserverEntry' in window && 'intersectionRatio' in window.IntersectionObserverEntry.prototype;
+  observerMode = 'IntersectionObserver' in window
+                  && 'IntersectionObserverEntry' in window  // bypassing
+                  && 'intersectionRatio' in window.IntersectionObserverEntry.prototype // inclomplete implementations
+                  && (/\{\s*\[native code\]\s*\}/).test('' + IntersectionObserver); // and buggy polyfills
   raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || raf;
   ssr = window.document.querySelectorAll('div[data-reactroot]').length>0; // are we prerendered?
   if (navigator.appVersion.indexOf("MSIE 10") !== -1)

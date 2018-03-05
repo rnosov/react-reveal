@@ -10,19 +10,51 @@
 import React from 'react';
 
 function withReveal(WrappedComponent, effect) {
-  return function(props) {
-
-    function reveal(node) {
-      if (effect)
-        return <effect.type {...effect.props} {...props}>{node}</effect.type>;
-      return <node.type {...node.props} {...props} />;
-    }
-
+  let refProp = undefined;
+  if (typeof WrappedComponent === 'function' && typeof WrappedComponent.styledComponentId === 'string')
+    refProp = "innerRef";
+  return function({
+    force,
+    mountOnEnter,
+    unmountOnExit,
+    opposite,
+    mirror,
+    wait,
+    onReveal,
+    in: inProp,
+    when,
+    spy,
+    collapse,
+    onExited,
+    enter,
+    exit,
+    appear,
+    //disableObserver,
+    ...props
+  }) {
     return (
-      <WrappedComponent
-        reveal={reveal}
-        {...props}
-      />
+      <effect.type
+        force={force}
+        mountOnEnter={mountOnEnter}
+        unmountOnExit={unmountOnExit}
+        opposite={opposite}
+        mirror={mirror}
+        wait={wait}
+        onReveal={onReveal}
+        in={inProp}
+        when={when}
+        spy={spy}
+        collapse={collapse}
+        onExited={onExited}
+        enter={enter}
+        exit={exit}
+        appear={appear}
+        //disableObserver={disableObserver}
+        {...effect.props}
+        refProp={refProp}
+      >
+        <WrappedComponent {...props} />
+      </effect.type>
     );
   }
 

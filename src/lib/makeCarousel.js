@@ -29,7 +29,7 @@ function makeCarousel(WrappedComponent, config = {}) {
     static get defaultProps() {
       return {
         defaultWait: config.defaultWait || 5000,
-        maxTurns: config.maxTurns || 2,
+        maxTurns: config.maxTurns || 5,
         swipe: config.swipe || true,
       };
     }
@@ -45,6 +45,7 @@ function makeCarousel(WrappedComponent, config = {}) {
         appear: false,
       };
       this.turn = 0;
+      this.stop = false;
       this.handleReveal = this.handleReveal.bind(this);
       this.handleSwipe = this.handleSwipe.bind(this);
       this.target = this.target.bind(this);
@@ -94,20 +95,36 @@ function makeCarousel(WrappedComponent, config = {}) {
     }
 
     componentDidMount() {
-      swipedetect(this.beforeNode, this.handleSwipe );
-      swipedetect(this.afterNode, this.handleSwipe );
+      if (this.beforeNode && this.afterNode) {
+        swipedetect(this.beforeNode, this.handleSwipe );
+        swipedetect(this.afterNode, this.handleSwipe );
+      }
     }
 
     render() {
       const { children } = this.props,
         arr = React.Children.toArray(children),
         count = arr.length;
-      if (count<2)
-        return children;
       let { swap, next, current, backwards } = this.state;
       current %= count; next %= count;
-      let before = arr[swap ? next : current];
-      let after  = arr[swap ? current : next];
+      let before, after ;
+
+      switch (count) {
+        case 0:
+          before = <div />;
+          after  = <div />;
+        case 1:
+          before = arr[0];
+          after  = arr[0];
+        default:
+          before = arr[swap ? next : current];
+          after  = arr[swap ? current : next];
+      }
+
+      if (typeof before !== 'object')
+        before = <div>{before}</div>;
+      if (typeof after !== 'object')
+        after = <div>{after}</div>;
 
       return (
         <WrappedComponent
@@ -118,6 +135,7 @@ function makeCarousel(WrappedComponent, config = {}) {
           children={[
             <div ref={ node => this.beforeNode = node } key={1} style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 1 : 2 }}>
               <before.type
+                //disableObserver
                 //force
                 mountOnEnter
                 unmountOnExit
@@ -127,11 +145,12 @@ function makeCarousel(WrappedComponent, config = {}) {
                 opposite
                 when={!swap}
                 mirror={backwards}
-                onReveal={!swap ? this.handleReveal : void 0}
+                onReveal={!swap/*&&!this.stop*/ ? this.handleReveal : void 0}
               />
             </div>,
             <div key={2} ref={ node => this.afterNode = node } style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: swap ? 2 : 1 }}>
               <after.type
+                //disableObserver
                 //force
                 mountOnEnter
                 unmountOnExit
@@ -141,7 +160,7 @@ function makeCarousel(WrappedComponent, config = {}) {
                 opposite
                 when={swap}
                 mirror={backwards}
-                onReveal={swap ? this.handleReveal : void 0}
+                onReveal={swap/*&&!this.stop*/ ? this.handleReveal : void 0}
               />
             </div>
           ]}

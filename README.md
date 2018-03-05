@@ -81,30 +81,6 @@ or if you want to customize `div` props:
 </Zoom>
 ```
 
-If you don't want any tag at all then another option is to [expose DOM ref](https://reactjs.org/docs/refs-and-the-dom.html#exposing-dom-refs-to-parent-components) to `react-reveal`. You do that by using `refProp` prop. Consider following custom React Component:
-
-```jsx
-function CustomComponent({ innerRef, className, style }) {
-  return (<div ref={innerRef} className={className} style={style}>Some content</div>);
-}
-```
-
-And then you can reveal using following code:
-
-```jsx
-<Zoom refProp="innerRef">
-  <CustomComponent />   
-</Zoom>
-```
-
-In this case, `react-reveal` will not insert any tags and will use the exposed HTML element. Some React components such as React Router links already expose their refs via `innerRef` prop:
-
-```jsx
-<Zoom refProp="innerRef">
-  <Link to="/">Your Content</Link>
-</Zoom>
-```
-
 ## Revealing Images
 
 If you want to reveal an image you can wrap `img` tag with with the desired `react-reveal` effect:
@@ -153,15 +129,20 @@ If you don't want this to happen, you should wrap multiple children in a `div` t
 
 ## Server Side Rendering
 
-`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. `react-reveal` will try to autodetect this and apply gentle fadeout effect on the initial render to mitigate flickering. If it's something you
-don't really want then you can place the following code somewhere near the entry point of your app to disable this fadeout effect on initial loading:
+`react-reveal` supports server side rendering out of the box. In some cases, when the javascript bundle arrives much later than the HTML&CSS it might cause a flickering. To prevent this `react-reveal` will not apply reveal effects on the initial load. 
+Another option is to apply gentle fadeout effect on the initial render. You can force it on all `react-reveal` elements by placing the following code somewhere near the entry point of your app:
 
 ```jsx
 import config from 'react-reveal/globals';
 
-config({ ssrFadeout: false });
+config({ ssrFadeout: true });
 ```
 
+Or you you can do it on a per element basis using `ssrFadeout` prop:
+
+```jsx
+<Zoom ssrFadeout><h1>Content</h1></Zoom>
+```
 
 ## Search Engine Optimisation 
 
