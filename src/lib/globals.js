@@ -11,9 +11,9 @@
 
 export const namespace = 'react-reveal';//, is16 = parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
-export const raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||  window.mozRequestAnimationFrame || function(callback) {window.setTimeout(callback, 66);};
 
 export let
+  raf = cb => window.setTimeout(cb, 66),
   ssr = true,
   disableSsr = () => ssr = false,
   fadeOutEnabled = true,
@@ -61,6 +61,7 @@ function hideAll() {
 //navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")
 if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document && typeof navigator !== 'undefined') { // are we in browser?
   ssr = window.document.querySelectorAll('div[data-reactroot]').length>0; // are we prerendered?
+  raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || raf;
   if (navigator.appVersion.indexOf("MSIE 10") !== -1)
     ie10 = true;
   //if (ssr && 'serviceWorker' in navigator && navigator.serviceWorker.controller) //cached by service worker?
