@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 function Tutorial() {
   return (
-    <Article title="Working With Collections">
+    <Article title="Working With Lists">
 <p>
 <code>react-reveal</code> has added a support
 for <a href="https://github.com/reactjs/react-transition-group">react transition group</a> <code>2.x</code>!
@@ -36,8 +36,10 @@ After that, you can import <code>TransitionGroup</code> and some effect from <co
 {
 `
 <pre class="language-jsx">
-<code class="language-jsx line-numbers">import TransitionGroup from 'react-transition-group/TransitionGroup';
+<code class="language-jsx">import TransitionGroup from 'react-transition-group/TransitionGroup';
 import Zoom from 'react-reveal/Zoom';
+</code>
+</pre>
 `
 }
 </Code>

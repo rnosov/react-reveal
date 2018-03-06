@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import hamburger from 'react-reveal/hamburger';
+import hamburger from './hamburger';
 //import Fade from 'react-reveal/Fade';
 import { ie10 } from 'react-reveal/globals';
 

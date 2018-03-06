@@ -1,5 +1,5 @@
 import React from 'react';
-import withReveal from 'react-reveal/withReveal';
+//import withReveal from 'react-reveal/withReveal';
 import { Link } from 'react-router-dom';
 //import Animation from 'react-reveal/Animation';
 //import Fade from 'react-reveal/Fade';
@@ -29,9 +29,9 @@ function heading(first, second) {
   );
 }
 
-function Brand({ reveal }) {
-  return reveal(
-      <Slide right>
+function Brand() {
+  return (
+      <Slide right wait={6500}>
         <div id="brand-bg">
           <div className="container jumbotron">
             <div className="mx-4 text-white">
@@ -58,4 +58,4 @@ function Brand({ reveal }) {
   );
 }
 
-export default withReveal(Brand);
+export default Brand;

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Fade from 'react-reveal/Fade';
-import responsive from 'react-reveal/responsive';
+import responsive from './responsive';
 
 function Sidebar({ items, reveal, belowBreakpoint, isToggled, toggle }) {
   let button;
@@ -30,7 +30,7 @@ function Sidebar({ items, reveal, belowBreakpoint, isToggled, toggle }) {
     <div>
       {button}
       {reveal(
-        <Fade appear={items.length>3} bottom cascade force duration={1200}>
+        <Fade appear={items.length>3}  bottom cascade force duration={300 + items.length*100}>
           <div className="list-group">
             {items}
           </div>

@@ -12,20 +12,20 @@ import Sidebar from '../navigation/Sidebar';
 import Article from '../Article';
 import { Route, Switch } from 'react-router-dom';
 import navMap from '../navigation/navMap';
-//import Basic from './Basic';
+import Quickstart from './Quickstart';
+import Carousel from './Carousel';
 import TransitionGroup from './TransitionGroup';
+import Styled from './Styled';
 
 const
   prefix = '/tutorials/',
-  indexPath = 'transition-group',
+  indexPath = 'quickstart',
   linkClass = 'list-group-item list-group-item-action',
-  //routes = makeRoutes(prefix, indexPath),
   nav = navMap({ prefix, linkClass }, [
-    { title: 'Working With Collections', to: indexPath },
-    //{ title: 'Working With Collections', to: 'transition-group' },
-    //{ title: 'Carousel', to: 'carousel' },
-    //{ title: 'Hamburger', to: 'hamburger' },
-    //{ title: 'Responsive', to: 'responsive' },
+    { title: 'Quickstart', to: indexPath },
+    { title: 'Working With Lists', to: 'transition-group' },
+    { title: 'Styled Components', to: 'styled' },
+    { title: 'Making A Carousel', to: 'carousel' },
   ]);
 
 function Tutorials () {
@@ -37,9 +37,11 @@ function Tutorials () {
         </div>
         <div className="col-12 col-md-8 order-md-1 mt-md-4">
           <Switch>
-            <Route exact path={prefix} component={TransitionGroup} />
-            <Route path={prefix + indexPath} component={TransitionGroup} />
-            {/*<Route path={prefix + 'transition-group'} component={TransitionGroup} />*/}
+            <Route exact path={prefix} component={Quickstart} />
+            <Route path={prefix + indexPath} component={Quickstart} />
+            <Route path={prefix + 'transition-group'} component={TransitionGroup} />
+            <Route path={prefix + 'styled'} component={Styled} />
+            <Route path={prefix + 'carousel'} component={Carousel} />
             <Route render={ () => <Article title="Not Found" content="Tutorial not found" />} />
           </Switch>
         </div>

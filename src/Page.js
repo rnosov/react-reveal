@@ -13,7 +13,7 @@ import { string, bool } from 'prop-types';
 import Helmet from 'react-helmet';
 
 const trackingId = 'UA-113142916-1',
-      currentVer = '1.34';
+      currentVer = '1.37';
 const
   propTypes = {
     title: string.isRequired,

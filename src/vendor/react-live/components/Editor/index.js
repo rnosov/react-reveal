@@ -250,7 +250,7 @@ class Editor extends Component {
       <pre
         {...rest}
         ref={this.onRef}
-        className={cn('prism-code', className) + ' line-numbers'}
+        className={cn('prism-code', className)}
         style={style}
         spellCheck="false"
         contentEditable={contentEditable}

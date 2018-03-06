@@ -20,7 +20,7 @@ import Demos from './examples/Demos';
 
 function App() {
   return (
-    <div className="App" style={{ overflow: 'hidden' }}>
+    <div style={{ overflow: 'hidden' }}>
       <Header />
       <Switch>
         <Route exact path='/' component={Home} />

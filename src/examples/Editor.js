@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, {Component} from 'react';
 import Page from '../Page';
 import { LiveProvider, LiveEditor, LivePreview} from '../vendor/react-live/';
 import './Editor.css'
@@ -35,10 +35,17 @@ import Tada from 'react-reveal/Tada';
 import Wobble from 'react-reveal/Wobble';
 
 import Reveal from 'react-reveal/Reveal';
+import withReveal from 'react-reveal/withReveal';
+import makeCarousel from 'react-reveal/makeCarousel';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 
+import styled, { css } from 'styled-components';
+import logo from './logo.svg';
+
+
 const scope = { Reveal, Fade, Flip, Rotate, Zoom, Roll, Bounce, Slide, LightSpeed,
-	Flash, HeadShake, Jello, Jump, Pulse, RubberBand, Shake, Spin, Swing, Tada, Wobble, TransitionGroup };
+	Flash, HeadShake, Jello, Jump, Pulse, RubberBand, Shake, Spin, Swing, Tada, Wobble,
+  TransitionGroup, styled, css, withReveal, Component, logo, makeCarousel };
 
 class Editor extends React.Component {
 
@@ -90,7 +97,7 @@ class Editor extends React.Component {
     }
 		const code = this.props.children;
 		return (
-			<LiveProvider transformCode={ (code) => this.truncate(code) } scope={scope} code={code} mountStylesheet={false}>
+			<LiveProvider noInline={this.props.noInline} transformCode={ (code) => this.truncate(code) } scope={scope} code={code} mountStylesheet={false}>
 			  <div className="row no-gutters" >
 			  	<div className={'col-12' + (this.props.stacked ? ' order-last mt-3':` col-md-${this.props.wide?'5':'6'} order-md-2`)}>
 			  	  <div className={(this.props.stacked ?'':'ml-2 ')+'live-preview-container'} >

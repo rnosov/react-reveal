@@ -6,7 +6,7 @@ import Carousel from'./Carousel';
 import Brand from'./Brand';
 import './Home.css';
 
-import withReveal from 'react-reveal/withReveal';
+//import Slide from 'react-reveal/Slide';
 import Fade from 'react-reveal/Fade';
 import Flip from 'react-reveal/Flip';
 import Rotate from 'react-reveal/Rotate';
@@ -19,16 +19,17 @@ import LightSpeed from 'react-reveal/LightSpeed';
 const cat = '/assets/striped-cat-small.jpg';
 
 function makeSlide(name, pic, arr) {
-  const Effect = arr[0];
-  const El = withReveal( ({ reveal }) => reveal(
-    <Effect.type right>
+  //const Effect = Slide;//arr[0];
+  const Effect = arr[0].type;
+  return (
+    <Effect right key={name}>
       <div id="bg" style={{ backgroundImage: `url(${pic})` }}>
         <div className="container jumbotron">
           <div className="mx-4 text-center">
             <div className="mt-1" style={{ opacity: 0.8, backgroundColor:'#ccc', padding:'0.5rem' }}>
             <h1 className="mb-3">{name} Effect</h1>
             {arr.map( (item, id) =>
-              <item.type delay={800+(id*300)} key={id} {...item.props} onReveal={ id === 0 ? (()=> Page.event('Carousel-' + name)) : void 0 }>
+              <item.type delay={800+(id*300)} key={id} {...item.props} /*onReveal={ id === 0 ? (()=> Page.event('Carousel-' + name)) : void 0 }*/>
                 <h2 className="mt-2">React Reveal</h2>
               </item.type>
             )}
@@ -37,9 +38,8 @@ function makeSlide(name, pic, arr) {
           </div>
         </div>
       </div>
-    </Effect.type>
-  ));
-  return <El key={name} />;
+    </Effect>
+  );
 }
 
 let conf, slides, preloads = {};
@@ -53,13 +53,13 @@ function preload(src) {
 function Home() {
   if (!conf)
     conf = [
-      {name: 'Bounce', pic: '/assets/cat-on-floor.jpg', effects: [<Bounce/>, <Bounce left/>, <Bounce right/>, <Bounce top/>, <Bounce bottom/> ]},
       {name: 'Fade', pic: '/assets/cat-on-couch.jpg', effects: [<Fade left/>, <Fade right/>, <Fade top/>, <Fade bottom/> ] },
       {name: 'Zoom', pic: '/assets/cat-on-plate.jpg', effects: [<Zoom/>, <Zoom left/>, <Zoom right/>, <Zoom top/>, <Zoom bottom/> ]},
-      {name: 'Flip', pic: '/assets/cat-on-tree.jpg', effects: [<Flip delay={800}/>, <Flip right delay={2000}/>, <Flip top delay={3000}/>  ]},
       {name: 'Roll', pic: '/assets/cat-on-bed.jpg', effects: [<Roll left/>, <Roll right/>, <Roll top/>, <Roll bottom/> ]},
       {name: 'LightSpeed', pic: '/assets/cat-on-grass.jpg', effects: [<LightSpeed left/>, <LightSpeed right/> ]},
+      {name: 'Flip', pic: '/assets/cat-on-tree.jpg', effects: [<Flip delay={800}/>, <Flip right delay={2000}/>, <Flip top delay={3000}/>  ]},
       {name: 'Rotate', pic: '/assets/cat-on-hands.jpg', effects: [<Rotate/>, <Rotate top left/>, <Rotate top right/>, <Rotate bottom left/>, <Rotate bottom right/> ]},
+      {name: 'Bounce', pic: '/assets/cat-on-floor.jpg', effects: [<Bounce/>, <Bounce left/>, <Bounce right/>, <Bounce top/>, <Bounce bottom/> ]},
     ];
   if (!slides) {
     slides = conf.map( slide => makeSlide(slide.name, slide.pic, slide.effects) );
@@ -73,7 +73,7 @@ function Home() {
     <Page title='Home'>
       <main>
         <Carousel maxTurns={10}>
-          <Brand wait={6500} />
+          {Brand()}
           {slides}
         </Carousel>
         <div className="container">
@@ -112,11 +112,11 @@ function Home() {
           {
             conf.map( ({ name, effects }) => (
               <React.Fragment key={name}>
-              <h3 className="text-center"><Link to={`/examples/common/${name}`}>{name}</Link></h3>
+              <h3 className="text-center"><Link to={`/examples/common/${name}`}>{name} Effect</Link></h3>
               {
                 effects.map( (example, index) =>
                   <div key={index} className="row">
-                    <example.type {...example.props} delay={0} alwaysReveal onReveal={ index === 0 ? (()=> Page.event('scroll-' + name)) : void 0 }>
+                    <example.type {...example.props} delay={0} alwaysReveal /*onReveal={ index === 0 ? (()=> Page.event('scroll-' + name)) : void 0 }*/>
                       <img className="d-block mx-auto my-4" height="285" width="390" src={cat} alt="cute cat" />
                     </example.type>
                   </div>
