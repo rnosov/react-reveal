@@ -52,7 +52,7 @@ const
     mountOnEnter: bool,
     inEffect: inOut.isRequired,
     outEffect: oneOfType([ inOut, oneOf([ false ]) ]).isRequired,
-    alwaysReveal: bool,
+    ssrReveal: bool,
     collapseOnly: bool,
     ssrFadeout: bool,
   },
@@ -89,7 +89,7 @@ class RevealBase extends React.Component {
        ? RevealBase.getInitialCollapseStyle(props)
        : void 0,
       style: {
-        opacity: (!this.isOn||props.alwaysReveal) && props.outEffect ? 0 : void 0,
+        opacity: (!this.isOn||props.ssrReveal) && props.outEffect ? 0 : void 0,
         //visibility: props.when  ? 'visible' : 'hidden',
       },
     };
@@ -304,7 +304,7 @@ class RevealBase extends React.Component {
     const parentGroup = this.context.transitionGroup;
     const appear = parentGroup && !parentGroup.isMounting ? !('enter' in this.props && this.props.enter === false) : this.props.appear;
     if (this.isOn && (((this.props.when !== undefined || this.props.spy !== undefined) && !appear)
-    || (ssr && !fadeOutEnabled && !this.props.ssrFadeout && this.props.outEffect && !this.props.alwaysReveal && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
+    || (ssr && !fadeOutEnabled && !this.props.ssrFadeout && this.props.outEffect && !this.props.ssrReveal && (RevealBase.getTop(this.el) < window.pageYOffset + window.innerHeight)))
       ) {
       this.isShown = true;
       this.setState({
