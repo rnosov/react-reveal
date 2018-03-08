@@ -11,10 +11,12 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Helmet from 'react-helmet';
 import Header from './navigation/Header';
+import Menu from './navigation/Menu';
 import Footer from './navigation/Footer';
 import NoMatch from './navigation/NoMatch';
 import Home from './home/Home';
 import Docs from './docs/components/Docs';
+import Blog from './blog/components/Blog';
 import Tutorials from './tutorials/Tutorials';
 import Demos from './examples/Demos';
 
@@ -24,9 +26,11 @@ function App() {
       <Header />
       <Switch>
         <Route exact path='/' component={Home} />
+        <Route path='/menu/' component={Menu} />
         <Route path='/tutorials/' component={Tutorials} />
         <Route path='/docs/' component={Docs} />
         <Route path='/examples/' component={Demos} />
+        <Route path='/blog/' component={Blog} />
         <Route component={NoMatch} />
       </Switch>
       <Footer />

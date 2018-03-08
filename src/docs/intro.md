@@ -146,6 +146,8 @@ Or you you can do it on a per element basis using `ssrFadeout` prop:
 <Zoom ssrFadeout><h1>Content</h1></Zoom>
 ```
 
+One last option is to use `ssrReveal` prop. If enabled, this option will suppress both flickering and `ssrFadeout` effect. The unfortunate drawback of this option is that the revealed content will appear hidden to Googlebot and to anyone with javascript switched off. So it will makes sense for images and/or headings which are duplicated elsewhere on the page.
+
 
 ## Search Engine Optimisation 
 

@@ -24,6 +24,7 @@ function responsive( WrappedComponent, {effect, breakpoint = '768px', ...rest } 
       this.state = {
         match : true,
         isClicked: false,
+        mounted: false,
       };
     }
 
@@ -31,7 +32,8 @@ function responsive( WrappedComponent, {effect, breakpoint = '768px', ...rest } 
       this.setState({ match: e.matches, isClicked: false });
     }
 
-    handleClick() {
+    handleClick(e) {
+      e.preventDefault();
       this.setState({ isClicked: !this.state.isClicked });
     }
 
@@ -55,6 +57,7 @@ function responsive( WrappedComponent, {effect, breakpoint = '768px', ...rest } 
 
     componentDidMount() {
       this.newQuery(this.props.query);
+      this.setState({ mounted : true });
     }
 
     componentWillReceiveProps({ query }) {
@@ -72,6 +75,7 @@ function responsive( WrappedComponent, {effect, breakpoint = '768px', ...rest } 
           disabled={this.props.disableAboveBreakpoint&&this.state.match}
           when={this.state.match || this.state.isClicked}
           collapseOnly={!this.state.match}
+          mounted={this.state.mounted}
         />
       );
     }

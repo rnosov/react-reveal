@@ -285,7 +285,7 @@ class Example extends React.Component {
         <div className="form-row justify-content-center mt-1">
           <div className="custom-control custom-checkbox mr-2">
             <input id="customFadeOut" checked={this.state.out} onChange={this.handleOut} type="checkbox" className="custom-control-input" />
-            <label className="custom-control-label" htmlFor="customFadeOut">Conditional</label>
+            <label className="custom-control-label" htmlFor="customFadeOut">Show/Hide</label>
           </div>
           <div className="custom-control custom-checkbox mr-2">
             <input id="customOpposite" checked={this.state.opposite} onChange={this.handleOpposite} type="checkbox" className="custom-control-input" />

@@ -18,9 +18,9 @@ function hamburger(WrappedComponent, config = {} ) {
   let responsiveNode;
 
   function icon(iconProps) {
-    if (!responsiveNode || responsiveNode.state.match)
+    if (responsiveNode && responsiveNode.state.match)
       return void 0;
-    return makeIcon(responsiveNode.state.isClicked, animation, responsiveNode.handleClick, iconProps);
+    return makeIcon(responsiveNode&&responsiveNode.state.isClicked, animation, responsiveNode&&responsiveNode.handleClick, iconProps);
   }
 
   if ('duration' in config)

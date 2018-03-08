@@ -11,23 +11,25 @@ import React from 'react';
 import Fade from 'react-reveal/Fade';
 import responsive from './responsive';
 
-function Sidebar({ items, reveal, belowBreakpoint, isToggled, toggle }) {
+function Sidebar({ mounted, items, reveal, belowBreakpoint, isToggled, toggle }) {
   let button;
+  if (belowBreakpoint && items.length < 2)
+    return <div />;
   if (belowBreakpoint)
       button = (
         <div className={ isToggled ? 'dropup' : '' }>
           <button
-            style={{ width: '8rem' }}
+            style={{ width: '12rem' }}
             onClick={toggle}
             className={`mb-3 btn btn-outline-primary dropdown-toggle`}
             type="button"
           >
-            Show { isToggled ? 'Less' : 'More' }
+            { isToggled ? 'Hide' : 'Show' } Article Index
           </button>
         </div>
       );
   return (
-    <div>
+    <div className={mounted || items.length > 1 ?undefined:'d-none d-md-block'}>
       {button}
       {reveal(
         <Fade appear={items.length>3}  bottom cascade force duration={300 + items.length*100}>

@@ -14,13 +14,13 @@ const bg = '/assets/black-cat4.jpg';
 function heading(first, second) {
   return (
     <h1 className="text-center">
-      <Zoom left cascade duration={1200} delay={300} ssrFadeout>
+      <Zoom left cascade duration={1200} delay={300} ssrReveal>
         <div style={{display: 'inline-block'}}>
           {first}
         </div>
       </Zoom>
       <span style={{whiteSpace:'pre'}}> </span>
-      <Zoom right cascade duration={1200} delay={300} ssrFadeout>
+      <Zoom right cascade duration={1200} delay={300} ssrReveal>
         <div style={{display: 'inline-block'}}>
           {second}
         </div>
@@ -48,7 +48,7 @@ function Brand() {
               <Link className="btn btn-primary mr-3" to="/docs/" role="button">Documentation</Link>
             </div>
           </div>
-          <Zoom duration={2000} delay={2000} alwaysReveal>
+          <Zoom duration={2000} delay={2000} ssrReveal>
             <div id="img">
                 <img alt="" src={bg} />
             </div>

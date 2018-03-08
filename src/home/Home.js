@@ -116,7 +116,7 @@ function Home() {
               {
                 effects.map( (example, index) =>
                   <div key={index} className="row">
-                    <example.type {...example.props} delay={0} alwaysReveal /*onReveal={ index === 0 ? (()=> Page.event('scroll-' + name)) : void 0 }*/>
+                    <example.type {...example.props} delay={0} ssrReveal /*onReveal={ index === 0 ? (()=> Page.event('scroll-' + name)) : void 0 }*/>
                       <img className="d-block mx-auto my-4" height="285" width="390" src={cat} alt="cute cat" />
                     </example.type>
                   </div>
