@@ -50,12 +50,14 @@ export function animation(effect) {
   return `${name}${effectId}`;
 }
 
-function hideAll() {
+export function hideAll() {
+  if(globalHide)
+    return;
+  globalHide = true;
   window.removeEventListener('scroll', hideAll, true);
   insertRule(`.${namespace} { opacity: 0; }`);
   window.removeEventListener('orientationchange', hideAll, true);
   window.document.removeEventListener('visibilitychange', hideAll);
-  globalHide = true;
 }
 
 //navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")

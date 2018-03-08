@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { string, object, number, bool, func, oneOfType, oneOf, shape, element } from 'prop-types';
-import { namespace, ssr, disableSsr, globalHide, cascade, collapseend, fadeOutEnabled, observerMode, raf } from './lib/globals';
+import { namespace, ssr, disableSsr, globalHide, hideAll, cascade, collapseend, fadeOutEnabled, observerMode, raf } from './lib/globals';
 //import Step from './lib/Step';
 //import throttle from './lib/throttle';
 
@@ -276,6 +276,8 @@ class RevealBase extends React.Component {
   }
 
   reveal(props, inView = false) {
+    if (!globalHide)
+      hideAll();
     if (!this||!this.el) return;
     if (!props)
       props = this.props;
