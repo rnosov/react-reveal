@@ -24,7 +24,7 @@ function makeRoutes(prefix, indexPath)  {
     />));
   return (
     <Switch>
-      <Route path={prefix + 'zombies'} component={Npm} />
+      <Route path={prefix + 'npm'} component={Npm} />
       <Route exact path={prefix} component={Npm} />
       {routes}
       <Route key="NoMatch" render={ () => <Article title="Not Found" content="Article not found" />} />

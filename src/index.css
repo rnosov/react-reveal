@@ -31,6 +31,10 @@ code {
     flex-flow: column nowrap;
     -ms-flex-flow: column nowrap;
   }
+  .article-text {
+    text-align: justify;
+    text-justify: inter-word;
+  }
 }
 
 

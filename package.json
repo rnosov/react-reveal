@@ -23,7 +23,8 @@
   },
   "reactSnapshot": {
     "include": [
-      "/404"
+      "/404",
+      "/blog/npm/"
     ]
   },
   "scripts": {

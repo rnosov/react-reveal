@@ -13,7 +13,7 @@ import { string, bool } from 'prop-types';
 import Helmet from 'react-helmet';
 
 const trackingId = 'UA-113142916-1',
-      currentVer = '1.38';
+      currentVer = '1.40';
 const
   propTypes = {
     title: string.isRequired,
@@ -116,13 +116,13 @@ if (process.env.NODE_ENV === 'production') {
   Page.gtag('config', trackingId, { 'send_page_view': false });
   Page.gtag('event', `App Load (${currentVer})`, {'non_interaction': true } );
 
-  window.clicky_site_ids = window.clicky_site_ids || [];
-  window.clicky_site_ids.push(101102816);
-  var s = document.createElement('script');
-  s.type = 'text/javascript';
-  s.async = true;
-  s.src = '//static.getclicky.com/js';
-  ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
+  //window.clicky_site_ids = window.clicky_site_ids || [];
+  //window.clicky_site_ids.push(101102816);
+  //var s = document.createElement('script');
+  //s.type = 'text/javascript';
+  //s.async = true;
+  //s.src = '//static.getclicky.com/js';
+  //( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
 }
 
 Page.propTypes = propTypes;

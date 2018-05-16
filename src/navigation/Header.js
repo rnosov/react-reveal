@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-//import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import hamburger from './hamburger';
 import Menu from './Menu';
 //import Fade from 'react-reveal/Fade';
@@ -51,7 +51,7 @@ function Header({ reveal, icon, belowBreakpoint, mounted }) {
   //const styles = getStyles();
   return (
 		<nav className="navbar navbar-expand-md navbar-dark bg-dark">
-		  <a className="navbar-brand align-self-start" href="/">react-reveal</a>
+		  <Link className="navbar-brand align-self-start" to="/">react-reveal</Link>
 		  <div className="hamburger">
           {icon({ size: 28, style: { alignSelf: 'flex-end' }})}
           {reveal(

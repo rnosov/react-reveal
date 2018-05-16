@@ -11,6 +11,7 @@
 }
 #brand-bg img {
     background: black;
+    border: 0px solid black;
 }
 #brand-bg>#img {
     position: absolute;
@@ -20,4 +21,11 @@
     width: 416px;
     z-index: 1;
     max-height: 500px;
+}
+
+
+@media (max-width: 767px) {
+  #brand-bg>#img {
+    display: none;
+  }
 }

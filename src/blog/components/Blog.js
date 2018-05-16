@@ -14,7 +14,7 @@ import navMap from '../../navigation/navMap';
 
 const
   prefix = '/blog/',
-  indexPath = 'zombies',
+  indexPath = 'npm',
   linkClass = 'list-group-item list-group-item-action',
   routes = makeRoutes(prefix, indexPath),
   nav = navMap({ prefix, linkClass }, [

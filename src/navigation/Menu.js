@@ -35,8 +35,8 @@ export default function Menu({ nowrap }) {
                   <a className="nav-link" href="https://www.npmjs.com/package/react-reveal">NPM</a>
                 </li>
                 <li className="nav-item">
-                  {/*<NavLink className="nav-link" to="/blog/zombies/" activeClassName="active">Blog</NavLink>*/}
-                  <a className="nav-link" href="https://github.com/rnosov/react-reveal/tree/site">Site Source</a>
+                  <NavLink className="nav-link" to="/blog/npm/" activeClassName="active">Blog</NavLink>
+                  {/*<a className="nav-link" href="https://github.com/rnosov/react-reveal/tree/site">Site Source</a>*/}
                 </li>
               </ul>
     </React.Fragment>
