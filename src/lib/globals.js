@@ -43,7 +43,7 @@ export function animation(effect) {
   const rule = `@keyframes ${name + counter}{${effect}}`;
   const effectId = effectMap[effect];
   if (!effectId){
-    sheet.insertRule(rule, sheet.cssRules.length);
+    insertRule(rule);
     effectMap[effect] = counter;
     return `${name}${counter++}`;
   }
