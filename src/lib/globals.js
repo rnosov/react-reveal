@@ -26,7 +26,7 @@ let counter = 1, effectMap = {}, sheet = false, name = `${namespace}-${Math.floo
 
 export function insertRule(rule) {
   try {
-    return sheet.insertRule(rule, sheet.cssRules.length);
+    sheet.insertRule(rule, sheet.cssRules.length);
   }
   catch(e){
     console.warn('react-reveal - animation failed');
