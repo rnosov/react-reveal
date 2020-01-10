@@ -1,5 +1,8 @@
 # React Reveal
 
+THE ONLY DIFFERENCE BETWEEN THIS PACKAGE AND REACT-REVEAL IS THE IFRAME OPTION. 
+ONCE THAT IS INTEGRATED TO THE REACT-REVEAL PACKAGE, THIS WILL BE DELETED. 
+
 [React Reveal](https://www.react-reveal.com/) is
 an animation framework for React. It's MIT licensed, has a tiny footprint
 and written specifically for React in ES6. It can be used to create various cool reveal

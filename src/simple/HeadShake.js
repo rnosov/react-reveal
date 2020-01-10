@@ -48,8 +48,8 @@ const rule = `
 `;
 
 let name = false;
-function make() {
-  return name || (name = animation(rule));
+function make(reverse, { iframe }) {
+  return name || (name = animation(rule, iframe));
 }
 
 
