@@ -1,6 +1,6 @@
 {
   "name": "react-reveal-iframe",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "author": "Roman Nosov <rnosov@gmail.com>",
   "description": "Really simple way to add reveal on scroll animation to your React app.",
   "license": "MIT",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rnosov/react-reveal"
+    "url": "https://github.com/matrix-marketing/react-reveal"
   },
   "bugs": {
     "url": "https://github.com/rnosov/react-reveal/issues"
