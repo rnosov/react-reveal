@@ -13,7 +13,7 @@ export const namespace = 'react-reveal';//, is16 = parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
 
 export let
-  win = window,
+  win = typeof window !== 'undefined' ? window : null,
   ssr = true,
   observerMode = false,
   raf = cb => window.setTimeout(cb, 66),
