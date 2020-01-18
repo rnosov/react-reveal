@@ -373,8 +373,8 @@ class RevealBase extends React.Component {
           visibility: props.when  ? void 0 : 'hidden',
     };
   }
-
-  componentWillReceiveProps (props) {
+  
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.when !== undefined)
       this.isOn = !!props.when;
     if (props.fraction !== this.props.fraction)
