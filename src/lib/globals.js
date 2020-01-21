@@ -13,6 +13,7 @@ export const namespace = 'react-reveal';//, is16 = parseInt(version, 10) >= 16;
 export const defaults = { duration: 1000,  delay: 0, count: 1, };
 
 export let
+  win = typeof window !== 'undefined' ? window : null,
   ssr = true,
   observerMode = false,
   raf = cb => window.setTimeout(cb, 66),
@@ -38,7 +39,8 @@ export function cascade(i, start, end, duration, total) {
   return Math.exp(minv + scale*(i-start));
 }
 
-export function animation(effect) {
+export function animation(effect, iframe) {
+  initStyles(iframe);
   if (!sheet) return '';
   const rule = `@keyframes ${name + counter}{${effect}}`;
   const effectId = effectMap[effect];
@@ -50,14 +52,35 @@ export function animation(effect) {
   return `${name}${effectId}`;
 }
 
+function initStyles(iframe) {
+  
+  // if the component is in an iframe, add the animation style tag in the iframe window and setup the events within
+  if (iframe) win = document.getElementById(iframe).contentWindow;
+  
+  // get the style tag - if exists, we're already initialized
+  let element = win.document.getElementById('react-reveal-styles');
+  if (element) return;
+
+  // initialize style tag and events
+  element = win.document.createElement('style');
+  element.type = 'text/css';
+  element.id = 'react-reveal-styles';
+  win.document.head.appendChild(element);
+  if (element.sheet && element.sheet.cssRules && element.sheet.insertRule) {
+    sheet = element.sheet;
+    win.addEventListener('scroll', hideAll, true);
+    win.addEventListener('orientationchange', hideAll, true);
+    win.document.addEventListener('visibilitychange', hideAll);
+  }
+}
+
 export function hideAll() {
-  if(globalHide)
-    return;
+  if (globalHide) return;
   globalHide = true;
-  window.removeEventListener('scroll', hideAll, true);
+  win.removeEventListener('scroll', hideAll, true);
   insertRule(`.${namespace} { opacity: 0; }`);
-  window.removeEventListener('orientationchange', hideAll, true);
-  window.document.removeEventListener('visibilitychange', hideAll);
+  win.removeEventListener('orientationchange', hideAll, true);
+  win.document.removeEventListener('visibilitychange', hideAll);
 }
 
 //navigator.userAgent.includes("Node.js") || navigator.userAgent.includes("jsdom")
@@ -84,14 +107,6 @@ if (typeof window !== 'undefined' && window.name !== 'nodejs' && window.document
   if (!observerMode) {
     collapseend = document.createEvent('Event');
     collapseend.initEvent('collapseend', true, true);
-  }
-  let element = document.createElement('style');
-  document.head.appendChild(element);
-  if (element.sheet && element.sheet.cssRules && element.sheet.insertRule) {
-    sheet = element.sheet;
-    window.addEventListener('scroll', hideAll, true);
-    window.addEventListener("orientationchange", hideAll, true);
-    window.document.addEventListener("visibilitychange", hideAll);
   }
 }
 

@@ -32,8 +32,8 @@ from, 50%, to {
 `;
 
 let name = false;
-function make() {
-  return name || (name = animation(rule));
+function make(reverse, { iframe }) {
+  return name || (name = animation(rule, iframe));
 }
 
 function Flash({ children, out, timeout, duration = defaults.duration, delay = defaults.delay, count = defaults.count, forever, ...props } = defaults) {

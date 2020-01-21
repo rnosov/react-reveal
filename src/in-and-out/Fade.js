@@ -30,7 +30,7 @@ const
   };
 
 const lookup = {};
-function make(reverse, { distance, left, right, up, down, top, bottom, big, mirror, opposite, }) {
+function make(reverse, { distance, left, right, up, down, top, bottom, big, mirror, opposite, iframe }) {
   const checksum = (distance?distance.toString():0) + ( (left?1:0) | (right?2:0) | (top||down?4:0) | (bottom||up?8:0) | (mirror?16:0) | (opposite?32:0) | (reverse?64:0) | (big?128:0));
   if (lookup.hasOwnProperty(checksum))
     return lookup[checksum];
@@ -45,7 +45,7 @@ function make(reverse, { distance, left, right, up, down, top, bottom, big, mirr
   }
   lookup[checksum] = animation(
     `${!reverse?'from':'to'} {opacity: 0;${ transform ? ` transform: translate3d(${x}, ${y}, 0);` : ''}}
-     ${ reverse?'from':'to'} {opacity: 1;transform: none;} `
+     ${ reverse?'from':'to'} {opacity: 1;transform: none;} `, iframe
   );
   return lookup[checksum];
 }

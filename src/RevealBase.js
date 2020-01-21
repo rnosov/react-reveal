@@ -123,7 +123,11 @@ class RevealBase extends React.Component {
       this.observe(this.props, true);
     }
   }
-
+  
+  window() {
+    return this.props.iframe ? document.getElementById(this.props.iframe).contentWindow : window;
+  }
+  
   invisible() {
     if (!this || !this.el)
       return;
@@ -133,7 +137,7 @@ class RevealBase extends React.Component {
       //if (this.props.onExited)
       //  this.props.onExited(this.el);
       if (!observerMode && this.props.collapse)
-        window.document.dispatchEvent(collapseend);
+        this.window().document.dispatchEvent(collapseend);
     }
   }
 
@@ -369,8 +373,8 @@ class RevealBase extends React.Component {
           visibility: props.when  ? void 0 : 'hidden',
     };
   }
-
-  componentWillReceiveProps (props) {
+  
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.when !== undefined)
       this.isOn = !!props.when;
     if (props.fraction !== this.props.fraction)
@@ -487,21 +491,21 @@ class RevealBase extends React.Component {
   listen() {
     if (!observerMode && !this.isListener) {
       this.isListener = true;
-      window.addEventListener('scroll', this.revealHandler, { passive: true });
-      window.addEventListener('orientationchange', this.revealHandler, { passive: true });
-      window.document.addEventListener('visibilitychange', this.revealHandler, { passive: true });
-      window.document.addEventListener('collapseend', this.revealHandler, { passive: true });
-      window.addEventListener('resize', this.resizeHandler, { passive: true });
+      this.window().addEventListener('scroll', this.revealHandler, { passive: true });
+      this.window().addEventListener('orientationchange', this.revealHandler, { passive: true });
+      this.window().document.addEventListener('visibilitychange', this.revealHandler, { passive: true });
+      this.window().document.addEventListener('collapseend', this.revealHandler, { passive: true });
+      this.window().addEventListener('resize', this.resizeHandler, { passive: true });
     }
   }
 
   unlisten() {
     if (!observerMode && this.isListener) {
-      window.removeEventListener('scroll', this.revealHandler, { passive: true });
-      window.removeEventListener('orientationchange', this.revealHandler, { passive: true });
-      window.document.removeEventListener('visibilitychange', this.revealHandler, { passive: true });
-      window.document.removeEventListener('collapseend', this.revealHandler, { passive: true });
-      window.removeEventListener('resize', this.resizeHandler, { passive: true });
+      this.window().removeEventListener('scroll', this.revealHandler, { passive: true });
+      this.window().removeEventListener('orientationchange', this.revealHandler, { passive: true });
+      this.window().document.removeEventListener('visibilitychange', this.revealHandler, { passive: true });
+      this.window().document.removeEventListener('collapseend', this.revealHandler, { passive: true });
+      this.window().removeEventListener('resize', this.resizeHandler, { passive: true });
       this.isListener = false;
     }
     if(this.onRevealTimeout)

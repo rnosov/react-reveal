@@ -29,7 +29,7 @@ const
   };
 
 const lookup = {};
-function make(reverse, { left, right, up, down, top, bottom, mirror, opposite, }) {
+function make(reverse, { left, right, up, down, top, bottom, mirror, opposite, iframe }) {
   const checksum = (left?1:0) | (right?2:0) | (top||down?4:0) | (bottom||up?8:0) | (mirror?16:0) | (opposite?32:0) | (reverse?64:0);
   if (lookup.hasOwnProperty(checksum))
     return lookup[checksum];
@@ -43,7 +43,7 @@ function make(reverse, { left, right, up, down, top, bottom, mirror, opposite, }
   lookup[checksum] = animation(`
     ${!reverse?'from':'to'} { opacity: 0; transform-origin: ${origin}; transform: rotate3d(0, 0, 1, ${angle});}
     ${reverse?'from':'to'} { opacity: 1; transform-origin: ${origin}; transform: none;}
-  `);
+  `, iframe);
   return lookup[checksum];
 }
 
