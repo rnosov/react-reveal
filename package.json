@@ -44,7 +44,7 @@
     "gulp-replace": "^1.0.0",
     "gulp-uglify": "^3.0.2",
     "jest": "^22.1.4",
-    "jest-cli": "^22.4.3",
+    "jest-cli": "^23.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-test-renderer": "^16.2.0",
