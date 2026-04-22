@@ -95,7 +95,7 @@ If you want to reveal an image you can wrap `img` tag with with the desired `rea
 
 ```jsx
 <Zoom>
-  <img height="300" width="400" src="https://source.unsplash.com/random/300x400" />
+  <img height="300" width="400" src="https://picsum.photos/300/400" />
 </Zoom>
 ```
 
